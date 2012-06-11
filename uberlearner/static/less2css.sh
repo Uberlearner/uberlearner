@@ -8,6 +8,11 @@ RESPONSIVE_SRC=$LESS_FOLDER"/responsive.less"
 BOOTSTRAP_TARGET=$CSS_FOLDER"/bootstrap.css"
 RESPONSIVE_TARGET=$CSS_FOLDER"/bootstrap-responsive.css"
 
+if [ ! -d "$CSS_FOLDER" ]; then
+    echo "CSS directory doesn't exist... creating"
+    mkdir -p "$CSS_FOLDER"
+fi
+
 lessc -x "$BOOTSTRAP_SRC" > "$BOOTSTRAP_TARGET"
 lessc -x "$RESPONSIVE_SRC" > "$RESPONSIVE_TARGET"
 
