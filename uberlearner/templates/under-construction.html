@@ -1,0 +1,35 @@
+{% extends 'templated-base.html' %}
+
+{% block hero %}
+<div class="row-fluid">
+	<div class="span3">
+		<img src="{{STATIC_URL}}img/under_construction.png" alt="Go Away!" />
+	</div>
+	<div class="span9">
+		<div class="hero-unit">
+			<h1>Site Under Construction</h1>
+			<p>This site is currently in a very early stage of its life. There is nothing to see here just yet. Go away!</p>
+			<a class="btn btn-primary" href="#underConstructionTrapModal" data-toggle="modal">Go Away!</a>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="modal hide fade in" id="underConstructionTrapModal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h3>This was a trap...</h3>
+	</div>
+	<div class="modal-body">
+		<p>If you really wanted to be gone you would have closed the browser-tab. And since you clearly don't want to go away, you might as well make yourself home.</p>
+		<p>
+			<ul class="unstyled">
+				<li>You could try logging in... but that might not be operational yet.</li>
+				<li>You could try contacting me using the contact tab... but that might not work either.</li>	
+			</ul>
+			But really, it's your fault for trying. I warned you about this!
+		</p>
+	</div>
+</div>
+{% endblock %}

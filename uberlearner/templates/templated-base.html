@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% load navigation_tags %}
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+			</a>
+			<a class="brand" href="/">ÜberLearner</a>
+			<div class="nav-collapse">
+				<ul class="nav">
+					<li class="{% navactive request 'home' %}">
+						<a href="/">Home</a>
+					</li>
+					<li class="{% navactive request 'about' %}">
+						<a href="/about">About</a>
+					</li>
+					<li class="{% navactive request 'contact' %}">
+						<a href="/contact">Contact</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div><!-- top nav-bar -->
+
+<div class="container-fluid">
+	{% block hero %}{% endblock %}
+	
+	<h1>{% block content_title %}{% endblock %}</h1>
+	
+	{% block content %}{% endblock %}
+	
+	<hr />
+	
+	{% block footer %}
+		<footer>
+			<p class="pull-right"><a href="#">Back to the top</a></p>
+			<p><small>&copy; ÜberLearner 2012</small></p>
+			<p>
+				Icons from 
+				<a href="http://glyphicons.com" target="_blank">Glyphicons Free</a>
+				, licensed under 
+				<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a>.
+			</p>
+		</footer>
+	{% endblock %}
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+*.log
+*.pot
+*.pyc
+local_settings.py
+*~
+
+# since this project uses less, the css files are merely the result of 
+# the compilation of the less files. Therefore, the css files will not
+# be committed.
+*.css
