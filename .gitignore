@@ -8,3 +8,13 @@ local_settings.py
 # the compilation of the less files. Therefore, the css files will not
 # be committed.
 *.css
+
+# the static files collected by the collectstatic utility have no business
+# getting committed to the repository. Hence all contents of this directory
+# will be exempt
+static.pub/*
+
+# the local settings file was created so that the local settings of each installation
+# would not get uploaded onto the repository. Hence, by definition, this file 
+# does not get uploaded.
+uberlearner/uberlearner/settings_local.py
