@@ -1,0 +1,71 @@
+{% extends "templated-base.html" %}
+
+{% load i18n %}
+{% load account_tags %}
+{% load bootstrap_toolkit %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+
+{% block content %}
+
+{% if not user.is_authenticated %}
+
+{% if allauth.socialaccount_enabled  %}
+<p>
+	{% blocktrans with site.name as site_name %}Please sign in with one of your existing third party accounts. Or, 
+	<a href="{{ signup_url }}">sign up</a> for a {{site_name}} account and sign in below:{% endblocktrans %}
+</p>
+
+<div class="socialaccount_ballot">
+
+<ul class="socialaccount_providers">
+{% include "socialaccount/snippets/provider_list.html" %}
+</ul>
+
+<div class="login-or">{% trans 'or' %}</div>
+
+</div>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+{% endif %}
+{% endif %}
+<div class="row">
+	<div class="span9">
+		<div class="hero-unit">
+			<h2>Super-cheezy stock photo!</h2>
+			<div class="thumbnail">
+				<img src="{{STATIC_URL}}img/close_up_text.jpg"/>
+			</div>
+		</div>
+	</div>
+	<div class="span3">
+    
+    <div class="row">
+    	<div class="span3">
+    		<h1>{% trans "Sign In" %}</h1><br/>
+    	</div>
+    </div>
+		
+    <form class="form" method="POST" action="{% url account_login %}" id="login-form">
+    	<fieldset>
+        {% csrf_token %}
+        {{ form|as_bootstrap:"vertical" }}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        <div class="form-actions">
+        	<button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+        	<a href="{% url account_reset_password %}">{% trans "Forgot Password?" %}</a>
+       </div>
+      </fieldset>
+    </form>
+	</div>
+</div>
+{% if user.is_authenticated %}
+{% include "account/snippets/already_logged_in.html" %}
+{% endif %}
+    
+
+{% endblock %}

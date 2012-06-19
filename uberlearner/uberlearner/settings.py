@@ -122,6 +122,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'main',
     'django.contrib.admin',
+    'emailconfirmation',
+    'allauth',
+    'allauth.account',
+    'bootstrap_toolkit',
+    'captcha',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -155,10 +160,36 @@ LOGGING = {
     }
 }
 
-# Add the request context processor so that the navigation activation can be managed
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
-TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.request', )
-
 # Over-ride some of this behavious using settings_local.py
 from uberlearner.settings_local import *
+
+# Email server settings
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_SUBJECT_PREFIX = "[Uberlearner] "
+AWS_ACCESS_KEY_ID = 'AKIAIYSEGJ5HLGMDPP2Q'
+AWS_SECRET_ACCESS_KEY = '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'
+DEFAULT_FROM_EMAIL = 'abhin@uberlearner.com'
+
+# Authentication and registration constants
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = True
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Uberlearner] "
+LOGIN_REDIRECT_URLNAME = "account_user_profile"
+EMAIL_CONFIRMATION_DAYS = 7
+RECAPTCHA_PUBLIC_KEY = '6Lft9NISAAAAAIF3ySVKJht8MVJZ06D019smlRWl'
+RECAPTCHA_PRIVATE_KEY = '6Lft9NISAAAAAOWLuZGHQeO1MIyM9Xui45T72oOa'
+
+# Add to TEMPLATE_CONTEXT_PROCESSORS and AUTHENTICATION_BACKENDS
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS, AUTHENTICATION_BACKENDS
+TEMPLATE_CONTEXT_PROCESSORS += (
+    'django.core.context_processors.request',
+    'allauth.context_processors.allauth',
+    'allauth.account.context_processors.account', 
+)
+
+AUTHENTICATION_BACKENDS += (
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 

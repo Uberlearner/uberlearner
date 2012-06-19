@@ -1,0 +1,38 @@
+{% extends "templated-base.html" %}
+
+{% load i18n %}
+{% load bootstrap_toolkit %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+    	<div class="span6 well">
+		    <h1>{% trans "Sign Up" %}</h1>
+		    
+		    {% if user.is_authenticated %}
+					{% include "account/snippets/already_logged_in.html" %}
+		    {% else %}
+		    <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+		        
+		    <form class="form-horizontal" id="signup_form" method="post" action="{% url account_signup %}">
+		        {% csrf_token %}
+		        {{ form|as_bootstrap:"horizontal" }}
+		        {% if redirect_field_value %}
+		        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+		        {% endif %}
+		        <div class="form-actions">
+		        	<button type="submit" class="btn btn-primary">{% trans "Sign Up" %} &raquo;</button>
+		        </div>
+		    </form>
+    		{% endif %}
+		  </div>
+		  <div class="hero-unit span4">
+		  	<h2>One step away from enlightenment!</h2>
+		  	<hr />
+		  	<p>
+		  		Some more random text about how great e-learning is!
+		  	</p>
+		  </div>
+    </div>
+{% endblock %}
