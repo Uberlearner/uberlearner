@@ -3,10 +3,24 @@
 {% load i18n %}
 {% load account_tags %}
 {% load bootstrap_toolkit %}
+{% load avatar_tags %}
 
 {% block head_title %}{% trans "Profile" %}{% endblock %}
 
 
 {% block content %}
-	<p>User profile goes here!</p>
+<div class="row">
+  <div class="span2">
+    {% avatar profile_owner 150 %}
+  </div>
+  <div class="span8">
+    <h1>{{profile_owner.username}}</h1>
+    <p>
+      Full Name: {{profile_owner.get_profile.first_name}} {{profile_owner.get_profile.last_name}} <br />
+      {% if profile_owner.get_profile.middle_name %}
+      Middle Name: {{profile_owner.get_profile.middle_name}} <br />
+      {% endif %}
+    </p>
+  </div>
+</div>
 {% endblock %}

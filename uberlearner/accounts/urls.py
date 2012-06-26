@@ -32,5 +32,6 @@ urlpatterns = patterns("",
     url(r"^password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$", allauth_views.password_reset_from_key, name="account_reset_password_from_key"),
     
     # user profile
+    url(r"^profile/(?P<username>[0-9a-zA-Z@.+-_]+)/$", accounts_views.user_profile_with_username, name="account_user_profile_with_username"),
     url(r"^profile/$", accounts_views.user_profile, name="account_user_profile"),
 )

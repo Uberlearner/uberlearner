@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     (r'^$', direct_to_template, {'template': 'under-construction.html'}, 'home'),
     (r'^about/$', direct_to_template, {'template': 'about.html'}, 'about'),
     (r'^contact/$', direct_to_template, {'template': 'under-construction.html'}, 'contact'),
-    url(r'^account/', include('accounts.urls'), name="account"),
+    url(r'^accounts/', include('accounts.urls'), name="accounts"),
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )

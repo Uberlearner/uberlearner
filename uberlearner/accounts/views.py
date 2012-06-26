@@ -2,6 +2,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 import allauth.account
 from django.core.urlresolvers import reverse
 from django.views.generic.simple import direct_to_template
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render_to_response
+from django.template import RequestContext
+from django.contrib.auth.models import User
 
 def login(request, **kwargs):
     """
@@ -15,5 +19,15 @@ def login(request, **kwargs):
     else:
         return allauth.account.views.login(request, **kwargs)
 
+def user_profile_with_username(request, username=''):
+    user = get_object_or_404(User, username=username)
+    return render_to_response('allauth/account/profile.html',
+                              {'profile_owner': user},
+                              context_instance=RequestContext(request))
+
+@login_required
 def user_profile(request):
-    return direct_to_template(request, 'allauth/account/profile.html')
+    user = request.user
+    return render_to_response('allauth/account/profile.html',
+                              {'profile_owner': user},
+                              context_instance=RequestContext(request))

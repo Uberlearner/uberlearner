@@ -127,8 +127,11 @@ INSTALLED_APPS = (
     'allauth.account',
     'bootstrap_toolkit',
     'captcha',
+    'accounts',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'avatar',
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -184,6 +187,7 @@ LOGIN_REDIRECT_URLNAME = "account_user_profile"
 EMAIL_CONFIRMATION_DAYS = 7
 RECAPTCHA_PUBLIC_KEY = '6Ldk99ISAAAAAKBOZgQ8gyoaCKmHJ_2Pf-nhY4vv'
 RECAPTCHA_PRIVATE_KEY = '6Ldk99ISAAAAALgZgEV1PKpGYlcoKl1x40taL4jO'
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 # Add to TEMPLATE_CONTEXT_PROCESSORS and AUTHENTICATION_BACKENDS
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS, AUTHENTICATION_BACKENDS

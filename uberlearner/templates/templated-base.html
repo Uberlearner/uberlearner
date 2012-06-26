@@ -20,26 +20,26 @@
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a href="/account/profile">Profile</a></li>
+							<li><a href={% url account_user_profile_with_username username=user.username %}>Profile</a></li>
 							<li class="divider"></li>
-							<li><a href="/account/logout">Logout</a></li>
+							<li><a href={% url account_logout %}>Logout</a></li>
 						</ul>
 				{% else %}
-					<a class="btn btn-primary" href="/account/login">Login</a>
-					<a class="btn" href="/account/signup">Sign Up</a>
+					<a class="btn btn-primary" href={% url account_login %}>Login</a>
+					<a class="btn" href={% url account_signup %}>Sign Up</a>
 				{% endif %}
 			</div>
 			
 			<div class="nav-collapse">
 				<ul class="nav">
 					<li class="{% navactive request 'home' %}">
-						<a href="/">Home</a>
+						<a href={% url home %}>Home</a>
 					</li>
 					<li class="{% navactive request 'about' %}">
-						<a href="/about">About</a>
+						<a href={% url about %}>About</a>
 					</li>
 					<li class="{% navactive request 'contact' %}">
-						<a href="/contact">Contact</a>
+						<a href={% url contact %}>Contact</a>
 					</li>
 				</ul>
 			</div>
