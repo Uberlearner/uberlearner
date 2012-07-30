@@ -13,4 +13,7 @@
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
 <path>/uberlearner/uberlearner</path>
 </pydev_pathproperty>
+<pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
+<path>/home/abhin/virtualenvs/uberlearner/src/django-avatar</path>
+</pydev_pathproperty>
 </pydev_project>

@@ -3,6 +3,7 @@
 	<name>uberlearner</name>
 	<comment></comment>
 	<projects>
+		<project>django-avatar</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

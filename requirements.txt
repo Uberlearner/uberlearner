@@ -1,0 +1,9 @@
+Django==1.4
+South
+Pillow
+-e git+https://github.com/madron/django-email-confirmation.git#egg=django-email-confirmation
+-e git+https://github.com/chhabrakadabra/django-allauth.git#egg=django-allauth
+django-bootstrap-toolkit
+django-recaptcha
+-e git+https://github.com/chhabrakadabra/django-avatar.git#egg=django-avatar
+django-ses

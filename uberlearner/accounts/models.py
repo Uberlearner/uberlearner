@@ -1,22 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from django.core.urlresolvers import reverse
 
 class UserProfile(models.Model):
     """
     A model representing the profile of each user.
     """
     # to associate each user with one UserProfile
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name="profile")
 
     # Other fields here
-    first_name = models.CharField(max_length=30, blank=True)
-    middle_name = models.CharField(max_length=60, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
-    dob = models.DateField(null=True)
+    dob = models.DateField(null=True, blank=True)
+    summary = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.user.username
+    
+    def get_absolute_url(self):
+        return reverse('account_user_profile_with_username', kwargs={'username': self.user.username})
 
 def create_user_profile(sender, instance, created, **kwargs):
     """

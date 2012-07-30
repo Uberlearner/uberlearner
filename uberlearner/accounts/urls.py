@@ -1,11 +1,9 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
-
-from accounts.forms import CaptchaSignupForm
-
+from accounts.forms import CaptchaSignupForm, ReplacementPrimaryAvatarForm
 from allauth.account import views as allauth_views
 from accounts import views as accounts_views
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 
 urlpatterns = patterns("",
     url(r"^email/$", allauth_views.email, name="account_email"),
@@ -32,6 +30,15 @@ urlpatterns = patterns("",
     url(r"^password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$", allauth_views.password_reset_from_key, name="account_reset_password_from_key"),
     
     # user profile
-    url(r"^profile/(?P<username>[0-9a-zA-Z@.+-_]+)/$", accounts_views.user_profile_with_username, name="account_user_profile_with_username"),
     url(r"^profile/$", accounts_views.user_profile, name="account_user_profile"),
+#    url(r'^profile/avatar/add/$', 'avatar.views.add', name='avatar_add'),
+#    url(r'^profile/avatar/change/$', 'avatar.views.change', {
+#            'next_override': reverse_lazy('account_edit_user_profile'),
+#            'primary_form': ReplacementPrimaryAvatarForm, 
+#        }, name='avatar_change'),
+#    url(r'^profile/avatar/delete/$', 'avatar.views.delete', name='avatar_delete'),
+#    url(r'^profile/avatar/render_primary/(?P<user>[\+\w]+)/(?P<size>[\d]+)/$', 'avatar.views.render_primary', name='avatar_render_primary'),   
+    url(r"^profile/(?P<username>[0-9a-zA-Z@.+-_]+)/edit/$", accounts_views.edit_user_profile_with_username, name="account_edit_user_profile_with_username"),
+    url(r"^profile/edit/$", accounts_views.edit_user_profile, name="account_edit_user_profile"),
+    url(r"^profile/(?P<username>[0-9a-zA-Z@.+-_]+)/$", accounts_views.user_profile_with_username, name="account_user_profile_with_username"),
 )

@@ -1,0 +1,41 @@
+{% extends "templated-base.html" %}
+
+{% load i18n %}
+{% load account_tags %}
+{% load bootstrap_toolkit %}
+{% load avatar_tags %}
+
+{% block title %}{{block.super}} | {% trans "Profile" %}{% endblock %}
+
+
+{% block content %}
+<div class="row">
+  <div class="span2">
+  	{% include 'avatar/profile_thumbnail.html' %}
+  </div>
+  <div class="span10">
+  	{% if profile_owner == request.user %}
+  	<p class="pull-right">
+  		<a href="{% url account_edit_user_profile_with_username username=request.user.username %}" class="btn btn-primary">
+  			<i class="icon-pencil icon-white"></i> Edit
+  		</a>
+  	</p>
+  	{% endif %}
+    <h1>{{profile_owner.username}}</h1><br />
+    <h3>Basic Information</h3>
+    <p>
+      {% if profile_owner.first_name %}
+      Full name: {{profile_owner.first_name}} {{profile_owner.last_name}} <br />
+      {% endif %}
+
+      {% if profile_owner.get_profile.dob %}
+      Date of birth: {{profile_owner.get_profile.dob}} <br />
+      {% endif %}
+    </p>
+	<h3>Summary</h3>
+	  {% if profile_owner.get_profile.summary %}
+	  {{ profile_owner.get_profile.summary|linebreaks }} <br />
+	  {% endif %}
+  </div>
+</div>
+{% endblock %}

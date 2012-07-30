@@ -14,6 +14,10 @@ local_settings.py
 # getting committed to the repository. Hence all contents of this directory
 # will be exempt
 static.pub/*
+static/
+
+# the media files also have no business getting commited
+media/
 
 # the local settings file was created so that the local settings of each installation
 # would not get uploaded onto the repository. Hence, by definition, this file 

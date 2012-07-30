@@ -1,0 +1,25 @@
+{% extends 'templated-base.html' %}
+
+{% load avatar_tags %}
+
+{% block content %}
+<div class="row">
+	<div class="span2 offset2">
+		{% include 'avatar/profile_thumbnail.html' %}
+	</div>
+	<div class="span6">
+		{% if avatars and avatars.count > 1 %}
+			<form method="post" action="{% url avatar_change %}" id="change-primary-avatar-form">
+				{% csrf_token %}
+				{{ primary_avatar_form }}
+				<input type="submit" value="Choose new default" />
+			</form>
+		{% endif %}
+	    <form enctype="multipart/form-data" method="post" action="{% url avatar_add %}">
+	    	{% csrf_token %}
+	        <input type="file" name="avatar" value="Avatar Image" /> <br/><br/>
+	        <input type="submit" value="Save changes" class="btn btn-primary"/>
+	    </form>		
+	</div>
+</div>
+{% endblock %}
