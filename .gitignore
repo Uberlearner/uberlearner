@@ -23,3 +23,6 @@ media/
 # would not get uploaded onto the repository. Hence, by definition, this file 
 # does not get uploaded.
 uberlearner/uberlearner/settings_local.py
+
+# the eclipse settings file
+.settings
