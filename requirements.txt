@@ -7,3 +7,4 @@ django-bootstrap-toolkit
 django-recaptcha
 -e git+https://github.com/chhabrakadabra/django-avatar.git#egg=django-avatar
 django-ses
+pytz
