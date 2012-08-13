@@ -2,7 +2,7 @@ from main.models import TimestampedModel
 from django.db import models
 from courses.models import Page
 
-class CourseWidget(TimestampedModel):
+class UberWidget(TimestampedModel):
     """
     Every page in a course is composed of many widgets. These can be of types such as text, video, quiz etc.
     They have a position in the page.

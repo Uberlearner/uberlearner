@@ -10,7 +10,7 @@
 {% block content %}
 <div class="row">
 	<form action="{% url account_edit_user_profile_with_username username=request.user.username %}" method="post" 
-			enctype="multipart/form-data" class=_"form-horizontal edit-profile-form">
+			enctype="multipart/form-data" class="form-horizontal edit-profile-form">
 		{% csrf_token %}
 		<div class="span2 offset2" id="avatar">
 			{% with request.user as profile_owner %}

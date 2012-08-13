@@ -1,5 +1,5 @@
 from django.db import models
-from courses.widgets.models import CourseWidget
+from courses.uberwidgets.models import UberWidget
 from django.contrib.auth.models import User
 
 """
@@ -29,7 +29,7 @@ class Result(models.Model):
     quiz = models.ForeignKey('Quiz')
     user = models.ForeignKey(User)
 
-class Quiz(CourseWidget):
+class Quiz(UberWidget):
     title = models.CharField(max_length=75)
     user = models.ManyToManyField(through=Result)
     

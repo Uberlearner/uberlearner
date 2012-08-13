@@ -1,7 +1,7 @@
 from django.db import models
-from courses.widgets.models import CourseWidget
+from courses.uberwidgets.models import UberWidget
 
-class Text(CourseWidget):
+class Text(UberWidget):
     """
     A text widget just represents a text block in a course page.
     """
