@@ -16,6 +16,18 @@ class UserProfileForm(UploadAvatarForm):
     dob = forms.DateField(label='Date of birth', widget=DateWidget, required=False)
     summary = forms.CharField(label='Summary', widget=forms.Textarea, required=False)
 
+    def wrap_clean_avatar(self, clean_avatar):
+        def wrapped_clean_avatar():
+            if not self.cleaned_data['avatar']:
+                return
+            return clean_avatar()
+        return wrapped_clean_avatar
+    
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        self.fields['avatar'].required = False
+        self.clean_avatar = self.wrap_clean_avatar(self.clean_avatar)
+        
 class ReplacementPrimaryAvatarForm(forms.Form):    
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')

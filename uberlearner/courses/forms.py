@@ -5,4 +5,8 @@ from courses.models import Course
 class CourseForm(models.ModelForm):
     class Meta:
         model = Course
-        exclude = ('instructor', )
+        exclude = ('instructor', 'title', 'slug')
+        
+class CoursePageForm(forms.Form):
+    text = forms.TextInput()
+    

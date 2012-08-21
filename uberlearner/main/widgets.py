@@ -7,7 +7,7 @@ class DateWidget(forms.DateInput):
     this site.
     """
     class Media:
-        js = ('js/accounts/edit_profile.js', )
+        js = ('uberlearner/js/accounts/edit_profile.js', )
     
     def __init__(self, attrs=None, format=None):
         compiled_attrs = {'class': 'date-widget'}

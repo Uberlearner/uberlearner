@@ -45,11 +45,12 @@ def edit_user_profile_with_username(request, username=''):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, user=user)
         if form.is_valid():
-            avatar = Avatar(user=user, primary=True)
-            image_file = request.FILES['avatar']
-            avatar.avatar.save(image_file.name, image_file)
-            avatar.save()
-            avatar_updated.send(sender=Avatar, user=user, avatar=avatar)
+            if 'avatar' in request.FILES:
+                avatar = Avatar(user=user, primary=True)
+                image_file = request.FILES['avatar']
+                avatar.avatar.save(image_file.name, image_file)
+                avatar.save()
+                avatar_updated.send(sender=Avatar, user=user, avatar=avatar)
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.profile.dob = form.cleaned_data['dob']

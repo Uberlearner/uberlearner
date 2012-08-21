@@ -1,0 +1,56 @@
+{% extends 'templated-base.html' %}
+
+{% block title %}{{block.super}} | {{course.title}}{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="span2">
+		<p>Insert thumbnail here</p>
+	</div>
+	<div class="span10">
+		{% if not course.is_public %}
+			<div class="alert alert-info">
+				<button class="close" data-dismiss="alert">×</button>
+				This course is not yet publicly viewable. Be sure to click that "Make public" button when the course is ready.
+			</div>
+		{% endif %}
+		<div class="row">
+			<div class="span8">
+				<h1>{{course.title}} <span class="label label-info">{{course.popularity}} enrollment{{course.popularity|pluralize}}</span></h1>
+				<i>- Authored by {{course.instructor}}</i>
+			</div>
+			<div class="span2">
+				{% if request.user == course.instructor %}
+					<p class="pull-right">
+						<a href={% url course.manage username=request.user.username slug=course.slug %} class="btn btn-primary">
+							<i class="icon-edit icon-white"></i> Manage
+						</a>
+						<a href={% url course.edit username=request.user.username slug=course.slug %} class="btn btn-primary">
+							<i class="icon-pencil icon-white"></i> Edit
+						</a>
+					</p>
+					<p class="pull-right">
+						{% if not course.is_public %}
+							<a href="javascript:alert('not implemented');" class="btn btn-success">
+								<i class="icon-eye-open icon-white"></i> Make public
+							</a>
+						{% else %}
+							<a href="javascript:alert('not implemented');" class="btn btn-primary">
+								<i class="icon-eye-close icon-white"></i> Make private
+							</a>
+						{% endif %}
+					</p>
+				{% else %}
+					{% comment %}
+					When the enrollment modelling is done, show an enroll button when appropriate
+					(ie., when the student isn't already enrolled and is not the instructor)
+					{% endcomment %}
+				{% endif %}
+			</div>
+		</div>
+		{% if course.description %}
+			{{course.description|linebreaks}}
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

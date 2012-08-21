@@ -1,0 +1,55 @@
+{% extends 'templated-base.html' %}
+
+{% block content %}
+<div class="row">
+	<div class="span2 offset8">
+		<label for="sort_select">Sort by: 
+			<select id="sort_select" data-bind="options: sortingOptions, 
+												optionsText: 'name', 
+												value: changeSortingOption">
+			</select>
+		</label>
+	</div>
+	<div class="span8 offset2">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Instructor</th>
+					<th>Created on</th>
+					<th>Popularity</th>
+				</tr>
+				<tbody data-bind="foreach: courses">
+					<tr>
+						<td data-bind="text: title"></td>
+						<td data-bind="text: instructor.username"></td>
+						<td data-bind="text: creation_timestamp"></td>
+						<td data-bind="text: popularity"></td>
+					</tr>
+				</tbody>
+			</thead>
+		</table>
+		<div class="row">
+			<div class="span2">
+				<a href="javascript: void(0);" data-bind="visible: hasPreviousPage, click: loadFirstPage">First</a>
+				&nbsp;&nbsp;
+				<a href="javascript: void(0);" data-bind="visible: hasPreviousPage, click: loadPreviousPage">Previous</a>
+			</div>
+			<div class="span4">
+				<ul class="nav nav-pills" data-bind="foreach: pageIndexes">
+					<li data-bind="css: { active: $data == $root.currentPage()}">
+						<a href="javascript: void(0);" data-bind="click: $root.loadPage, text: $data + 1"></a>
+					</li>
+				</ul>
+			</div>
+			<div class="span2">
+				<span class="pull-right">
+					<a href="javascript: void(0);" data-bind="visible: hasNextPage, click: loadNextPage">Next</a>
+					&nbsp;&nbsp;
+					<a href="javascript: void(0);" data-bind="visible: hasNextPage, click: loadLastPage">Last</a>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

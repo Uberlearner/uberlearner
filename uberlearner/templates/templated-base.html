@@ -23,11 +23,11 @@
 							<li><a href={% url account_user_profile_with_username username=user.username %}>Profile</a></li>
 							<li class="divider"></li>
 							{% if user.course_set.exists %}
-								<li><a href="#">Teach</a></li>
+								<li><a href={% url course.user_list user.username %}>Teach</a></li>
 							{% else %}
 								<li><a href={% url course.create %}>Create a course!</a></li>
 							{% endif %}
-							<li><a href="#">Learn</a></li>
+							<li><a href={% url course.list %}>Learn</a></li>
 							<li class="divider"></li>
 							<li><a href={% url account_logout %}>Logout</a></li>
 						</ul>
@@ -39,14 +39,11 @@
 			
 			<div class="nav-collapse">
 				<ul class="nav">
-					<li class="{% navactive request 'home' %}">
-						<a href={% url home %}>Home</a>
+					<li class="{% navactive request 'course.list' %}">
+						<a href={% url course.list %}>Courses</a>
 					</li>
 					<li class="{% navactive request 'about' %}">
 						<a href={% url about %}>About</a>
-					</li>
-					<li class="{% navactive request 'contact' %}">
-						<a href={% url contact %}>Contact</a>
 					</li>
 				</ul>
 			</div>
@@ -69,7 +66,7 @@
 			<p><small>&copy; ÜberLearner 2012</small></p>
 			<p>
 				Icons from 
-				<a href="http://glyphicons.com" target="_blank">Glyphicons Free</a>
+				<a href="http://fortawesome.github.com/Font-Awesome" target="_blank">Font Awesome</a>
 				, licensed under 
 				<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a>.
 			</p>

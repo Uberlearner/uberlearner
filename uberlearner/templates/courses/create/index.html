@@ -1,0 +1,45 @@
+{% extends 'templated-base.html' %}
+
+{% load bootstrap_toolkit %}
+
+{% block title %}{{block.super}} | {% if course %}Edit{% else %}Create{% endif %} course{% endblock %}
+
+{% block content_title %}
+{% if course %}
+	Edit "{{course.title}}"
+{% else %}
+	Create a new course!
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="span2">
+		<p>Thumbnail here</p>
+	</div>
+	<div class="span8">
+		<form action="" method="post" class="form-horizontal">
+			{% csrf_token %}
+			{{form|as_bootstrap}}
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">
+					{% if course %}
+					Save
+					{% else %}
+					Create
+					{% endif %}
+				</button>
+				{% if course %}
+					<a class="btn btn-inverse" href="{% url course.view username=course.instructor.username slug=course.slug %}">
+						Cancel
+					</a>
+				{% else %}
+					<a class="btn btn-inverse" href="{% url account_user_profile_with_username username=request.user.username %}">
+						Cancel
+					</a>
+				{% endif %}
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

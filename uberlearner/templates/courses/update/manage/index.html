@@ -1,0 +1,33 @@
+{% extends 'templated-base.html' %}
+
+{% block title %}{{block.super}} | Manage {{course.title}}{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="span3">
+		<a href="javascript:alert('not implemented');" class="btn btn-success">
+			<i class="icon-plus-sign icon-white"></i> New page
+		</a><br/><br/>
+		
+		<ul class="nav nav-list well">
+			<li class="nav-header">
+				Course Pages
+			</li>
+			<li>
+				<i class="icon-lock"></i>
+				Introduction
+			</li>
+			{% for page in course.pages.all %}
+			<li>
+				<a href="javascript:alert('not implemented');">
+					<i class="icon-file"></i>
+					{{page.title}}
+					<i class="icon-copy pull-right"></i>
+					<i class="icon-minus-sign pull-right"></i>
+				</a>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}

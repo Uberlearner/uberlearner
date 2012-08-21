@@ -8,3 +8,4 @@ django-recaptcha
 -e git+https://github.com/chhabrakadabra/django-avatar.git#egg=django-avatar
 django-ses
 pytz
+-e git+https://github.com/toastdriven/django-tastypie.git#egg=django-tastypie

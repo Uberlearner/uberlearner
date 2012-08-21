@@ -14,7 +14,7 @@ local_settings.py
 # getting committed to the repository. Hence all contents of this directory
 # will be exempt
 static.pub/*
-static/
+collected-static/
 
 # the media files also have no business getting commited
 media/

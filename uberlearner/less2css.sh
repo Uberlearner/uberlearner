@@ -1,8 +1,8 @@
 #!/bin/bash
 
 PWD=$(printf "%q" "$(pwd)")
-LESS_FOLDER=$PWD"/static/less"
-CSS_FOLDER=$PWD"/static/css"
+LESS_FOLDER=$PWD"/static/lib/bootstrap/less"
+CSS_FOLDER=$PWD"/static/lib/bootstrap/css"
 BOOTSTRAP_SRC=$LESS_FOLDER"/bootstrap.less"
 RESPONSIVE_SRC=$LESS_FOLDER"/responsive.less"
 BOOTSTRAP_TARGET=$CSS_FOLDER"/bootstrap.css"

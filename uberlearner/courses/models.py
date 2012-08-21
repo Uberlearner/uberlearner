@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 from main.models import TimestampedModel
 from django.db.models.signals import post_save
+from django.core.urlresolvers import reverse
 ################################
 # Main models
 ################################
@@ -54,6 +55,13 @@ class Course(TimestampedModel):
     
     def __unicode__(self):
         return self.title
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('course.view', (), {
+            'username': self.instructor.username,
+            'slug': self.slug
+        })
 
 class Page(TimestampedModel):
     """
@@ -63,7 +71,7 @@ class Page(TimestampedModel):
     This was decided because it makes the app more complex while not adding any significant value to the 
     user experience.
     """
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, related_name='pages')
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50)
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the page has been viewed
