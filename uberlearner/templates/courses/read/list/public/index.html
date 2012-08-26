@@ -2,6 +2,16 @@
 
 {% block content %}
 <div class="row">
+	<div 	class="span8 offset2" 
+			id="course-list"
+			data-bind=" uberGridUrl: '/api/v1/course/',
+						uberGrid: gridViewModel">
+	</div>
+</div>
+{% endblock %}
+
+{% block contont %}
+<div class="row">
 	<div class="span2 offset8">
 		<label for="sort_select">Sort by: 
 			<select id="sort_select" data-bind="options: sortingOptions, 
@@ -10,6 +20,8 @@
 			</select>
 		</label>
 	</div>
+</div>
+<div class="row">
 	<div class="span8 offset2">
 		<table class="table table-bordered table-striped">
 			<thead>

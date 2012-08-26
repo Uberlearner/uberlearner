@@ -11,7 +11,9 @@
 {% block content %}
 <div class="row">
   <div class="span2">
+  	{% with profile_owner as user %}
   	{% include 'avatar/profile_thumbnail.html' %}
+  	{% endwith %}
   </div>
   <div class="span10">
   	{% if profile_owner == request.user %}

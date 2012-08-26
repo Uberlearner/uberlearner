@@ -68,6 +68,7 @@ class CourseList(TemplateView):
             context_data['js_files'] = []
             
         context_data['js_files'].extend([
+            'uberlearner/js/courses/ko.uberGrid.js',
             'uberlearner/js/courses/list.js',
         ])
         return context_data
@@ -79,6 +80,14 @@ class UserCourses(TemplateView):
     """
     template_name = 'courses/read/list/instructor/index.html'
     
-    def get_queryset(self):
-        instructor = get_object_or_404(User, username=self.kwargs['username'])
-        return Course.objects.filter(instructor=instructor)
+    def get_context_data(self, **kwargs):
+        context_data = super(UserCourses, self).get_context_data(**kwargs)
+        if not 'js_files' in context_data:
+            context_data['js_files'] = []
+        
+        context_data['js_files'].extend([
+            'uberlearner/js/courses/ko.uberGrid.js',
+            'uberlearner/js/courses/instructorCourseList.js',
+        ])
+        context_data['instructor'] = User.objects.get(username=kwargs['username'])
+        return context_data

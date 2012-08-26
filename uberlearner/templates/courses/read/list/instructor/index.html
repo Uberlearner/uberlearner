@@ -1,1 +1,23 @@
-{% extends 'courses/read/list/public/index.html' %}
+{% extends 'templated-base.html' %}
+{% load avatar_tags %}
+
+{% block content %}
+<div class="row">
+	<div class="span8">
+		<h1>Courses taught by {{instructor.username}}</h1><br>
+	</div>
+</div>
+<div class="row">
+	<div class="span2">
+		{% with instructor as user %}
+		{% include 'avatar/profile_thumbnail.html' %}
+		{% endwith %}
+	</div>
+	<div 	class="span8 offset1" 
+			id="instructor-course-list" 
+			data-bind="	uberGridUrl: '/api/v1/course/', 
+						uberGrid: gridViewModel, 
+						uberGridGetParams: {'instructor': '{{instructor.username}}'}">
+	</div>
+</div>
+{% endblock %}
