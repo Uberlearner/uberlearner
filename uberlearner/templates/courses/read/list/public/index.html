@@ -2,10 +2,29 @@
 
 {% block content %}
 <div class="row">
+	<div class="span8 offset2">
+		<h2>Most popular</h2>
+	</div>
+</div><br>
+<div class="row">
 	<div 	class="span8 offset2" 
-			id="course-list"
+			id="popular-course-list"
 			data-bind=" uberGridUrl: '/api/v1/course/',
-						uberGrid: gridViewModel">
+						uberGrid: gridViewModel,
+						uberGridGetParams: {'order_by': '-popularity'}">
+	</div>
+</div><br>
+<div class="row">
+	<div class="span8 offset2">
+		<h2>Fresh out of the oven!</h2>
+	</div>
+</div><br>
+<div class="row">
+	<div 	class="span8 offset2"
+			id="new-course-list"
+			data-bind="	uberGridUrl: '/api/v1/course',
+						uberGrid: gridViewModel,
+						uberGridGetParams: {'order_by': '-creation_timestamp'}">
 	</div>
 </div>
 {% endblock %}

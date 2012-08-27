@@ -15,7 +15,7 @@
 			self.defaultText = configuration.defaultText || 'No data for this table could be found!';
 			
 			self.currentPageIndex = ko.observable(0);
-			self.currentSortingOption = ko.observable(self.sortingOptions[self.defaultSortingOptionIndex]);
+			self.currentSortingOption = ko.observable(self.sortingOptions ? self.sortingOptions[self.defaultSortingOptionIndex] : undefined);
 			self.currentDataOptions = ko.computed(function() {
 				if (self.url() == '') {
 					// if the url hasn't been set by the binding yet, then don't waste time on ajax call
@@ -23,7 +23,8 @@
 				};
 				var options = self.extraGetParams();
 				options[self.offsetGetKey] = self.pageSize*self.currentPageIndex();
-				options[self.orderingGetKey] = self.currentSortingOption().field;
+				if (self.currentSortingOption() && self.currentSortingOption().field)
+					options[self.orderingGetKey] = self.currentSortingOption().field;
 				options[self.limitGetKey] = self.pageSize;
 				
 				//TODO: find a better way of updating the currentData
@@ -90,13 +91,46 @@
 				indexes = ko.utils.range(0, self.maxPageIndex());
 				return indexes;
 			});
+			/**
+			 * Returns the html to be filled into each td node in the data-grid.
+			 * 1) If the link exists, then an anchor tag is used, else text in inputted directly
+			 * 2) If the link is a function, then it is called, otherwise the link is a key into the row data.
+			 * 3) If the value is a function, then it is called, otherwise the value is a key into the row data.
+			 */
+			self.getTdHtml = function(rowData, columnConfig) {
+				var content = '';
+				if (typeof(columnConfig.field) == 'function')
+					content = columnConfig.field(rowData);
+				else
+					content = rowData[columnConfig.field];
+				
+				if (typeof(columnConfig.link) == 'undefined')
+					return content;
+				else {
+					var link = '';
+					if (typeof(columnConfig.link) == 'function')
+						link = columnConfig.link(rowData);
+					else
+						link = rowData[columnConfig.link];
+					
+					return "<a href=\"" + link + "\">" + content + "</a>";
+				}
+			};
+			self.showSortingOptions = function() {
+				return self.dataExists() && (self.sortingOptions.length>0);
+			}
 		}	
 	};
 	
 	// Templates used to render the grid
-	var templateEngine = new ko.jqueryTmplTemplateEngine();
+	var templateEngine = new ko.nativeTemplateEngine();
+	
+	templateEngine.addTemplate = function(templateName, templateMarkup) {
+		document.write("<script type='text/html' id='" + templateName + "'>" + templateMarkup + "</script>");
+	};
+	
 	templateEngine.addTemplate("ko_uberGrid_sortingOptions", 
-			"<div class=\"row\" data-bind=\"visible: dataExists\">" +
+			"<div class=\"row\" data-bind=\"visible: showSortingOptions()\">" +
 			"	<div class=\"span2 offset6\">" +
 			"		<label> Sort by:" +
 			"			<select data-bind=\"options: sortingOptions," +
@@ -110,27 +144,15 @@
 			"<div class=\"row\">" +
 			"	<table class=\"table table-striped table-bordered\" data-bind=\"visible: dataExists\">" +
 			"		<thead>" +
-			"			<tr>" +
-			"				{{each(i, columnDefinition) columns}}" +
-			"					<th>${ columnDefinition.headerText }</th>" +
-			"				{{/each}}" +
+			"			<tr data-bind=\"foreach: columns\">" +
+			"				<th data-bind=\"text: $data.headerText\"></th>" +
 			"			</tr>" +
 			"		</thead>" +
-			"		<tbody>" +
-			"			{{each(i, row) currentData()}}" +
-			"				<tr>" +
-			"					{{each(j, columnDefinition) columns}}" +
-			"						<td>" +
-			"							{{if columnDefinition.link}}" +
-			"							<a href=\"${ typeof columnDefinition.link=='function' ? columnDefinition.link(row) : row[columnDefinition.link]}\">" +
-			"							{{/if}}" +
-			"								${ typeof columnDefinition.field == 'function' ? columnDefinition.field(row) : " +
-			"									row[columnDefinition.field] }" +
-			"							{{if columnDefinition.link}}</a>{{/if}}" +
-			"						</td>" +
-			"					{{/each}}" +
-			"				</tr>" +
-			"			{{/each}}" +
+			"		<tbody data-bind=\"foreach: currentData\">" +
+			"			<tr data-bind=\"foreach: $root.columns\">" +
+			"				<td data-bind=\"html: $root.getTdHtml($parentContext.$data, $data)\">" +
+			"				</td>" +
+			"			</tr>" +
 			"		</tbody>" +
 			"	</table>" +
 			"</div>");
@@ -149,15 +171,12 @@
 			"		</a>" +
 			"	</div>" +
 			"	<div class=\"span4\">" +
-			"		<ul class=\"nav nav-pills\">" +
-			"			{{each(i) pageIndexes()}}" +
-			"			<li data-bind=\"css: { active: i == currentPageIndex() }\">" +
+			"		<ul class=\"nav nav-pills\" data-bind=\"foreach: ko.utils.range(0, maxPageIndex)\">" +
+			"			<li data-bind=\"css: { active: $data == $root.currentPageIndex() }\">" +
 			"				<a href=\"javascript: void(0);\" " +
-			"					data-bind=\"click: function() { currentPageIndex(i) }\">" +
-			"					${ i+1 }" +
+			"					data-bind=\"click: function() { $root.currentPageIndex($data) }, text: $data + 1\">" +
 			"				</a>" +
 			"			</li>" +
-			"			{{/each}}" +
 			"		</ul>" +
 			"	</div>" +
 			"	<div class=\"span2\">" +
@@ -198,6 +217,9 @@
 	
 	// The uberGrid binding
 	ko.bindingHandlers.uberGrid = {
+		init: function() {
+			return {'controlsDescendantBindings': true};
+		},
 		update: function (element, viewModelAccessor, allBindingsAccessor) {
 			var viewModel = viewModelAccessor(), allBindings = allBindingsAccessor();
 			
@@ -230,8 +252,8 @@
 			ko.renderTemplate(pageLinksTemplateName, viewModel, { templateEngine: templateEngine }, pageLinksContainer, "replaceNode");
 			
 			// Render the default text
-			var defaultTextContainer = element.appendChild(document.createElement("DIV"));
-			ko.renderTemplate(defaultTextTemplateName, viewModel, { templateEngine: templateEngine }, defaultTextContainer, "replaceNode");
+			//var defaultTextContainer = element.appendChild(document.createElement("DIV"));
+			//ko.renderTemplate(defaultTextTemplateName, viewModel, { templateEngine: templateEngine }, defaultTextContainer, "replaceNode");
 			
 		}
 	};

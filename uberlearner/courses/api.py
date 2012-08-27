@@ -2,13 +2,14 @@ from tastypie.resources import ModelResource
 from tastypie import fields
 from tastypie.authentication import SessionAuthentication
 from tastypie.authorization import Authorization
-from courses.models import Course
+from courses.models import Course, Instructor
 from django.contrib.auth.models import User              
 from tastypie.constants import ALL_WITH_RELATIONS
 from tastypie.serializers import Serializer
 from tastypie.utils.timezone import make_naive
 from django.utils import dateformat, timezone
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 
 class UberSerializer(Serializer):
     def format_datetime(self, data):
@@ -28,6 +29,10 @@ class UserResource(ModelResource):
         fields = ['username', 'first_name', 'last_name', 'last_login']
         allowed_methods = ['get']
         include_absolute_url = True
+        
+    def dehydrate(self, bundle):
+        bundle.data['absolute_url'] = reverse('course.by_user', kwargs={'username': bundle.obj.username})
+        return bundle
 
 class CourseResource(ModelResource):
     instructor = fields.ForeignKey(UserResource, 'instructor', full=True)
@@ -69,7 +74,7 @@ class CourseResource(ModelResource):
         if 'instructor__exact' in applicable_filters:
             instructor_username = applicable_filters['instructor__exact'] 
             if isinstance(instructor_username, basestring):
-                applicable_filters['instructor__exact'] = User.objects.get(username=instructor_username)
+                applicable_filters['instructor__exact'] = Instructor.objects.get(user__username=instructor_username)
         
         result = super(CourseResource, self).apply_filters(request, applicable_filters)
         return result

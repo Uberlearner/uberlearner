@@ -21,6 +21,12 @@ class Instructor(models.Model):
     def __unicode__(self):
         return self.user.__unicode__()
     
+    @models.permalink
+    def get_absolute_url(self):
+        return ('course.by_user', (), {
+            'username': self.user.username,
+        })
+    
     @classmethod
     def make_user_instructor(cls, sender, instance, created, **kwargs):
         """

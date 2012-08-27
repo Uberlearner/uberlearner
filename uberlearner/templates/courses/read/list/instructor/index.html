@@ -1,19 +1,27 @@
 {% extends 'templated-base.html' %}
 {% load avatar_tags %}
 
-{% block content %}
+{% block content_title %}
 <div class="row">
 	<div class="span8">
-		<h1>Courses taught by {{instructor.username}}</h1><br>
+		<h1>Courses taught by {{instructor.username}}</h1>
 	</div>
-</div>
+	<div class="span4">
+		<span class="pull-right">
+			<a href={% url course.create %} class="btn btn-primary"><i class="icon-plus-sign icon-white"></i> Create a course!</a>
+		</span>
+	</div>
+</div><br>
+{% endblock %}
+
+{% block content %}
 <div class="row">
 	<div class="span2">
 		{% with instructor as user %}
 		{% include 'avatar/profile_thumbnail.html' %}
 		{% endwith %}
 	</div>
-	<div 	class="span8 offset1" 
+	<div 	class="span8 offset2" 
 			id="instructor-course-list" 
 			data-bind="	uberGridUrl: '/api/v1/course/', 
 						uberGrid: gridViewModel, 
