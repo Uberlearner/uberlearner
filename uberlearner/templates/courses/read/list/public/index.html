@@ -9,7 +9,7 @@
 <div class="row">
 	<div 	class="span8 offset2" 
 			id="popular-course-list"
-			data-bind=" uberGridUrl: '/api/v1/course/',
+			data-bind=" uberGridUrl: '/api/v1/courses/',
 						uberGrid: gridViewModel,
 						uberGridGetParams: {'order_by': '-popularity'}">
 	</div>
@@ -22,7 +22,7 @@
 <div class="row">
 	<div 	class="span8 offset2"
 			id="new-course-list"
-			data-bind="	uberGridUrl: '/api/v1/course',
+			data-bind="	uberGridUrl: '/api/v1/courses/',
 						uberGrid: gridViewModel,
 						uberGridGetParams: {'order_by': '-creation_timestamp'}">
 	</div>

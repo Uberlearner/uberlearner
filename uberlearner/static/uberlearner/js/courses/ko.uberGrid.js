@@ -4,6 +4,7 @@
 			var self = this;
 			self.url = ko.observable('')
 			self.pageSize = configuration.pageSize || 10;
+            self.maxPageCount = configuration.maxPageCount || -1;
 			self.sortingOptions = configuration.sortingOptions || [];
 			self.columns = configuration.columns || []; //TODO: the url can be used to get the schema,
 														//which can be used to get the column data
@@ -51,8 +52,13 @@
 				var totalCount = self.currentMeta().total_count || 0;
 				if (totalCount == 0)
 					return 0;
-				else
-					return Math.floor(totalCount/self.pageSize);									
+				else {
+                    _maxPageIndex = Math.floor(totalCount/self.pageSize);
+                    if (self.maxPageCount != -1)
+                        _maxPageIndex = Math.min(_maxPageIndex, self.maxPageCount);
+
+                    return _maxPageIndex;
+                }
 			});
 			
 			self.goToFirstPage = function() {

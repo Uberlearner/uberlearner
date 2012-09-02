@@ -2,13 +2,13 @@
 
 {% block title %}{{block.super}} | Manage {{course.title}}{% endblock %}
 
+{% block content_title %}
+    <h1>Manage: {{ course.title }}</h1><br>
+{% endblock %}
+
 {% block content %}
 <div class="row">
 	<div class="span3">
-		<a href="javascript:alert('not implemented');" class="btn btn-success">
-			<i class="icon-plus-sign icon-white"></i> New page
-		</a><br/><br/>
-		
 		<ul class="nav nav-list well">
 			<li class="nav-header">
 				Course Pages
@@ -27,7 +27,17 @@
 				</a>
 			</li>
 			{% endfor %}
-		</ul>
+		</ul><br>
+        <a href="javascript:alert('not implemented');" class="btn btn-success">
+            <i class="icon-plus-sign icon-white"></i> Create new page
+        </a>
 	</div>
+    <div class="span9" id="page-content">
+        <label for="page-title">Page title: </label>
+        <input type="text" id="page-title" placeholder="Please make it relevant to the page content"/><br><br>
+        <textarea class="tinymce" data-bind="tinymce: pageContent"></textarea>
+        <span data-bind="text: pageContent"></span>
+    </div>
 </div>
+
 {% endblock %}

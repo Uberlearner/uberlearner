@@ -26,3 +26,5 @@ uberlearner/uberlearner/settings_local.py
 
 # the eclipse settings file
 .settings
+# the pycharm settings folder
+.idea/

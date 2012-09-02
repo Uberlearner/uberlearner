@@ -14,7 +14,8 @@ var PopularCourses = function() {
 		    { headerText: "Created on", field: 'creation_timestamp' },
 		    { headerText: "Popularity", field: 'popularity' }
 		],
-		defaultText: 'We don\'t have any courses to offer yet. Check again in a few days!'
+		defaultText: 'We don\'t have any courses to offer yet. Check again in a few days!',
+        maxPageCount: 9
 	});
 };
 
@@ -34,7 +35,8 @@ var NewCourses = function() {
 		    { headerText: "Created on", field: 'creation_timestamp' },
 		    { headerText: "Popularity", field: 'popularity' }
 		],
-		defaultText: 'We don\'t have any courses to offer yet. Check again in a few days!'
+		defaultText: 'We don\'t have any courses to offer yet. Check again in a few days!',
+        maxPageCount: 9
 	});
 };
 

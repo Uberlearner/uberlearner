@@ -81,6 +81,7 @@ class Page(TimestampedModel):
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50)
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the page has been viewed
+    html = models.TextField()
     
     class Meta:
         order_with_respect_to = 'course'

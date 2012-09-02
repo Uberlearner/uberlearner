@@ -55,6 +55,20 @@ class CourseEdit(UpdateView):
     
 class CourseManage(CourseView):
     template_name = 'courses/update/manage/index.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super(CourseManage, self).get_context_data(**kwargs)
+        if not 'js_files' in context_data:
+            context_data['js_files'] = []
+
+        context_data['js_files'].extend([
+            'lib/tiny_mce/tiny_mce.js',
+            'lib/tiny_mce/jquery.tinymce.js',
+            'lib/knockoutjs/js/ko.tinymce.js',
+            'uberlearner/js/courses/manageCourse.js',
+        ])
+        return context_data
+
     
 class CourseList(TemplateView):
     """

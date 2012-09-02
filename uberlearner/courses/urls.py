@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from courses.views import CourseCreate, CourseView, CourseEdit, CourseManage, UserCourses, CourseList
 
 urlpatterns = patterns('',

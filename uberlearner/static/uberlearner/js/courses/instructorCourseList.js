@@ -15,7 +15,8 @@ var InstructorCoursesPagedGridModel = function() {
 		    { headerText: "Popularity", field: 'popularity' }
 		],
 		defaultSortingOptionIndex: 3,
-		defaultText: 'No courses taught by this instructor could be found!'
+		defaultText: 'No courses taught by this instructor could be found!',
+        maxPageCount: 9
 	});
 };
 
