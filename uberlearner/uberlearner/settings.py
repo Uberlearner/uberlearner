@@ -204,9 +204,12 @@ AVATAR_MAX_AVATARS_PER_USER = 1
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS, AUTHENTICATION_BACKENDS
 TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
+    'django.core.context_processors.debug',
     'allauth.context_processors.allauth',
     'allauth.account.context_processors.account', 
 )
+
+INTERNAL_IPS = ('192.168.1.65', '127.0.0.1')
 
 AUTHENTICATION_BACKENDS += (
     'allauth.account.auth_backends.AuthenticationBackend',

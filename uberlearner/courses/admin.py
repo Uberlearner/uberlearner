@@ -11,9 +11,7 @@ class InstructorAdmin(admin.ModelAdmin):
     list_display = ['user', 'popularity']
     
 class PageAdmin(admin.ModelAdmin):
-    prepopulated_fields = {
-        'slug': ('title', )
-    }
+    pass
 
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Instructor, InstructorAdmin)

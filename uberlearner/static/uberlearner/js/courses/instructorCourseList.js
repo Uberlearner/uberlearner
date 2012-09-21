@@ -10,8 +10,8 @@ var InstructorCoursesPagedGridModel = function() {
 		    { name: 'Popularity', field: '-popularity'}
 		],
 		columns: [
-		    { headerText: "Title", field: "title", link: "absolute_url" },
-		    { headerText: "Created on", field: 'creation_timestamp' },
+		    { headerText: "Title", field: "title", link: "absoluteUrl" },
+		    { headerText: "Created on", field: 'creationTimestamp' },
 		    { headerText: "Popularity", field: 'popularity' }
 		],
 		defaultSortingOptionIndex: 3,

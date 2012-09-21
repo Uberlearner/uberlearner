@@ -7,37 +7,74 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row" id="course-management-block" data-bind="courseResourceUri: '{{ course.get_resource_uri }}'">
 	<div class="span3">
-		<ul class="nav nav-list well">
-			<li class="nav-header">
-				Course Pages
-			</li>
-			<li>
-				<i class="icon-lock"></i>
-				Introduction
-			</li>
-			{% for page in course.pages.all %}
-			<li>
-				<a href="javascript:alert('not implemented');">
-					<i class="icon-file"></i>
-					{{page.title}}
-					<i class="icon-copy pull-right"></i>
-					<i class="icon-minus-sign pull-right"></i>
-				</a>
-			</li>
-			{% endfor %}
+        <h3>Course pages</h3>
+		<ul class="nav nav-list well"
+            data-bind="foreach: course().pages, uberSortableList: true">
+            <li data-bind="click: $root.currentPage, css: {active: $root.isActivePage($data)}">
+                <a href="javascript: void(0);" class="ordinary-text-link">
+                    <i class="icon-file"></i>
+                    <span data-bind="text: $data.title() || 'Untitled page'"></span>
+                    <span class="pull-right">
+                        <i class="icon-remove-sign" data-bind="click: function() {$root.doomedPage($data);}"></i>&nbsp;
+                        <i class="icon-move sortable-helper-icon cursor-movable"></i>
+                    </span>
+                </a>
+            </li>
 		</ul><br>
-        <a href="javascript:alert('not implemented');" class="btn btn-success">
+        <a href="#page-slug-and-title-modal"
+           class="btn btn-success"
+           data-toggle="modal"
+           data-bind="click: function() {$('#page-title-modal').focus();}">
             <i class="icon-plus-sign icon-white"></i> Create new page
         </a>
 	</div>
-    <div class="span9" id="page-content">
-        <label for="page-title">Page title: </label>
-        <input type="text" id="page-title" placeholder="Please make it relevant to the page content"/><br><br>
-        <textarea class="tinymce" data-bind="tinymce: pageContent"></textarea>
-        <span data-bind="text: pageContent"></span>
+    <div class="span8" id="page-content">
+        <div class="row" data-bind="slideVisible: !isPreviewModeOn()">
+            <div class="span8">
+                <span class="pull-right">
+                <button class="btn btn-primary"
+                        href="javascript: void(0);"
+                        data-bind="click: function(){currentPage() && currentPage().save()},
+                                   visible: currentPageIdx() != -1,
+                                   disable: currentPage() && currentPage().isSaveButtonDisabled,
+                                   text: currentPage() && currentPage().saveButtonText()">
+                </button>
+                <button class="btn btn-success"
+                        href="javascript: void(0);"
+                        data-bind="visible: currentPageIdx() != -1,
+                                   click: togglePreviewMode">
+                    Preview
+                </button>
+            </span>
+                <br>
+                <label for="page-title">Page title: </label>
+                <input type="text" id="page-title" placeholder="Please make it relevant to the page content"
+                       data-bind="value: currentPage() && currentPage().title"/><br><br>
+                <textarea class="tinymce" data-bind="tinymce: currentHtml, tinymceOptions: tinymceOptions"></textarea>
+            </div>
+        </div><br>
+        <div class="row" data-bind="slideVisible: isPreviewModeOn()">
+            <div class="span8">
+                <span class="pull-right">
+                    <button class="btn btn-primary"
+                            href="javascript: void(0);"
+                            data-bind="click: togglePreviewMode">
+                        Edit
+                    </button>
+                </span>
+                <br><br>
+                <h1 data-bind="text: currentPage() && currentPage().title"></h1>
+                <div data-bind="html: currentHtml"></div>
+            </div>
+        </div>
     </div>
+
+    <!-- Hidden sections -->
+    {% include 'courses/update/manage/modals/new-page-create.html' %}
+    {% include 'courses/update/manage/modals/page-delete-warning.html' %}
+
 </div>
 
 {% endblock %}

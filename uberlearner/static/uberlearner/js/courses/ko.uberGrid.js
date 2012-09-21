@@ -49,7 +49,7 @@
 			self.currentMeta = ko.observable({});
 			
 			self.maxPageIndex = ko.computed(function () {
-				var totalCount = self.currentMeta().total_count || 0;
+				var totalCount = self.currentMeta().totalCount || 0;
 				if (totalCount == 0)
 					return 0;
 				else {
@@ -91,7 +91,7 @@
 				return self.currentPageIndex() > 0;
 			});
 			self.dataExists = ko.computed(function() {
-				return self.currentMeta().total_count > 0;
+				return self.currentMeta().totalCount > 0;
 			});
 			self.pageIndexes = ko.computed(function() {
 				indexes = ko.utils.range(0, self.maxPageIndex());

@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from courses.models import Course
 from courses.forms import CourseForm, CoursePageForm
@@ -36,12 +37,12 @@ class CourseView(DetailView):
         except Course.DoesNotExist:
             raise Http404("{course} by {instructor} could not be found!".format(
                 course=self.kwargs[self.slug_url_kwarg],
-                instructor=self.kwargs['username'],
+                instructor=self.kwargs['username']
             ))
         if instructor != self.request.user and not course.is_public:
-            raise Http404("{course} by {instructor} is not ready for public viewing".format(
+            raise PermissionDenied("{course} by {instructor} is not ready for public viewing".format(
                 course=self.kwargs[self.slug_url_kwarg],
-                instructor=self.kwargs['username'],
+                instructor=self.kwargs['username']
             ))
         return course
     
@@ -49,12 +50,40 @@ class CourseEdit(UpdateView):
     model = Course
     form_class = CourseForm
     template_name = 'courses/update/edit/index.html'
+
     def get_object(self, queryset=None):
         instructor = get_object_or_404(User, username=self.kwargs['username'])
-        return Course.objects.get(slug=self.kwargs[self.slug_url_kwarg], instructor=instructor)
+        try:
+            if queryset is None:
+                course = Course.objects.get(slug=self.kwargs[self.slug_url_kwarg], instructor=instructor)
+            else:
+                course = queryset.get(slug=self.kwargs[self.slug_url_kwarg], instructor=instructor)
+        except Course.DoesNotExist:
+            raise Http404("{course} by {instructor} could not be found!".format(
+                course=self.kwargs[self.slug_url_kwarg],
+                instructor=self.kwargs['username']
+            ))
+        # nobody except the instructor can edit a course
+        if instructor != self.request.user:
+            raise PermissionDenied("You do not have the permissions to edit {course} by {instructor}".format(
+                course=self.kwargs[self.slug_url_kwarg],
+                instructor=self.kwargs['username']
+            ))
+        return course
     
 class CourseManage(CourseView):
     template_name = 'courses/update/manage/index.html'
+
+    def get_object(self, queryset=None):
+        course = super(CourseManage, self).get_object(queryset)
+        # nobody except the instructor can manage a course
+        if course.instructor != self.request.user:
+            raise PermissionDenied("Your do not have the permissions to manage {course} by {instructor}".format(
+                course=course,
+                instructor=self.kwargs['username']
+            ))
+
+        return course
 
     def get_context_data(self, **kwargs):
         context_data = super(CourseManage, self).get_context_data(**kwargs)

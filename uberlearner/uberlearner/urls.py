@@ -2,13 +2,14 @@ from django.conf.urls.defaults import patterns, include, url
 from django.views.generic.simple import direct_to_template
 from django.conf import settings
 from django.contrib import admin
-from courses.api import CourseResource, UserResource
+from courses.api import CourseResource, UserResource, PageResource
 from tastypie.api import Api
 admin.autodiscover()
 
 v1_api = Api(api_name='v1')
 v1_api.register(CourseResource())
 v1_api.register(UserResource())
+v1_api.register(PageResource())
 
 urlpatterns = patterns('',
     (r'^$', direct_to_template, {'template': 'under-construction.html'}, 'home'),

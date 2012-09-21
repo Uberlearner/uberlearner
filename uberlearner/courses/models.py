@@ -1,14 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.utils import timezone
+from django.template.defaultfilters import slugify
 from main.models import TimestampedModel
 from django.db.models.signals import post_save
-from django.core.urlresolvers import reverse
 ################################
 # Main models
 ################################
-        
+
 class Instructor(models.Model):
     """
     This model encapsulates the various properties of a user who has signed
@@ -55,6 +54,8 @@ class Course(TimestampedModel):
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the course has been enrolled in
     #rating = models.FloatField(default=0, editable=False)
     is_public = models.BooleanField(default=False, help_text="If checked, it will enable anyone to see your course.")
+
+    refresh_slug = True # a boolean indicating whether the save method should re-create the slug
     
     class Meta:
         unique_together = (('slug', 'instructor'), )
@@ -69,6 +70,43 @@ class Course(TimestampedModel):
             'slug': self.slug
         })
 
+    @models.permalink
+    def get_resource_uri(self):
+        # avoid circular import
+        from courses.api import CourseResource
+        #courseResource = CourseResource(self)
+        #return courseResource.get_resource_uri(self)
+
+        from uberlearner.urls import v1_api
+
+        return ('api_dispatch_detail', (), {
+            'resource_name': CourseResource._meta.resource_name,
+            'api_name': v1_api.api_name,
+            'pk': self.id
+        })
+
+    def save(self, force_insert=False, force_update=False, using=None):
+        """
+        The slug field for the course model is supposed to be auto-generated. Django doesn't provide this
+        functionality. So this over-ride of save does that.
+
+        This method borrows heavily from: http://djangosnippets.org/snippets/512/
+        """
+        if not self.slug or self.refresh_slug:
+            slug = slugify(self.title)
+            all_slugs = [sl.values()[0] for sl in Course.objects.filter(instructor=self.instructor).values('slug')]
+            if slug in all_slugs:
+                import re
+                counter_finder = re.compile(r'-\d+$')
+                counter = 2
+                slug = "{0}-{1}".format(slug, counter)
+                while slug in all_slugs:
+                    slug = re.sub(counter_finder, "-{0}".format(counter), slug)
+                    counter += 1
+            self.slug = slug
+            self.refresh_slug = False
+        return super(Course, self).save(force_insert, force_update, using)
+
 class Page(TimestampedModel):
     """
     This class represents a page of a course. All pages belong to some course and have a certain
@@ -79,7 +117,6 @@ class Page(TimestampedModel):
     """
     course = models.ForeignKey(Course, related_name='pages')
     title = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50)
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the page has been viewed
     html = models.TextField()
     
@@ -90,9 +127,3 @@ class Page(TimestampedModel):
         return self.title
 
 post_save.connect(Instructor.make_user_instructor, sender=User)
-    
-    
-    
-    
-    
-    

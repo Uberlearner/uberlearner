@@ -1,0 +1,23 @@
+<div class="modal hide fade" id="page-slug-and-title-modal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3>Set page title and slug</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="page-title-modal">Page title:</label>
+                <div class="controls">
+                    <input type="text"
+                           id="page-title-modal"
+                           placeholder="Please make it relevant to the page content"
+                           data-bind="value: newPageTitle"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-bind="click: createNewPage" data-dismiss="modal">Done</button>
+        <button class="btn" data-dismiss="modal">Cancel</button>
+    </div>
+</div>

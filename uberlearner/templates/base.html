@@ -36,20 +36,23 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-  	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  	<script>window.jQuery || document.write('<script src="media/js/vendor/jquery-1.7.2.min.js"><\/script>')</script>
-  	<script src="{{ STATIC_URL }}lib/jquery/js/jquery.tmpl.js"></script>
-  	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
-    <script src="{{ STATIC_URL }}lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="http://github.com/downloads/SteveSanderson/knockout/knockout-2.1.0.debug.js"></script>
-    <script>window.ko || document.write('<script src="{{STATIC_URL}}lib/knockoutjs/js/knockout-2.1.0.js"><\/script>')</script>
+  {% if not debug %}
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+      <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
+      <script src="http://github.com/downloads/SteveSanderson/knockout/knockout-2.1.0.debug.js"></script>
+  {% endif %}
+      <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}lib/jquery/js/jquery-1.7.2.min.js"><\/script>')</script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
+      <script src="{{ STATIC_URL }}lib/jquery/js/jquery.tmpl.js"></script>
+      <script src="{{ STATIC_URL }}lib/bootstrap/js/bootstrap.min.js"></script>
+      <script>window.ko || document.write('<script src="{{STATIC_URL}}lib/knockoutjs/js/knockout-2.1.0.js"><\/script>')</script>
     	
     {% for js_file in js_files %}
     	<script src="{{STATIC_URL}}{{js_file}}"></script>
     {% endfor %}
     	
     {{form.media}}
+  {% if not debug %}
     <!-- Asynchronous Google Analytics snippet. -->
 	  <script>
 	  var _gaq = _gaq || [];
@@ -64,5 +67,6 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
 	  </script>
+  {% endif %}
   </body>
 </html>
