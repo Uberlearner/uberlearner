@@ -12,7 +12,12 @@ v1_api.register(UserResource())
 v1_api.register(PageResource())
 
 urlpatterns = patterns('',
-    (r'^$', direct_to_template, {'template': 'under-construction.html'}, 'home'),
+    (r'^$', direct_to_template, {
+        'template': 'under-construction.html',
+        'extra_context': {
+            'main_js_module': 'uberlearner/js/main/under-construction'
+        }
+    }, 'home'),
     (r'^api/', include(v1_api.urls)),
     (r'^about/$', direct_to_template, {'template': 'about.html'}, 'about'),
     (r'^contact/$', direct_to_template, {'template': 'under-construction.html'}, 'contact'),

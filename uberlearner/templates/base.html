@@ -34,8 +34,53 @@
 	
 	<!-- Le javascript
     ================================================== -->
+  <script>
+      var require = {
+          baseUrl: '{{ STATIC_URL }}',
+          shim: {
+              'bootstrap': {
+                  deps: ['jquery'],
+                  exports: 'bootstrap'
+              },
+              'tinymce': {
+                  deps: ['jquery'],
+                  exports: 'tinymce'
+              },
+              'jquery_tinymce': {
+                  deps: ['jquery'],
+                  exports: 'jquery_tinymce'
+              },
+              'jquery-ui': ['jquery']
+          },
+          paths: {
+              text: 'lib/require/plugins/text/text',
+              css: 'lib/require/plugins/css/css',
+              'css.api': 'lib/require/plugins/css/css.api',
+              'css.pluginBuilder': 'lib/require/plugins/css/css.pluginBuilder',
+              jquery: [
+                  'http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min',
+                  'lib/jquery/js/jquery-1.7.2.min'
+              ],
+              'jquery-ui': [
+                  'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.22/jquery-ui.min',
+                  'lib/jquery_ui/js/jquery-ui.min'
+              ],
+              bootstrap: 'lib/bootstrap/js/bootstrap.min',
+              ko: [
+                  'http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.1.0',
+                  'lib/knockoutjs/js/knockout-2.1.0'
+              ],
+              uberGrid: 'lib/ubergrid/js/uberGrid',
+              tinymce: 'lib/tiny_mce/tiny_mce',
+              jquery_tinymce: 'lib/tiny_mce/jquery.tinymce',
+              ko_tinymce: 'lib/knockoutjs/js/ko.tinymce'
+          }
+      };
+  </script>
+  <script data-main="{{ main_js_module }}" src="{{ STATIC_URL }}lib/require/require.js"></script>
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  {% comment %}
   {% if not debug %}
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
       <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
@@ -52,6 +97,7 @@
     {% endfor %}
     	
     {{form.media}}
+   {% endcomment %}
   {% if not debug %}
     <!-- Asynchronous Google Analytics snippet. -->
 	  <script>
