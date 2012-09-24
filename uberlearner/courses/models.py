@@ -55,7 +55,7 @@ class Course(TimestampedModel):
     #rating = models.FloatField(default=0, editable=False)
     is_public = models.BooleanField(default=False, help_text="If checked, it will enable anyone to see your course.")
 
-    refresh_slug = True # a boolean indicating whether the save method should re-create the slug
+    refresh_slug = False # a boolean indicating whether the save method should re-create the slug
     
     class Meta:
         unique_together = (('slug', 'instructor'), )

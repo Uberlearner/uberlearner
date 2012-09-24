@@ -89,7 +89,6 @@ class CourseManage(CourseView):
         context_data = super(CourseManage, self).get_context_data(**kwargs)
         context_data['main_js_module'] = 'uberlearner/js/courses/manage/main.js'
         return context_data
-
     
 class CourseList(TemplateView):
     """
@@ -111,15 +110,6 @@ class UserCourses(TemplateView):
     
     def get_context_data(self, **kwargs):
         context_data = super(UserCourses, self).get_context_data(**kwargs)
-        """
-        if not 'js_files' in context_data:
-            context_data['js_files'] = []
-        
-        context_data['js_files'].extend([
-            'uberlearner/js/courses/ko.uberGrid.js',
-            'uberlearner/js/courses/instructorCourseList.js',
-        ])
-        """
         context_data['instructor'] = User.objects.get(username=kwargs['username'])
         context_data['main_js_module'] = 'uberlearner/js/courses/instructor-course-list.js'
         return context_data
