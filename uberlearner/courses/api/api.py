@@ -1,13 +1,18 @@
-from django.core.exceptions import PermissionDenied
+from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models.query_utils import Q
+from django.http import HttpResponse
 from tastypie.authentication import Authentication
 from tastypie.exceptions import ImmediateHttpResponse, BadRequest
+from tastypie.http import HttpGone, HttpMultipleChoices, HttpNoContent, HttpForbidden
 from tastypie.resources import ModelResource, convert_post_to_patch
 from tastypie import fields, http
+from tastypie.utils import trailing_slash
 from courses.api.authentication import UberAuthentication
 from courses.api.authorization import UberAuthorization
 from courses.api.serializers import UberSerializer
-from courses.models import Course, Instructor, Page
+from courses.models import Course, Instructor, Page, Enrollment
 from django.contrib.auth.models import User              
 from tastypie.constants import ALL_WITH_RELATIONS
 from django.core.urlresolvers import reverse
@@ -133,6 +138,48 @@ class CourseResource(ModelResource):
         }
         serializer = UberSerializer()
         include_absolute_url = True
+
+    def prepend_urls(self):
+        return [
+            url(r'^(?P<resource_name>{resource})/(?P<pk>\w[\w/-]*)/enroll{slash}'.format(
+                resource=self._meta.resource_name,
+                slash=trailing_slash()
+            ), self.wrap_view('enroll'), name='api_course_enroll')
+        ]
+
+    def enroll(self, request, **kwargs):
+        """
+        This method will be used by the client to enroll the current user into the current course. Since this
+        method changes the state of the system, only a POST or a PUT request will be responded to. In the future,
+        it may be possible to return a boolean for a GET request indicating whether or not the current user is
+        enrolled in the current course.
+        """
+        # if the request is not of the desired types, then deny
+        if not request.method in ['POST', 'PUT', 'GET']:
+            return BadRequest("Only a PUT, POST, or GET is allowed at this endpoint")
+
+        # if the user is not authenticated then deny
+        if not self._meta.authentication.is_authenticated(request):
+            return HttpForbidden("Operation not authorized")
+
+        try:
+            course = self.cached_obj_get(request=request, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI")
+
+        if request.method == 'GET':
+            # the client just wants to find out whether or not the current user is enrolled with the current course
+            if course.students.filter(username=request.user.username).count() == 1:
+                #the student is enrolled
+                return HttpResponse(True)
+            else:
+                return HttpResponse(False)
+        elif request.method in ['POST', 'PUT']:
+            # now that we have the course and the user, we should enroll the user in the course
+            enrollment, created = Enrollment.objects.get_or_create(student=request.user, course=course)
+            return HttpNoContent()
 
     def apply_filters(self, request, applicable_filters):
         # if the filters list has instructor, then modify its value to be the actual user

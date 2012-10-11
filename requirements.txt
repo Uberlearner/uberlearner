@@ -9,3 +9,5 @@ django-recaptcha
 django-ses
 pytz
 -e git+https://github.com/toastdriven/django-tastypie.git#egg=django-tastypie
+django-storages
+easy-thumbnails

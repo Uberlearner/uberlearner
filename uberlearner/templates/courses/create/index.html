@@ -1,5 +1,5 @@
 {% extends 'templated-base.html' %}
-
+{% load thumbnail %}
 {% load bootstrap_toolkit %}
 
 {% block title %}{{block.super}} | {% if course %}Edit{% else %}Create{% endif %} course{% endblock %}
@@ -17,10 +17,14 @@
 {% block content %}
 <div class="row">
 	<div class="span2">
-		<p>Thumbnail here</p>
+		<ul class="thumbnails">
+            <li class="thumbnail">
+                <img src="{{ course.photo|thumbnail_url:'thumbnail' }}"/>
+            </li>
+		</ul>
 	</div>
 	<div class="span8">
-		<form action="" method="post" class="form-horizontal">
+		<form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{form|as_bootstrap}}
 			<div class="form-actions">

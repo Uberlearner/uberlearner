@@ -134,6 +134,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'avatar',
+    'easy_thumbnails',
     'tastypie',
     'courses',
     'courses.uberwidgets',
@@ -214,3 +215,21 @@ INTERNAL_IPS = ('192.168.1.65', '127.0.0.1')
 AUTHENTICATION_BACKENDS += (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+# Amazon S3 storage settings
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+AWS_STORAGE_BUCKET_NAME = 'uberlearner'
+# The current AWS_S3_CALLING_FORMAT is 'subdomain' and that is good enough for this
+
+# Course related settings
+COURSE_PHOTO_THUMB_SIZE = (80, 80)
+COURSE_PHOTO_THUMB_QUALITY = 85
+COURSE_PHOTO_THUMB_FORMAT = "JPEG"
+THUMBNAIL_ALIASES = {
+    '': {
+        'thumbnail': {
+            'size': (200, 200),
+            'crop': 'smart'
+        }
+    }
+}

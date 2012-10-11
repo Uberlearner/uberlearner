@@ -1,9 +1,15 @@
+from easy_thumbnails.signals import saved_file
+from easy_thumbnails.signal_handlers import generate_aliases
+from easy_thumbnails.fields import ThumbnailerImageField
+import os
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.template.defaultfilters import slugify
+from storages.backends.s3boto import S3BotoStorage
 from main.models import TimestampedModel
 from django.db.models.signals import post_save
+from django.conf import settings
 ################################
 # Main models
 ################################
@@ -35,12 +41,38 @@ class Instructor(models.Model):
         """
         if created:
             cls.objects.create(user=instance)
-    
+
+class Enrollment(models.Model):
+    student = models.ForeignKey(User)
+    course = models.ForeignKey('Course')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return "{student} - {course} - {timestamp}".format(
+            student = str(self.student),
+            course = str(self.course),
+            timestamp = str(self.timestamp)
+        )
+
+def course_image_path(instance=None, filename=None):
+    """
+    This method is used to generate the path for the course image by the model.
+    """
+    path_segments = [instance.instructor.username]
+    if not filename:
+        #the file already exists in the database
+        filename = instance.photo.name
+    prefix, ext = os.path.splitext(os.path.basename(filename))
+    path_segments.append(prefix)
+    path_segments.append('original'+ext)
+    return os.path.join(*path_segments)
+
 class Course(TimestampedModel):
     """
     This model encapsulates the various parameters of a course.
     """
-    instructor = models.ForeignKey(User)
+    #model fields
+    instructor = models.ForeignKey(User, related_name='instructor_courses')
     # TEACHING ASSISTANTS AND TRANSLATORS WILL BE IMPLEMENTED LATER
     # teaching_assistants = models.ManyToManyField(Instructor)
     # translators = models.ManyToManyField(Translator)
@@ -48,12 +80,19 @@ class Course(TimestampedModel):
         containing only letters, numbers, underscores or hyphens.")
     slug = models.SlugField(max_length=50)
     # TODO:
-    # photo = models.ImageField()
+    photo = ThumbnailerImageField(
+        upload_to=course_image_path,
+        storage=S3BotoStorage(location='development/courses'),
+        thumbnail_storage=S3BotoStorage(location='development/courses', reduced_redundancy=True),
+        null=True,
+        blank=True
+    )
     description = models.TextField(blank=True)
     language = models.CharField(max_length=5, choices=settings.LANGUAGES, default='en')
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the course has been enrolled in
     #rating = models.FloatField(default=0, editable=False)
     is_public = models.BooleanField(default=False, help_text="If checked, it will enable anyone to see your course.")
+    students = models.ManyToManyField(User, through=Enrollment, blank=True, null=True, related_name='enrolled_courses')
 
     refresh_slug = False # a boolean indicating whether the save method should re-create the slug
     
@@ -71,7 +110,7 @@ class Course(TimestampedModel):
         })
 
     @models.permalink
-    def get_resource_uri(self):
+    def get_resource_uri(self, url_name='api_dispatch_detail'):
         # avoid circular import
         from courses.api import CourseResource
         #courseResource = CourseResource(self)
@@ -79,11 +118,14 @@ class Course(TimestampedModel):
 
         from uberlearner.urls import v1_api
 
-        return ('api_dispatch_detail', (), {
+        return (url_name, (), {
             'resource_name': CourseResource._meta.resource_name,
             'api_name': v1_api.api_name,
             'pk': self.id
         })
+
+    def get_enrollment_resource_uri(self):
+        return self.get_resource_uri(url_name='api_course_enroll')
 
     def save(self, force_insert=False, force_update=False, using=None):
         """
@@ -127,3 +169,4 @@ class Page(TimestampedModel):
         return self.title
 
 post_save.connect(Instructor.make_user_instructor, sender=User)
+saved_file.connect(generate_aliases) #to pre-generate the thumbnails

@@ -1,4 +1,4 @@
-define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/manage/bindings'], function(ko, Models) {
+define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'], function(ko, Models) {
     var ManageCourseViewModel = function() {
         var self = this;
         self.course = ko.observable(new Models.Course({}));

@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="row" id="course-management-block" data-bind="courseResourceUri: '{{ course.get_resource_uri }}'">
+<div class="row" id="course-management-block" data-bind="courseResourceUri: {url: '{{ course.get_resource_uri }}', attrName: 'url'}">
 	<div class="span3">
         <h3>Course pages</h3>
 		<ul class="nav nav-list well"

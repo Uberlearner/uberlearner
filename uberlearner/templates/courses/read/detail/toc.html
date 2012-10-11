@@ -1,0 +1,19 @@
+{% comment %}
+This template generates the table-of-contents of a given page. It expects the course variable to represent
+the course model.
+{% endcomment %}
+
+{% if not course.pages.all %}
+<div class="alert alert-info">
+    <p>This course currently has no pages!</p>
+</div>
+{% else %}
+<div class="well well-small">
+    <ul class="nav nav-list">
+        <li class="nav-header">Table of contents</li>
+        {% for page in course.pages.all %}
+            <li><i class="icon-file"></i> {{ page.title }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

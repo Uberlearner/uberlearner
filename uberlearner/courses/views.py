@@ -45,6 +45,11 @@ class CourseView(DetailView):
                 instructor=self.kwargs['username']
             ))
         return course
+
+    def get_context_data(self, **kwargs):
+        context_data = super(CourseView, self).get_context_data(**kwargs)
+        context_data['main_js_module'] = 'uberlearner/js/courses/detail/main.js'
+        return context_data
     
 class CourseEdit(UpdateView):
     model = Course
@@ -70,6 +75,11 @@ class CourseEdit(UpdateView):
                 instructor=self.kwargs['username']
             ))
         return course
+
+    def get_context_data(self, **kwargs):
+        context_data = super(CourseEdit, self).get_context_data(**kwargs)
+        context_data['main_js_module'] = 'uberlearner/js/main/under-construction.js' #we just need jquery and bootstrap
+        return context_data
     
 class CourseManage(CourseView):
     template_name = 'courses/update/manage/index.html'

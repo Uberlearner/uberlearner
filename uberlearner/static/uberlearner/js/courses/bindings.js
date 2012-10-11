@@ -1,8 +1,15 @@
 define(['ko', 'jquery', 'jquery-ui'], function(ko, $) {
     ko.bindingHandlers.courseResourceUri = {
         init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            var value = valueAccessor(), allBindings = allBindingsAccessor();
-            viewModel.url(value);
+            var value = valueAccessor();
+            if (typeof(value['attrName']) == "undefined")
+                value['attrName'] = 'url'
+            if (typeof(value['url']) == "undefined")
+            throw {
+                name: 'IllegalArgumentException',
+                message: 'The value of the courseResourceUri binding should contain a url'
+            }
+            viewModel[value.attrName](value.url);
         }
     };
 

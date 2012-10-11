@@ -1,31 +1,43 @@
 {% extends 'templated-base.html' %}
-
+{% load thumbnail %}
 {% block title %}{{block.super}} | {{course.title}}{% endblock %}
 
 {% block content %}
-<div class="row">
-	<div class="span2">
-		<p>Insert thumbnail here</p>
+<div class="row" id="course-detail-block" data-bind="urlList: {courseUrl: '{{ course.get_resource_uri }}',
+                                                     enrollmentUrl: '{{ course.get_enrollment_resource_uri }}'}">
+	<div class="span3">
+        <ul class="thumbnails">
+            <li class="thumbnail">
+                <img src="{{ course.photo|thumbnail_url:'thumbnail' }}" />
+            </li>
+        </ul>
+        {% include 'courses/read/detail/toc.html' %}
 	</div>
-	<div class="span10">
+	<div class="span9">
 		{% if not course.is_public %}
 			<div class="alert alert-info">
 				<button class="close" data-dismiss="alert">×</button>
 				This course is not yet publicly viewable. Be sure to click that "Make public" button when the course is ready.
 			</div>
 		{% endif %}
+        {% if not course.pages.all and course.instructor == user %}
+            <div class="alert alert-info">
+                <button class="close" data-dismiss="alert">×</button>
+                Use the manage button to add and remove pages from this course.
+            </div>
+        {% endif %}
 		<div class="row">
-			<div class="span8">
+			<div class="span7">
 				<h1>{{course.title}} <span class="label label-info">{{course.popularity}} enrollment{{course.popularity|pluralize}}</span></h1>
 				<i>- Authored by {{course.instructor}}</i>
 			</div>
 			<div class="span2">
 				{% if request.user == course.instructor %}
 					<p class="pull-right">
-						<a href={% url course.manage username=request.user.username slug=course.slug %} class="btn btn-primary">
+						<a href='{% url course.manage username=request.user.username slug=course.slug %}' class="btn btn-primary">
 							<i class="icon-edit icon-white"></i> Manage
 						</a>
-						<a href={% url course.edit username=request.user.username slug=course.slug %} class="btn btn-primary">
+						<a href='{% url course.edit username=request.user.username slug=course.slug %}' class="btn btn-primary">
 							<i class="icon-pencil icon-white"></i> Edit
 						</a>
 					</p>
@@ -45,12 +57,26 @@
 					When the enrollment modelling is done, show an enroll button when appropriate
 					(ie., when the student isn't already enrolled and is not the instructor)
 					{% endcomment %}
-				{% endif %}
+                    <p class="pull-right">
+                        <button href="javascript: void(0);"
+                           class="btn btn-success btn-large"
+                           data-bind="disable: isEnrolled(), click: toggleEnrollment">
+                            <i class="icon-white" data-bind="css: {'icon-star-empty': !isEnrolled(), 'icon-star': isEnrolled}"></i>
+                            <span data-bind="text: isEnrolled() ? 'Enrolled' : 'Enroll'"></span>
+                        </button>
+                    </p>
+                {% endif %}
 			</div>
 		</div>
-		{% if course.description %}
-			{{course.description|linebreaks}}
-		{% endif %}
+        <div class="row">
+            <div class="span9">
+                {% if course.description %}
+                    {{course.description|linebreaks}}
+                {% endif %}
+            </div>
+        </div>
 	</div>
 </div>
+{% comment %}Include a CSRF token in the body for the session authentication of ajax calls.{% endcomment %}
+{% csrf_token %}
 {% endblock %}
