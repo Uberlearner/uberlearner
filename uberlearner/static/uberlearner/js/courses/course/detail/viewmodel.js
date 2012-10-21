@@ -4,6 +4,7 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/utils/bindings/ur
         self.isEnrolled = ko.observable(false);
         self.courseUrl = ko.observable();
         self.enrollmentUrl = ko.observable();
+        self.postEnrollmentUrl = ko.observable();
 
         /* SUBSCRIPTIONS */
         self.enrollmentUrl.subscribe(function(url) {
@@ -24,6 +25,7 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/utils/bindings/ur
                     },
                     success: function() {
                         self.isEnrolled(true);
+                        window.location.href = self.postEnrollmentUrl();
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log("error textStatus: " + textStatus);
@@ -32,8 +34,7 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/utils/bindings/ur
                     }
                 });
             } else {
-                //The user is trying to withdraw from the course. If they do that, then the history of
-                //TODO
+                //TODO: figure out whether it is even necessary to have this option.
             }
         };
     };

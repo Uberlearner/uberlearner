@@ -4,14 +4,15 @@
 
 {% block content %}
 <div class="row" id="course-detail-block" data-bind="urlList: {courseUrl: '{{ course.get_resource_uri }}',
-                                                     enrollmentUrl: '{{ course.get_enrollment_resource_uri }}'}">
+                                                     enrollmentUrl: '{{ course.get_enrollment_resource_uri }}',
+                                                     postEnrollmentUrl: '{% url page.first.view course.instructor.username course.slug %}'}">
 	<div class="span3">
         <ul class="thumbnails">
             <li class="thumbnail">
                 <img src="{{ course.photo|thumbnail_url:'thumbnail' }}" />
             </li>
         </ul>
-        {% include 'courses/read/detail/toc.html' %}
+        {% include 'courses/course/read/detail/toc.html' %}
 	</div>
 	<div class="span9">
 		{% if not course.is_public %}
@@ -58,12 +59,20 @@
 					(ie., when the student isn't already enrolled and is not the instructor)
 					{% endcomment %}
                     <p class="pull-right">
+                    {% if not enrollment %}
                         <button href="javascript: void(0);"
                            class="btn btn-success btn-large"
                            data-bind="disable: isEnrolled(), click: toggleEnrollment">
                             <i class="icon-white" data-bind="css: {'icon-star-empty': !isEnrolled(), 'icon-star': isEnrolled}"></i>
                             <span data-bind="text: isEnrolled() ? 'Enrolled' : 'Enroll'"></span>
                         </button>
+                    {% else %}
+                        <a href="{% url page.first.view course.instructor.username course.slug %}"
+                           class="btn btn-success btn-large"
+                           data-bind="visible: isEnrolled">
+                            <i class="icon-white icon-book"></i> Study!
+                        </a>
+                    {% endif %}
                     </p>
                 {% endif %}
 			</div>

@@ -1,0 +1,39 @@
+<div class="btn-group pull-right">
+    {% with previous=page.get_previous_in_order %}
+        {% if previous %}
+            <a class="btn btn-inverse" href="{% url page.view course.instructor.username course.slug previous.pk %}">
+        {% else %}
+            <a class="btn btn-inverse disabled">
+        {% endif %}
+                <i class="icon-chevron-left icon-white"></i> Previous
+            </a>
+    {% endwith %}
+    {% with next=page.get_next_in_order %}
+        {% if next %}
+            <a class="btn btn-inverse" href="{% url page.view course.instructor.username course.slug next.pk %}">
+        {% else %}
+            <a class="btn btn-inverse disabled">
+        {% endif %}
+                Next <i class="icon-chevron-right icon-white"></i>
+            </a>
+    {% endwith %}
+    <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+        Table of contents
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="{% url course.view course.instructor.username course.slug %}">Course home</a></li>
+        <li class="divider"></li>
+        {% if course.pages.exists %}
+            {% for p in course.pages.all %}
+                {% if page == p %}
+                    <li class="active"><a href="{% url page.view course.instructor.username course.slug p.pk %}">{{ p.title }}</a></li>
+                {% else %}
+                    <li><a href="{% url page.view course.instructor.username course.slug p.pk %}">{{ p.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <li><a href="javascript: void(0);">No pages found!</a></li>
+        {% endif %}
+    </ul>
+</div>

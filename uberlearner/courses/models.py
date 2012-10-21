@@ -43,8 +43,8 @@ class Instructor(models.Model):
             cls.objects.create(user=instance)
 
 class Enrollment(models.Model):
-    student = models.ForeignKey(User)
-    course = models.ForeignKey('Course')
+    student = models.ForeignKey(User, related_name='enrollments')
+    course = models.ForeignKey('Course', related_name='enrollments')
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
@@ -113,9 +113,6 @@ class Course(TimestampedModel):
     def get_resource_uri(self, url_name='api_dispatch_detail'):
         # avoid circular import
         from courses.api import CourseResource
-        #courseResource = CourseResource(self)
-        #return courseResource.get_resource_uri(self)
-
         from uberlearner.urls import v1_api
 
         return (url_name, (), {
@@ -158,15 +155,29 @@ class Page(TimestampedModel):
     user experience.
     """
     course = models.ForeignKey(Course, related_name='pages')
+    #TODO: slug = models.SlugField(max_length=50)
     title = models.CharField(max_length=50)
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the page has been viewed
     html = models.TextField()
     
     class Meta:
         order_with_respect_to = 'course'
+        #TODO: unique_together = (("course", "slug"), )
         
     def __unicode__(self):
         return self.title
+
+    @models.permalink
+    def get_resource_uri(self, url_name='api_dispatch_detail'):
+        # avoid circular import
+        from courses.api import PageResource
+        from uberlearner.urls import v1_api
+
+        return (url_name, (), {
+            'resource_name': PageResource._meta.resource_name,
+            'api_name': v1_api.api_name,
+            'pk': self.id
+        })
 
 post_save.connect(Instructor.make_user_instructor, sender=User)
 saved_file.connect(generate_aliases) #to pre-generate the thumbnails

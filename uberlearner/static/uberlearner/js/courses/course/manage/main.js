@@ -1,7 +1,7 @@
 require([
     'ko',
     'jquery',
-    'uberlearner/js/courses/manage/viewmodel',
+    'uberlearner/js/courses/course/manage/viewmodel',
     'tinymce',
     'ko_tinymce',
     'jquery_tinymce',

@@ -1,0 +1,38 @@
+{% extends 'templated-base.html' %}
+
+{% block title %}
+    {{ block.super }} |
+    {% if page %}
+        {{ page.course.title }} | {{ page.title }}
+    {% else %}
+        No pages found!
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% comment %}
+    The following div is not meant to contain the view-model but to provide it server-side data. The view-model is
+    applied to the entire page.
+    {% endcomment %}
+    {% comment %}
+    For the sake of the first version of the course, a simple (no-ajax-page-changes) version will be implemented. When
+    the ajax-page-change version is to be implemented, the main div will look something like this:
+
+    <div data-bind="urlList: {
+        courseResourceUri: '{{ course.get_resource_uri }}',
+        pageResourceUri: '{{ page.get_resource_uri }}'
+    }, html: currentPageContent">
+    {% endcomment %}
+    <div>
+        {% if not page %}
+            {% include 'courses/page/read/list/no-pages-found.html' %}
+        {% else %}
+            {{ page.html|safe }}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block additional-navbar-controls %}
+    {{ block.super }}
+    {% include 'courses/page/read/list/navbar.html' %}
+{% endblock %}

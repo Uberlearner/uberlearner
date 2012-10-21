@@ -1,7 +1,7 @@
 require([
     'ko',
     'jquery',
-    'uberlearner/js/courses/detail/viewmodel',
+    'uberlearner/js/courses/course/detail/viewmodel',
     'bootstrap'
 ], function(ko, $, ViewModel) {
     $(function() {

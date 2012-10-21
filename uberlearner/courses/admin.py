@@ -1,5 +1,5 @@
 from django.contrib import admin
-from courses.models import Course, Instructor, Page
+from courses.models import Course, Instructor, Page, Enrollment
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['title', 'instructor', 'language', 'popularity', 'is_public']
@@ -16,3 +16,4 @@ class PageAdmin(admin.ModelAdmin):
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Instructor, InstructorAdmin)
 admin.site.register(Page, PageAdmin)
+admin.site.register(Enrollment)
