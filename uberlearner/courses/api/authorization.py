@@ -49,7 +49,7 @@ class UberAuthorization(Authorization):
                 return True
             else:
                 return False
-
+    """
     def apply_limits(self, request, object_list):
         if request.user.is_superuser:
             return object_list
@@ -57,3 +57,4 @@ class UberAuthorization(Authorization):
             return object_list.filter(Q(course__is_public=True) | Q(course__instructor__id=request.user.id))
         else:
             return object_list.filter(course__instructor__id=request.user.id)
+    """

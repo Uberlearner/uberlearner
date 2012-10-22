@@ -43,6 +43,11 @@
 						</a>
 					</p>
 					<p class="pull-right">
+                        <a href="javascript: void(0);" class="btn btn-success" data-bind="click: toggleVisibility">
+                            <i data-bind="css: { 'icon-eye-open': !course().isPublic() , 'icon-eye-close': course().isPublic() }">
+                            </i> <span data-bind="text: course().isPublic() ? 'Make private' : 'Make public'"></span>
+                        </a>
+                    {% comment %}
 						{% if not course.is_public %}
 							<a href="javascript:alert('not implemented');" class="btn btn-success">
 								<i class="icon-eye-open icon-white"></i> Make public
@@ -52,6 +57,7 @@
 								<i class="icon-eye-close icon-white"></i> Make private
 							</a>
 						{% endif %}
+                    {% endcomment %}
 					</p>
 				{% else %}
 					{% comment %}

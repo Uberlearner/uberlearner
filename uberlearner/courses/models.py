@@ -1,3 +1,4 @@
+from django.db.models import F
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases
 from easy_thumbnails.fields import ThumbnailerImageField
@@ -53,6 +54,18 @@ class Enrollment(models.Model):
             course = str(self.course),
             timestamp = str(self.timestamp)
         )
+
+    @classmethod
+    def increment_course_popularity(cls, sender, instance, created, **kwargs):
+        """
+        When an enrollment instance is saved, this method is called through the post_save signal. This method
+        has to check whether this was indeed the creation of a new instance (modifications of enrollment records
+        should not happen anyways). If this was indeed the creation of a new instance, the popularity of the course
+        has to be incremented.
+        """
+        if created:
+            instance.course.popularity = F('popularity') + 1 #increment course popularity
+            instance.course.save()
 
 def course_image_path(instance=None, filename=None):
     """
@@ -180,4 +193,5 @@ class Page(TimestampedModel):
         })
 
 post_save.connect(Instructor.make_user_instructor, sender=User)
+post_save.connect(Enrollment.increment_course_popularity, sender=Enrollment)
 saved_file.connect(generate_aliases) #to pre-generate the thumbnails

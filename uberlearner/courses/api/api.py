@@ -129,8 +129,9 @@ class CourseResource(ModelResource):
     class Meta:
         queryset = Course.objects.all()
         resource_name = 'courses'
-        allowed_methods = ['get']
+        allowed_methods = ['get', 'patch']
         authentication = UberAuthentication()
+        authorization = UberAuthorization()
         limit = 10
         ordering = ['title', 'popularity', 'instructor', 'creation_timestamp']
         filtering = {
@@ -138,6 +139,7 @@ class CourseResource(ModelResource):
         }
         serializer = UberSerializer()
         include_absolute_url = True
+        excludes = ['photo']
 
     def prepend_urls(self):
         return [

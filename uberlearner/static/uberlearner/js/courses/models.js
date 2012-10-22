@@ -162,12 +162,13 @@ define(['ko'], function(ko) {
 
     Models.Course = function (data) {
         var self = this;
+        data = data || {};
         self.absoluteUrl = data.absoluteUrl;
         self.creationTimestamp = data.creationTimestamp;
         self.description = data.description;
         self.id = data.id;
         self.instructor = new Models.Instructor(data.instructor);
-        self.isPublic = data.isPublic;
+        self.isPublic = ko.observable(data.isPublic);
         self.lastModified = data.lastModified;
         self.pageListUri = data.pageListUri;
         self.pages = ko.observableArray($.map((data.pages || []), function(page, index) {

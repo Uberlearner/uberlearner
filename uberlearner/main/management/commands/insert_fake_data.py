@@ -39,7 +39,7 @@ class Command(BaseCommand):
                 slug='sample-title-' + str(idx),
                 description='sample description ' + str(idx),
                 is_public = True if idx % 2 == 0 else False,
-                popularity=idx
+                popularity=0
             )
             course.save()
     

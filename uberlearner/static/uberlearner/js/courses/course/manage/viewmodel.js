@@ -165,6 +165,18 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
         self.togglePreviewMode = function() {
             self.isPreviewModeOn(!self.isPreviewModeOn());
         };
+
+        /**
+         * This is the method that gets called when the back button on the page itself is clicked.
+         * TODO: add this method as a listener for the "real" back button when Davis.js is used.
+         */
+        self.goBack = function() {
+            var currentPage = self.currentPage();
+            if (currentPage) {
+                currentPage.save();
+            }
+            window.location.href = self.backUrl();
+        };
     };
     return ManageCourseViewModel;
 });

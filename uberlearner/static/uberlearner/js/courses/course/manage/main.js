@@ -5,9 +5,10 @@ require([
     'tinymce',
     'ko_tinymce',
     'jquery_tinymce',
-    'bootstrap'
+    'bootstrap',
+    'uberlearner/js/utils/bindings/url-list'
 ], function(ko, $, ManageCourseViewModel) {
     $(function() {
-        ko.applyBindings(new ManageCourseViewModel(), $('#course-management-block')[0]);
+        ko.applyBindings(new ManageCourseViewModel());
     });
 });
