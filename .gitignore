@@ -28,3 +28,5 @@ uberlearner/uberlearner/settings_local.py
 .settings
 # the pycharm settings folder
 .idea/
+# the sublime project files
+*.sublime-*

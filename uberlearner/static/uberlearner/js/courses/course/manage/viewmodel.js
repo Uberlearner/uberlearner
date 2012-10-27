@@ -110,7 +110,26 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
         });
 
         self.tinymceOptions = {
-            theme_advanced_resizing: true
+            theme_advanced_resizing: true,
+            plugins: "fullscreen,spellchecker,advhr,insertdatetime",
+            theme_advanced_buttons1: "newdocument, |, bold, italic, underline, |, justifyleft, justifycenter, justifyright, fontselect, fontsizeselect, formatselect",
+            theme_advanced_buttons2: "cut, copy, paste, |, bullist, numlist, |, outdent, indent, |, undo, redo, |, link, unlink, anchor, image, |, code, preview, |, forecolor, backcolor, |, fullscreen",
+            theme_advanced_buttons3: "spellchecker, advhr, removeformat, |, sub, sup, |, charmap, emotions, |, insertdate",
+            theme_advanced_toolbar_location: "top",
+            theme_advanced_toolbar_align: "left",
+            theme_advanced_statusbar_location: "bottom",
+            theme_advanced_resizing: true,
+            width: "100%",
+            height: "500",
+            /**
+             * It is uncertain whether tinymce or the course model will load first. This function takes care of the
+             * case where tinymce loades after the course model.
+             */
+            oninit: function() {
+                if(self.course().pages().length > 0) {
+                    self.currentPageIdx(0);
+                }
+            }
         };
         /**
          * When the user shuffles the order of the pages around, the page list order gets
@@ -149,9 +168,13 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
                 $.getJSON(self.url(), function(course) {
                     var _course = new Models.Course(course);
                     self.course(_course);
-                    if (_course.pages().length > 0) {
+                    /*
+                    It is uncertain whether tinymce or the course models load first. This part below takes care of the
+                    case when the model loads after tinymce.
+                     */
+                    if (_course.pages().length > 0 && tinyMCE.editors.length > 0) {
                         //TODO: find a tinymce ready event to attach the following command to.
-                        //self.currentPageIdx(0);
+                        self.currentPageIdx(0);
                     }
                 });
             }
