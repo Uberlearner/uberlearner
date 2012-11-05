@@ -1,6 +1,7 @@
 define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'], function(ko, Models) {
     var ManageCourseViewModel = function() {
         var self = this;
+        var editorHasLoaded = false; //this is just an internal flag
         self.course = ko.observable(new Models.Course({}));
         self._url = ko.observable();
         self.url = ko.computed({
@@ -109,28 +110,19 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
             }
         });
 
-        self.tinymceOptions = {
-            theme_advanced_resizing: true,
-            plugins: "fullscreen,spellchecker,advhr,insertdatetime",
-            theme_advanced_buttons1: "newdocument, |, bold, italic, underline, |, justifyleft, justifycenter, justifyright, fontselect, fontsizeselect, formatselect",
-            theme_advanced_buttons2: "cut, copy, paste, |, bullist, numlist, |, outdent, indent, |, undo, redo, |, link, unlink, anchor, image, |, code, preview, |, forecolor, backcolor, |, fullscreen",
-            theme_advanced_buttons3: "spellchecker, advhr, removeformat, |, sub, sup, |, charmap, emotions, |, insertdate",
-            theme_advanced_toolbar_location: "top",
-            theme_advanced_toolbar_align: "left",
-            theme_advanced_statusbar_location: "bottom",
-            theme_advanced_resizing: true,
-            width: "100%",
-            height: "500",
-            /**
-             * It is uncertain whether tinymce or the course model will load first. This function takes care of the
-             * case where tinymce loades after the course model.
-             */
-            oninit: function() {
-                if(self.course().pages().length > 0) {
-                    self.currentPageIdx(0);
-                }
+        self.ckeditorOptions = {
+            customConfig: '/static/uberlearner/js/main/ckeditorCustomConfig.js'
+        };
+
+        self.ckeditorOnInit = function() {
+            editorHasLoaded = true;
+
+            //this part will only be useful if the _course.pages() load before the wysiwyg instance
+            if (self.course().pages().length > 0) {
+                self.currentPageIdx(0);
             }
         };
+
         /**
          * When the user shuffles the order of the pages around, the page list order gets
          * saved to the server using this method.
@@ -169,11 +161,10 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
                     var _course = new Models.Course(course);
                     self.course(_course);
                     /*
-                    It is uncertain whether tinymce or the course models load first. This part below takes care of the
-                    case when the model loads after tinymce.
+                    It is uncertain whether the editor or the course models load first. This part below takes care of the
+                    case when the model loads after the editor.
                      */
-                    if (_course.pages().length > 0 && tinyMCE.editors.length > 0) {
-                        //TODO: find a tinymce ready event to attach the following command to.
+                    if (_course.pages().length > 0 && editorHasLoaded) {
                         self.currentPageIdx(0);
                     }
                 });

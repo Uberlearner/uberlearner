@@ -171,13 +171,6 @@ LOGGING = {
     }
 }
 
-# Over-ride some of this behavious using settings_local.py
-try:
-    from uberlearner.settings_local import *
-except ImportError:
-    # settings_local.py has not been defined. That is all right.
-    pass
-
 # Email server settings
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django_ses.SESBackend'
@@ -233,3 +226,11 @@ THUMBNAIL_ALIASES = {
         }
     }
 }
+
+# Over-ride some of this behavious using settings_local.py
+try:
+    from uberlearner.settings_local import *
+except ImportError:
+    # settings_local.py has not been defined. That is all right.
+    pass
+

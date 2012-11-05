@@ -77,7 +77,10 @@
                     <label for="page-title">Page title: </label>
                     <input type="text" id="page-title" placeholder="Please make it relevant to the page content"
                            data-bind="value: currentPage() && currentPage().title"/><br><br>
-                    <textarea class="tinymce" data-bind="tinymce: currentHtml, tinymceOptions: tinymceOptions"></textarea>
+
+                    {% comment %}THE WYSIWYG EDITOR{% endcomment %}
+                    <textarea class="editor" data-bind="ckeditor: currentHtml, ckeditorOptions: ckeditorOptions, ckeditorOnInit: ckeditorOnInit"></textarea>
+
                 </div>
                 {% comment %}Div that is visible if there are no pages in the course.{% endcomment %}
                 <div class="span9" data-bind="visible: !course().pages().length">
