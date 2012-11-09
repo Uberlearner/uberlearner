@@ -15,8 +15,9 @@ CKEDITOR.editorConfig = function( config )
         { name: 'document', items: [ 'Source' ] },
         // '/',
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule', 'SpecialChar','PageBreak'] },
+        { name: 'insert', items : [ 'Image', 'Table','HorizontalRule', 'SpecialChar','PageBreak'] },
         { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] }
-    ],
-    config.height = '400px'
+    ];
+    config.height = '400px';
+    config.filebrowserImageBrowseUrl = '/';
 };
