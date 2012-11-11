@@ -7,8 +7,8 @@ local_settings.py
 
 # since this project uses less, the css files are merely the result of 
 # the compilation of the less files. Therefore, the css files will not
-# be committed.
-*.css
+# be committed in the uberlearner/static/lib/bootstrap directory.
+uberlearner/static/lib/bootstrap/css/*.css
 
 # the static files collected by the collectstatic utility have no business
 # getting committed to the repository. Hence all contents of this directory
