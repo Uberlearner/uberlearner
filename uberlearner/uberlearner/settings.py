@@ -1,6 +1,6 @@
 from os.path import join, abspath, dirname
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = abspath(join(dirname(__file__), '..'))
@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'courses',
     'courses.uberwidgets',
     'courses.uberwidgets.text',
+    'filestorage',
     'south',
 )
 
@@ -226,6 +227,7 @@ THUMBNAIL_ALIASES = {
         }
     }
 }
+THUMBNAIL_SUBDIR = 'thumbnails'
 
 # Over-ride some of this behavious using settings_local.py
 try:

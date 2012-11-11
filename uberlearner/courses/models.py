@@ -1,6 +1,4 @@
 from django.db.models import F
-from easy_thumbnails.signals import saved_file
-from easy_thumbnails.signal_handlers import generate_aliases
 from easy_thumbnails.fields import ThumbnailerImageField
 import os
 from django.db import models
@@ -71,14 +69,11 @@ def course_image_path(instance=None, filename=None):
     """
     This method is used to generate the path for the course image by the model.
     """
-    path_segments = [instance.instructor.username]
     if not filename:
         #the file already exists in the database
         filename = instance.photo.name
-    prefix, ext = os.path.splitext(os.path.basename(filename))
-    path_segments.append(prefix)
-    path_segments.append('original'+ext)
-    return os.path.join(*path_segments)
+    path = os.path.join(instance.instructor.username, filename)
+    return path
 
 class Course(TimestampedModel):
     """
@@ -98,7 +93,7 @@ class Course(TimestampedModel):
         storage=S3BotoStorage(location='development/courses' if settings.DEBUG else 'courses'),
         thumbnail_storage=S3BotoStorage(
             location='development/courses' if settings.DEBUG else 'courses',
-            reduced_redundancy=True
+            reduced_redundancy=True #this saves money!
         ),
         null=True,
         blank=True
@@ -197,4 +192,3 @@ class Page(TimestampedModel):
 
 post_save.connect(Instructor.make_user_instructor, sender=User)
 post_save.connect(Enrollment.increment_course_popularity, sender=Enrollment)
-saved_file.connect(generate_aliases) #to pre-generate the thumbnails
