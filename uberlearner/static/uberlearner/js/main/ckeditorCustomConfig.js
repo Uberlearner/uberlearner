@@ -19,5 +19,6 @@ CKEDITOR.editorConfig = function( config )
         { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] }
     ];
     config.height = '400px';
-    config.filebrowserImageBrowseUrl = '/filestorage/browse';
+    config.filebrowserImageBrowseUrl = '/filestorage/browse/';
+    config.filebrowserUploadUrl = '/filestorage/upload/';
 };

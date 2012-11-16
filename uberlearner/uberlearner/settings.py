@@ -229,6 +229,8 @@ THUMBNAIL_ALIASES = {
 }
 THUMBNAIL_SUBDIR = 'thumbnails'
 
+FILESTORAGE_ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
+
 # Over-ride some of this behavious using settings_local.py
 try:
     from uberlearner.settings_local import *

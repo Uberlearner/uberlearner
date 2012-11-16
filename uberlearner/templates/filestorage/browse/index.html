@@ -1,1 +1,33 @@
-{{ images }}
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block body %}
+<div class="container">
+    <div id="gallery" class="content row">
+        <div id="thumbs" class="span6">
+            <ul class="thumbs noscript thumbnails">
+                {% for img_urls in images %}
+                    <li class="span2">
+                        <a class="thumb thumbnail" href="{{ img_urls.original }}">
+                            <img src="{{ img_urls.thumbnail }}" alt="{{ img_urls.original }}" />
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="slideshow-container span5 offset1">
+            <div class="row">
+                <div id="loading" class="loader span1 offset4"></div>
+            </div>
+            <div class="row">
+                <div id="controls" class="controls span5"></div>
+            </div>
+            <div class="row">
+                <ul class="thumbnails">
+                    <li class="thumbnail" id="slideshow"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.base import View, TemplateView
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
-from django.views.generic.list import ListView
 import os
 
 # Base folder containing the js files for the courses app
