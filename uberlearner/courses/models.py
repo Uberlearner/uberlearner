@@ -90,10 +90,14 @@ class Course(TimestampedModel):
     # TODO:
     photo = ThumbnailerImageField(
         upload_to=course_image_path,
-        storage=S3BotoStorage(location='development/courses' if settings.DEBUG else 'courses'),
+        storage=S3BotoStorage(
+            location='development/courses' if settings.DEBUG else 'courses',
+            querystring_auth=False
+        ),
         thumbnail_storage=S3BotoStorage(
             location='development/courses' if settings.DEBUG else 'courses',
-            reduced_redundancy=True #this saves money!
+            reduced_redundancy=True, #this saves money!,
+            querystring_auth=False
         ),
         null=True,
         blank=True

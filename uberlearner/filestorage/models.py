@@ -30,11 +30,13 @@ class UberPhoto(models.Model):
     image = ThumbnailerImageField(
         upload_to=uberphoto_image_path_generator,
         storage=S3BotoStorage(
-            location='development/filestorage' if settings.DEBUG else 'filestorage'
+            location='development/filestorage' if settings.DEBUG else 'filestorage',
+            querystring_auth=False
         ),
         thumbnail_storage=S3BotoStorage(
             location='development/filestorage' if settings.DEBUG else 'filestorage',
-            reduced_redundancy=True #saves money on S3!
+            reduced_redundancy=True, #saves money on S3!
+            querystring_auth=False
         )
     )
 
@@ -51,3 +53,6 @@ class UberPhoto(models.Model):
             'thumbnail': thumbnail.url,
             'original': self.image.url
         }
+
+    def __unicode__(self):
+        return self.image.url
