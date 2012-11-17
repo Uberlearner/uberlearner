@@ -2,30 +2,21 @@
 {% load thumbnail %}
 
 {% block body %}
-<div class="container">
-    <div id="gallery" class="content row">
-        <div id="thumbs" class="span6">
-            <ul class="thumbs noscript thumbnails">
-                {% for img_urls in images %}
-                    <li class="span2">
-                        <a class="thumb thumbnail" href="{{ img_urls.original }}">
-                            <img src="{{ img_urls.thumbnail }}" alt="{{ img_urls.original }}" />
-                        </a>
-                    </li>
-                {% endfor %}
+<div class="container" data-bind="urlList: { imageData: {{ images }} }">
+    <div class="row">
+        <div class="span6">
+            <ul class="thumbnails" data-bind="foreach: imageData">
+                <li class="thumbnail span2">
+                    <img data-bind="attr: { src: thumbnail }, click: function() {$root.currentImageData($data)}" />
+                </li>
             </ul>
         </div>
-        <div class="slideshow-container span5 offset1">
+        <div class="span6">
             <div class="row">
-                <div id="loading" class="loader span1 offset4"></div>
+                <div id="controls"></div>
             </div>
             <div class="row">
-                <div id="controls" class="controls span5"></div>
-            </div>
-            <div class="row">
-                <ul class="thumbnails">
-                    <li class="thumbnail" id="slideshow"></li>
-                </ul>
+                <img data-bind="attr: { src: currentImageData() ? currentImageData().original : '' }, click: selectImage" />
             </div>
         </div>
     </div>
