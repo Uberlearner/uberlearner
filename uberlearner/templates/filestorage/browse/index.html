@@ -21,7 +21,11 @@
                 <div id="controls"></div>
             </div>
             <div class="row">
-                <img data-bind="attr: { src: currentImage() ? currentImage().original : '' }, click: selectImage" />
+                <img class="thumbnail" data-bind="attr: { src: currentImage() ? currentImage().original : '' }, click: selectImage" />
+            </div>
+            <div class="row">
+                <br/>
+                <a href="javascript: void(0);" data-bind="click: selectImage" class="btn btn-success">Select Image</a>
             </div>
         </div>
     </div>
