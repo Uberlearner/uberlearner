@@ -2,17 +2,17 @@
 {% load thumbnail %}
 
 {% block body %}
-<div class="container" data-bind="urlList: { imageData: {{ images }} }">
+<div class="container" data-bind="urlList: { imageUrls: {{ images }} }">
     <div class="row">
         <div class="span6">
-            <ul class="thumbnails" data-bind="foreach: currentPageImages">
+            <ul class="thumbnails" data-bind="foreach: currentPage().photos">
                 <li class="thumbnail span1">
-                    <img data-bind="attr: { src: thumbnail }, click: function() {$root.currentImage($data)}" />
+                    <img data-bind="attr: { src: thumbnailUrl }, click: function() {$root.currentImage($data)}" />
                 </li>
             </ul>
-            <div class="pagination" data-bind="visible: visiblePageNames().length > 1">
-                <ul data-bind="foreach: visiblePageNames">
-                    <li data-bind="click: action, css: {active: isActive, disabled: !isEnabled}"><a href="#" data-bind="text: title"></a></li>
+            <div class="pagination" data-bind="visible: visiblePages().length > 1">
+                <ul data-bind="foreach: visiblePages">
+                    <li data-bind="click: action, css: {active: isActive, disabled: !isEnabled()}"><a href="#" data-bind="text: title"></a></li>
                 </ul>
             </div>
         </div>
@@ -21,7 +21,7 @@
                 <div id="controls"></div>
             </div>
             <div class="row">
-                <img class="thumbnail" data-bind="attr: { src: currentImage() ? currentImage().original : '' }, click: selectImage" />
+                <img class="thumbnail" data-bind="attr: { src: currentImage() ? currentImage().originalUrl : '' }, click: selectImage" />
             </div>
             <div class="row">
                 <br/>
