@@ -1,6 +1,7 @@
 define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'], function(ko, Models) {
     var ManageCourseViewModel = function() {
         var self = this;
+        var editorHasLoaded = false; //this is just an internal flag
         self.course = ko.observable(new Models.Course({}));
         self._url = ko.observable();
         self.url = ko.computed({
@@ -109,9 +110,19 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
             }
         });
 
-        self.tinymceOptions = {
-            theme_advanced_resizing: true
+        self.ckeditorOptions = {
+            customConfig: '/static/uberlearner/js/main/ckeditorCustomConfig.js'
         };
+
+        self.ckeditorOnInit = function() {
+            editorHasLoaded = true;
+
+            //this part will only be useful if the _course.pages() load before the wysiwyg instance
+            if (self.course().pages().length > 0) {
+                self.currentPageIdx(0);
+            }
+        };
+
         /**
          * When the user shuffles the order of the pages around, the page list order gets
          * saved to the server using this method.
@@ -149,9 +160,12 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
                 $.getJSON(self.url(), function(course) {
                     var _course = new Models.Course(course);
                     self.course(_course);
-                    if (_course.pages().length > 0) {
-                        //TODO: find a tinymce ready event to attach the following command to.
-                        //self.currentPageIdx(0);
+                    /*
+                    It is uncertain whether the editor or the course models load first. This part below takes care of the
+                    case when the model loads after the editor.
+                     */
+                    if (_course.pages().length > 0 && editorHasLoaded) {
+                        self.currentPageIdx(0);
                     }
                 });
             }

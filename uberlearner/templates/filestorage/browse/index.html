@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block body %}
+<div class="container" data-bind="urlList: { imageUrls: {{ images }} }">
+    <div class="row">
+        <div class="span6">
+            <ul class="thumbnails" data-bind="foreach: currentPage().photos">
+                <li class="thumbnail span1">
+                    <img data-bind="attr: { src: thumbnailUrl }, click: function() {$root.currentImage($data)}" />
+                </li>
+            </ul>
+            <div class="pagination" data-bind="visible: visiblePages().length > 1">
+                <ul data-bind="foreach: visiblePages">
+                    <li data-bind="click: action, css: {active: isActive, disabled: !isEnabled()}"><a href="#" data-bind="text: title"></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="row">
+                <div id="controls"></div>
+            </div>
+            <div class="row">
+                <img class="thumbnail" data-bind="attr: { src: currentImage() ? currentImage().originalUrl : '' }, click: selectImage" />
+            </div>
+            <div class="row">
+                <br/>
+                <a href="javascript: void(0);" data-bind="click: selectImage" class="btn btn-success">Select Image</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}<img data-bind="attr: { src: currentImage() ? currentImage().original : '' }, click: selectImage" />

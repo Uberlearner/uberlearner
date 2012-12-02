@@ -42,18 +42,14 @@
                   deps: ['jquery'],
                   exports: 'bootstrap'
               },
-              'tinymce': {
-                  deps: ['jquery'],
-                  exports: 'tinymce'
-              },
-              'jquery_tinymce': {
-                  deps: ['jquery'],
-                  exports: 'jquery_tinymce'
-              },
               'jquery-ui': ['jquery'],
               'Davis': {
                   deps: ['jquery'],
                   exports: 'Davis'
+              },
+              'jquery_ckeditor': {
+                  deps: ['jquery', 'ckeditor'],
+                  exports: 'jquery_ckeditor'
               }
           },
           paths: {
@@ -76,8 +72,8 @@
               ],
               uberGrid: 'lib/ubergrid/js/uberGrid',
               tinymce: 'lib/tiny_mce/tiny_mce',
-              jquery_tinymce: 'lib/tiny_mce/jquery.tinymce',
-              ko_tinymce: 'lib/knockoutjs/js/ko.tinymce',
+              ckeditor: 'lib/ckeditor/ckeditor',
+              jquery_ckeditor: 'lib/ckeditor/adapters/jquery',
               Davis: 'lib/davisjs/js/davis.min'
           }
       };

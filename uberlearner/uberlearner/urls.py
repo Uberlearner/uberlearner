@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from courses.api import CourseResource, UserResource, PageResource
 from tastypie.api import Api
+
 admin.autodiscover()
 
 v1_api = Api(api_name='v1')
@@ -25,6 +26,7 @@ urlpatterns = patterns('',
     url(r'^courses/', include('courses.urls'), name="courses"),
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^filestorage/', include('filestorage.urls'), name='filestorage'),
 )
 
 if settings.DEBUG:

@@ -56,27 +56,43 @@
     {% endcomment %}
         <div class="span9" id="page-content">
             <div class="row" data-bind="slideVisible: !isPreviewModeOn()">
-                <div class="span9">
+                {% comment %}Div that is visible if there are pages in the course{% endcomment %}
+                <div class="span9" data-bind="visible: course().pages().length">
                     <span class="pull-right">
-                    <button class="btn btn-primary"
-                            href="javascript: void(0);"
-                            data-bind="click: function(){currentPage() && currentPage().save()},
-                                       visible: currentPageIdx() != -1,
-                                       disable: currentPage() && currentPage().isSaveButtonDisabled,
-                                       text: currentPage() && currentPage().saveButtonText()">
-                    </button>
-                    <button class="btn btn-success"
-                            href="javascript: void(0);"
-                            data-bind="visible: currentPageIdx() != -1,
-                                       click: togglePreviewMode">
-                        Preview
-                    </button>
-                </span>
+                        <button class="btn btn-primary"
+                                href="javascript: void(0);"
+                                data-bind="click: function(){currentPage() && currentPage().save()},
+                                           visible: currentPageIdx() != -1,
+                                           disable: currentPage() && currentPage().isSaveButtonDisabled,
+                                           text: currentPage() && currentPage().saveButtonText()">
+                        </button>
+                        <button class="btn btn-success"
+                                href="javascript: void(0);"
+                                data-bind="visible: currentPageIdx() != -1,
+                                           click: togglePreviewMode">
+                            Preview
+                        </button>
+                    </span>
                     <br>
                     <label for="page-title">Page title: </label>
                     <input type="text" id="page-title" placeholder="Please make it relevant to the page content"
                            data-bind="value: currentPage() && currentPage().title"/><br><br>
-                    <textarea class="tinymce" data-bind="tinymce: currentHtml, tinymceOptions: tinymceOptions"></textarea>
+
+                    {% comment %}THE WYSIWYG EDITOR{% endcomment %}
+                    <textarea class="editor" data-bind="ckeditor: currentHtml, ckeditorOptions: ckeditorOptions, ckeditorOnInit: ckeditorOnInit"></textarea>
+
+                </div>
+                {% comment %}Div that is visible if there are no pages in the course.{% endcomment %}
+                <div class="span9" data-bind="visible: !course().pages().length">
+                    <div class="alert alert-info">
+                        This course currently has no pages. Create a new page using:
+                        <a class="btn btn-success"
+                           href="#page-slug-and-title-modal"
+                           data-toggle="modal"
+                           data-bind="click: function() {$('#page-title-modal').focus();}">
+                            <i class="icon-plus-sign icon-white"></i> Create new page
+                        </a>
+                    </div>
                 </div>
             </div><br>
             <div class="row" data-bind="slideVisible: isPreviewModeOn()">

@@ -9,3 +9,9 @@ input, textarea, select {
 .cursor-movable {
   cursor: move;
 }
+
+//default bootstrap allows hover only for link type
+.thumbnail:hover {
+  border-color: @linkColor;
+  .box-shadow(0 1px 4px rgba(0,105,214,.25));
+}

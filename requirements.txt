@@ -11,3 +11,4 @@ pytz
 -e git+https://github.com/toastdriven/django-tastypie.git#egg=django-tastypie
 django-storages
 easy-thumbnails
+python-magic>=0.4.3

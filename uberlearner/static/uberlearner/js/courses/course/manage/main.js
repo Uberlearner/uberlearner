@@ -2,9 +2,8 @@ require([
     'ko',
     'jquery',
     'uberlearner/js/courses/course/manage/viewmodel',
-    'tinymce',
-    'ko_tinymce',
-    'jquery_tinymce',
+    'ckeditor',
+    'uberlearner/js/utils/bindings/ko.ckeditor',
     'bootstrap',
     'uberlearner/js/utils/bindings/url-list'
 ], function(ko, $, ManageCourseViewModel) {

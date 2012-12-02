@@ -1,6 +1,6 @@
 from os.path import join, abspath, dirname
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = abspath(join(dirname(__file__), '..'))
@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'courses',
     'courses.uberwidgets',
     'courses.uberwidgets.text',
+    'filestorage',
     'south',
 )
 
@@ -170,13 +171,6 @@ LOGGING = {
         },
     }
 }
-
-# Over-ride some of this behavious using settings_local.py
-try:
-    from uberlearner.settings_local import *
-except ImportError:
-    # settings_local.py has not been defined. That is all right.
-    pass
 
 # Email server settings
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -233,3 +227,14 @@ THUMBNAIL_ALIASES = {
         }
     }
 }
+THUMBNAIL_SUBDIR = 'thumbnails'
+
+FILESTORAGE_ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
+
+# Over-ride some of this behavious using settings_local.py
+try:
+    from uberlearner.settings_local import *
+except ImportError:
+    # settings_local.py has not been defined. That is all right.
+    pass
+
