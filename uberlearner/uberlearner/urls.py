@@ -14,7 +14,7 @@ v1_api.register(PageResource())
 
 urlpatterns = patterns('',
     (r'^$', direct_to_template, {
-        'template': 'under-construction.html',
+        'template': 'index.html',
         'extra_context': {
             'main_js_module': 'uberlearner/js/main/under-construction'
         }

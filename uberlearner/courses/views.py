@@ -64,7 +64,10 @@ class CourseView(DetailView):
         context_data = super(CourseView, self).get_context_data(**kwargs)
         # by this point course must have been added to the context_data and can be used to get the enrollment object
         try:
-            enrollment = context_data['course'].enrollments.filter(student=self.request.user).get()
+            if self.request.user.is_authenticated():
+                enrollment = context_data['course'].enrollments.filter(student=self.request.user).get()
+            else:
+                enrollment = None
         except ObjectDoesNotExist:
             enrollment = None
         context_data['enrollment'] = enrollment
