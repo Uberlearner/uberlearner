@@ -1,0 +1,40 @@
+<div class="well login-form well-large">
+    <h2>Login</h2>
+
+    <hr />
+
+    <form class="form" method="POST" action="{% url account_login %}">
+        {{ form.non_field_errors }}
+        <fieldset>
+            {% csrf_token %}
+            <div class="clearfix">
+                {{ form.login.errors }}
+                {{ form.login }}
+            </div>
+            <div class="clearfix">
+                {{ form.password.errors }}
+                {% comment %}
+                Ideally, it should be the following, but the placeholder text disappears. TODO: Fix the problem.
+                {{ form.password }}
+                {% endcomment %}
+                <input type="password" name="password" placeholder="Password" id="id_password"/>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        {{ form.remember }}
+                        {{ form.remember.label }}
+                    </label>
+                </div>
+            </div>
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+
+            <hr />
+
+            <button class="btn btn-primary" type="submit">Sign In</button>
+            <a href="{% url account_reset_password %}">Forgot Password?</a>
+        </fieldset>
+    </form>
+</div>

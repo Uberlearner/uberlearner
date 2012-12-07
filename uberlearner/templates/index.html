@@ -1,0 +1,48 @@
+{% extends 'templated-base.html' %}
+
+{% block hero %}
+<div class="row">
+    <div class="span8">
+        <iframe width="740" height="416" src="http://www.youtube.com/embed/jVCV7hKQcl8/?fs=0&rel=0" frameborder="1"></iframe>
+    </div>
+    <div class="span4">
+        {% include 'accounts/login/snippets/form.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<hr/>
+<div class="row">
+    <div class="span4 offset1">
+        <div class="row">
+            <img src="{{ STATIC_URL }}uberlearner/img/landing-page/learn.png" />
+        </div><br/>
+        <div class="row">
+            <h3>Courses of all kinds</h3>
+            <p>
+                ÜberLearner doesn't restrict the topics the instructors teach. This means that you can find a wide
+                variety of courses on ÜberLearner.
+            </p>
+            <h3>Free courses</h3>
+            <p>
+                Currently <b>all the courses on ÜberLearner are free!</b> Make use of this limited-offer by signing up now.
+            </p>
+        </div>
+    </div>
+    <div class="span4 offset2">
+        <div class="row">
+            <img src="{{ STATIC_URL }}uberlearner/img/landing-page/teach.png" />
+        </div><br/>
+        <div class="row">
+            <h3>Free hosting</h3>
+            <p>ÜberLearner offers free hosting for your courses along with tools to help you create them.</p>
+            <h3>Earn revenue (coming soon!)</h3>
+            <p>
+                ÜberLearner offers you the chance to make money from the advertisements on your course.
+                And as a bonus for the early adopters, <b>100% of the ad-revenue will be given to the instructor</b>.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

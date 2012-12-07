@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from courses.api import CourseResource, UserResource, PageResource
 from tastypie.api import Api
+from accounts import views as accounts_views
 
 admin.autodiscover()
 
@@ -13,12 +14,10 @@ v1_api.register(UserResource())
 v1_api.register(PageResource())
 
 urlpatterns = patterns('',
-    (r'^$', direct_to_template, {
-        'template': 'under-construction.html',
-        'extra_context': {
-            'main_js_module': 'uberlearner/js/main/under-construction'
-        }
-    }, 'home'),
+    url(r"^$", accounts_views.login, {
+        'template_name': 'index.html',
+        'verification_sent_template': 'allauth/account/verification_sent.html',
+        }, name="home"),
     (r'^api/', include(v1_api.urls)),
     (r'^about/$', direct_to_template, {'template': 'about.html'}, 'about'),
     (r'^contact/$', direct_to_template, {'template': 'under-construction.html'}, 'contact'),
