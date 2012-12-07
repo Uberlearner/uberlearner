@@ -23,14 +23,14 @@ class CourseCreate(CreateView):
     model = Course
     form_class = CourseForm
     template_name = 'courses/course/create/index.html'
-    
+
     def form_valid(self, form):
         form.instance.instructor = self.request.user
         return super(CourseCreate, self).form_valid(form)
-    
+
     def get_success_url(self):
         return reverse('course.edit', kwargs={'username': self.object.instructor.username, 'slug': self.object.slug})
-    
+
 class CourseView(DetailView):
     """
     This view is the one that the user sees on clicking the course link. It gives the user an overview
@@ -40,7 +40,7 @@ class CourseView(DetailView):
     model = Course
     object_name = 'course'
     template_name = 'courses/course/read/detail/index.html'
-    
+
     def get_object(self, queryset=None):
         instructor = get_object_or_404(User, username=self.kwargs['username'])
         try:

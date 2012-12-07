@@ -24,6 +24,18 @@ def login(request, **kwargs):
     else:
         return allauth.account.views.login(request, **kwargs)
 
+def signup(request, **kwargs):
+    """
+    This view is an envelope for the default signup view of the allauth.account.
+    In case the user is already authenticated, this view redirects the user
+    to the user-profile page. If not, the regular actions are taken to log
+    the user into the system.
+    """
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('account_user_profile'))
+    else:
+        return allauth.account.views.signup(request, **kwargs)
+
 def user_profile_with_username(request, username='', user=None):
     if not user:
         user = get_object_or_404(User, username=username)

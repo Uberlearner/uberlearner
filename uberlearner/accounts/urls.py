@@ -7,13 +7,13 @@ from django.core.urlresolvers import reverse_lazy
 
 urlpatterns = patterns("",
     url(r"^email/$", allauth_views.email, name="account_email"),
-    url(r"^signup/$", allauth_views.signup, {
-        'template_name': 'allauth/account/signup.html',
+    url(r"^signup/$", accounts_views.signup, {
+        'template_name': 'accounts/signup/index.html',
         'verification_sent_template': 'allauth/account/verification_sent.html',
         'form_class': CaptchaSignupForm,
     }, name="account_signup"),
     url(r"^login/$", accounts_views.login, {
-        'template_name': 'allauth/account/login.html',
+        'template_name': 'accounts/login/index.html',
         'verification_sent_template': 'allauth/account/verification_sent.html',        
     }, name="account_login"),
     url(r"^password/change/$", allauth_views.password_change, name="account_change_password"),

@@ -1,0 +1,24 @@
+{% extends 'templated-base.html' %}
+{% load bootstrap_toolkit %}
+
+{% block content %}
+    <div class="row">
+        <div class="span6 offset3 well">
+            <h1>Sign Up</h1>
+            <p>Already have an account? Then please <a href="{{ login_url }}">sign in</a>.</p>
+
+            <hr />
+
+            <form class="form-horizontal" id="signup_form" method="post" action="{% url account_signup %}">
+                {% csrf_token %}
+                {{ form|as_bootstrap:"horizontal" }}
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Sign Up &raquo;</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
