@@ -1,0 +1,111 @@
+require([
+    'jquery',
+    'ko',
+    'uberlearner/js/courses/models',
+    'text!uberlearner/js/courses/course/list/templates/courseTile.html',
+    'uberlearner/js/utils/bindings/url-list',
+    'bootstrap',
+    'uberlearner/js/courses/course/list/bindings/isotope'
+], function($, ko, courseModels, courseTileTemplate) {
+    $(function() {
+        var courseListTilesViewModelGenerator = function() {
+            /* Variable Declarations */
+            var url = ko.observable();
+            var urlData = {
+                limit: 12,
+                offset: 0
+            };
+            var courses = ko.observableArray([]);
+            var isotope = ko.observable();
+            var loading = ko.observable(false);
+
+            /* Helper methods */
+            var getDataFromServer = function() {
+                $.ajax({
+                    url: url(),
+                    data: urlData,
+                    beforeSend: function(jqXHR, settings) {
+                        loading(true);
+                    },
+                    success: function(data, textStatus, jqXHR) {
+                        $.each($.map(data.objects, function(course, index) {
+                            return new courseModels.Course(course);
+                        }), function(index, course) {
+                            courses.push(course);
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log("response text: " + jqXHR.responseText);
+                        console.log("textStatus: " + textStatus);
+                        console.log("error: " + errorThrown);
+                    },
+                    complete: function() {
+                        loading(false);
+                    }
+                });
+            };
+
+            /* Subscriptions and events */
+            url.subscribe(function(newUrl) {
+                getDataFromServer();
+            });
+            var courseAdded = function(courseTile) {
+                if (courseTile && courseTile.nodeType === 1) {
+                    $('#tile-container').isotope('appended', $(courseTile), function() {
+                        $('#tile-container').isotope('reLayout');
+                    });
+                }
+            };
+
+            /* Controller methods */
+            var loadMoreCourses = function() {
+                urlData.offset += urlData.limit;
+                getDataFromServer();
+            };
+            var sortAsPopularFirst = function() {
+                isotope({
+                    sortBy: 'popularity'
+                });
+            };
+            var sortAsNewestFirst = function() {
+                isotope({
+                    sortBy: 'dateCreated'
+                });
+            };
+
+            /* Initialize */
+            var _init = function() {
+                isotope({
+                    layoutMode: 'masonry',
+                    itemSelector: '.course-tile',
+                    animationEngine: 'best-available',
+                    getSortData: {
+                        popularity: function($elem) {
+                            var course = ko.dataFor($elem.context);
+                            return course.popularity;
+                        },
+                        dateCreated: function($elem) {
+                            var course = ko.dataFor($elem.context);
+                            return course.creationTimePrecise;
+                        }
+                    }
+                });
+            }();
+
+            /* Return publicly accessible stuff */
+            return {
+                url: url,
+                courses: courses,
+                courseAdded: courseAdded,
+                isotope: isotope,
+                loadMoreCourses: loadMoreCourses,
+                loading: loading,
+                sortAsPopularFirst: sortAsPopularFirst,
+                sortAsNewestFirst: sortAsNewestFirst
+            };
+        };
+        var courseListTilesViewModel = courseListTilesViewModelGenerator();
+        $('body').append(courseTileTemplate); //add the template to the html to make it accessible by the template binding
+        ko.applyBindings(courseListTilesViewModel);
+    });
+});

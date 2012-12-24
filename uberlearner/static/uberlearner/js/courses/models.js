@@ -158,6 +158,10 @@ define(['ko'], function(ko) {
         this.lastLogin = data.lastLogin;
         this.resourceUri = data.resourceUri;
         this.username = data.username;
+
+        this.getFullName = function() {
+            return this.firstName + ' ' + this.lastName;
+        };
     }
 
     Models.Course = function (data) {
@@ -181,6 +185,17 @@ define(['ko'], function(ko) {
         self.resourceUri = data.resourceUri;
         self.slug = data.slug;
         self.title = data.title;
+        self.photo = data.photo;
+        self.thumbnail = data.thumbnail || '';
+        self.creationTimePrecise = data.creationTimePrecise || '';
+
+        self.truncatedDescription = function(length) {
+            if (self.description.length > length) {
+                return self.description.substring(0, length) + '...';
+            } else {
+                return self.description;
+            }
+        }
     }
 
     return Models;

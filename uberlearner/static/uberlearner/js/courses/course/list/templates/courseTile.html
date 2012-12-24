@@ -1,0 +1,13 @@
+<script type="text/html" id="course_tile">
+    <div class="course-tile" data-bind="">
+        <img data-bind="attr: { src: thumbnail }" class="course-tile-image"/>
+        <a data-bind="attr: { href: absoluteUrl }">
+            <h3 data-bind="text: title" class="course-tile-title"></h3>
+        </a>
+
+        <a data-bind="attr: { href: instructor.absoluteUrl }">
+            <h5 data-bind="text: '- ' + instructor.getFullName()" class="course-tile-instructor"></h5>
+        </a>
+        <p data-bind="text: truncatedDescription(150)" class="course-tile-description"></p>
+    </div>
+</script>

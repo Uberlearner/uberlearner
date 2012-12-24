@@ -1,0 +1,29 @@
+{% extends 'templated-base.html' %}
+
+{% block content %}
+<div class="course-tile-sort-options">
+    <div class="btn-group">
+        <button class="btn btn-inverse" data-bind="click: sortAsPopularFirst">Most popular first</button>
+        <button class="btn btn-inverse" data-bind="click: sortAsNewestFirst">Newest first</button>
+    </div>
+</div>
+<div id="tile-container"
+     class="course-tile-container"
+     data-bind="
+    urlList: {
+        url: '/api/v1/courses/'
+    }, isotope: isotope
+    , template: {
+        name: 'course_tile',
+        foreach: courses,
+        afterAdd: courseAdded
+    }">
+
+</div>
+<a href="javascript: void(0);"
+   data-bind="click: loadMoreCourses,
+       text: loading() ? 'LOADING...' : 'LOAD MORE COURSES',
+       attr: { disabled: loading }"
+   class="btn btn-primary span6 offset3">LOADING...</a>
+<br />
+{% endblock %}

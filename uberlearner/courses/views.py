@@ -9,15 +9,7 @@ from django.views.generic.base import View, TemplateView
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 import os
-
-# Base folder containing the js files for the courses app
-JS_BASE_DIR = 'uberlearner/js/courses'
-
-# Base folder containing the js files for the course model in the courses app
-JS_BASE_DIR_COURSE = os.path.join(JS_BASE_DIR, 'course')
-
-# Base folder containing the js files for the page model in the courses app
-JS_BASE_DIR_PAGE = os.path.join(JS_BASE_DIR, 'page')
+from courses import JS_BASE_DIR, JS_BASE_DIR_COURSE, JS_BASE_DIR_PAGE
 
 class CourseCreate(CreateView):
     model = Course
