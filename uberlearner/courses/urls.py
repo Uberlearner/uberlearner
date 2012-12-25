@@ -1,8 +1,20 @@
 from django.conf.urls import patterns, url
+from django.views.generic.simple import direct_to_template
 from courses.views import CourseCreate, CourseView, CourseEdit, CourseManage, UserCourses, CourseList, CoursePage
+from courses import JS_BASE_DIR_COURSE
+import os
 
 urlpatterns = patterns('',
     url(r'^$', CourseList.as_view(), name='course.list'),
+    url(r'^isotope/$',
+        direct_to_template, {
+            'template': 'courses/course/read/list/public/isotope.html',
+            'extra_context': {
+                'main_js_module': os.path.join(JS_BASE_DIR_COURSE, 'list', 'public.js'),
+            }
+        },
+        'course.list.isotope'
+    ),
     url(r'^create/$', CourseCreate.as_view(), name='course.create'),
 
     url(r'^(?P<username>[0-9a-zA-Z@.+_-]+)/$', UserCourses.as_view(), name='course.by_user'),

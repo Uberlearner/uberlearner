@@ -1,5 +1,4 @@
 from django.conf.urls.defaults import patterns, include, url
-from django.views.generic.simple import direct_to_template
 from django.conf import settings
 from django.contrib import admin
 from courses.api import CourseResource, UserResource, PageResource
@@ -17,8 +16,8 @@ urlpatterns = patterns('',
     url(r"^$", accounts_views.login, {
         'template_name': 'index.html',
         'verification_sent_template': 'allauth/account/verification_sent.html',
-        }, name="home"),
-    (r'^api/', include(v1_api.urls)),
+    }, name="home"),
+    url(r'^api/', include(v1_api.urls)),
     url(r'^accounts/', include('accounts.urls'), name="accounts"),
     url(r'^courses/', include('courses.urls'), name="courses"),
     url(r'^admin/', include(admin.site.urls)),

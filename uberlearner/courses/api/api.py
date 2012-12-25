@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
+from easy_thumbnails.files import get_thumbnailer
 from tastypie.authentication import Authentication
 from tastypie.exceptions import ImmediateHttpResponse, BadRequest
 from tastypie.http import HttpGone, HttpMultipleChoices, HttpNoContent, HttpForbidden
@@ -16,6 +17,7 @@ from courses.models import Course, Instructor, Page, Enrollment
 from django.contrib.auth.models import User              
 from tastypie.constants import ALL_WITH_RELATIONS
 from django.core.urlresolvers import reverse
+import time
 
 class UserResource(ModelResource):
     class Meta:
@@ -139,7 +141,7 @@ class CourseResource(ModelResource):
         }
         serializer = UberSerializer()
         include_absolute_url = True
-        excludes = ['photo']
+        excludes = []
 
     def prepend_urls(self):
         return [
@@ -213,10 +215,11 @@ class CourseResource(ModelResource):
 
     def dehydrate(self, bundle):
         """
-        Adds a page list uri to the courses object. This is because when a new page is created, a url is needed to
+        1) Adds a page list uri to the courses object. This is because when a new page is created, a url is needed to
         send the post. Technically, this url could be constructed from the urls of the other pages, but that doesn't
         cover the scenario where there are no pages in the course. More importantly, it leaves some flexibility into
         the system.
+        2) Adds the url of the thumbnail version of the photo.
         """
         from uberlearner.urls import v1_api
         if bundle.obj and bundle.data:
@@ -224,4 +227,7 @@ class CourseResource(ModelResource):
                 'resource_name': PageResource._meta.resource_name,
                 'api_name': v1_api.api_name
             })
+            if bundle.obj.photo:
+                bundle.data['thumbnail'] = get_thumbnailer(bundle.obj.photo)['tile'].url
+            bundle.data['creationTimePrecise'] = str(time.mktime(bundle.obj.creation_timestamp.timetuple())*1000)
         return bundle

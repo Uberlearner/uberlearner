@@ -222,7 +222,11 @@ COURSE_PHOTO_THUMB_FORMAT = "JPEG"
 THUMBNAIL_ALIASES = {
     '': {
         'thumbnail': {
-            'size': (200, 200),
+            'size': (260, 189),
+            'crop': 'smart'
+        },
+        'tile': {
+            'size': (313, 227),
             'crop': 'smart'
         }
     }

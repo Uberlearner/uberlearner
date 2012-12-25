@@ -1,6 +1,8 @@
 import sys
 from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
+from django.template.loader import render_to_string
+from emailconfirmation.models import EmailConfirmation, EmailAddress
 from courses.models import *
 from django.contrib.auth.models import User, UserManager
 
@@ -16,20 +18,26 @@ class Command(BaseCommand):
     
     args = '<number of entries to be created>'
     help = 'Creates fake data for the Uberlearner project'
+
+    page_text = render_to_string('insert_fake_data/page.html', {})
             
     def _add_fake_data_to_courses(self, num):
-        # create a pool of 5 instructors
+        # create a pool of instructors
         instructor_data = [
-            {'first_name': 'crack', 'last_name': 'jack', 'username': 'crack-jack'},
-            {'first_name': 'pot', 'last_name': 'head', 'username': 'pot-head'},
-            {'first_name': 'shit', 'last_name': 'head', 'username': 'shit-head'},
+            {'first_name': 'first', 'last_name': 'user', 'username': 'first-user', 'email': 'first@aoeu.com'},
+            {'first_name': 'second', 'last_name': 'user', 'username': 'second-user', 'email': 'second@aoeu.com'},
+            {'first_name': 'third', 'last_name': 'user', 'username': 'third-user', 'email': 'third@aoeu.com'},
+            {'first_name': 'fourth', 'last_name': 'user', 'username': 'fourth-user', 'email': 'fourth@aoeu.com'},
+            {'first_name': 'fifth', 'last_name': 'user', 'username': 'fifth-user', 'email': 'fifth@aoeu.com'},
         ]
         instructors = []
         for instructor_datum in instructor_data:
-            user = User.objects.create_user(instructor_datum['username'], email=None, password="aoeu")
+            user = User.objects.create_user(instructor_datum['username'], email=instructor_datum['email'], password="aoeu")
+            email_address = EmailAddress(user=user, email=instructor_datum['email'], verified=True, primary=True)
             user.first_name = instructor_datum['first_name']
             user.last_name = instructor_datum['last_name']
             user.save()
+            email_address.save()
             instructors.append(user)
             
         for idx in xrange(num):
@@ -37,11 +45,20 @@ class Command(BaseCommand):
                 instructor=instructors[idx % len(instructor_data)], 
                 title='sample title ' + str(idx),
                 slug='sample-title-' + str(idx),
-                description='sample description ' + str(idx),
+                description=('sample description ' + str(idx) + '\t') * 25,
                 is_public = True if idx % 2 == 0 else False,
                 popularity=0
             )
             course.save()
+            self._generate_course_pages(course)
+
+    def _generate_course_pages(self, course):
+        for idx in xrange(7):
+            Page(
+                course=course,
+                title='sample page ' + str(idx),
+                html= self.page_text
+            ).save()
     
     def handle(self, *args, **options):
         courses = int(options['courses'])

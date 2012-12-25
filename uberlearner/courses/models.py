@@ -84,9 +84,9 @@ class Course(TimestampedModel):
     # TEACHING ASSISTANTS AND TRANSLATORS WILL BE IMPLEMENTED LATER
     # teaching_assistants = models.ManyToManyField(Instructor)
     # translators = models.ManyToManyField(Translator)
-    title = models.CharField(max_length=50, help_text="A slug is a URL friendly name \
+    title = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50, help_text="A slug is a URL friendly name \
         containing only letters, numbers, underscores or hyphens.")
-    slug = models.SlugField(max_length=50)
     # TODO:
     photo = ThumbnailerImageField(
         upload_to=course_image_path,
@@ -99,6 +99,7 @@ class Course(TimestampedModel):
             reduced_redundancy=True, #this saves money!,
             querystring_auth=False
         ),
+        default='defaultCourseImage.png',
         null=True,
         blank=True
     )

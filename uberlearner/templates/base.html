@@ -50,6 +50,10 @@
               'jquery_ckeditor': {
                   deps: ['jquery', 'ckeditor'],
                   exports: 'jquery_ckeditor'
+              },
+              'isotope': {
+                  deps: ['jquery'],
+                  exports: 'isotope'
               }
           },
           paths: {
@@ -71,11 +75,13 @@
                   'http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.1.0',
                   'lib/knockoutjs/js/knockout-2.1.0'
               ],
+              'ko.isotope': 'lib/ko_isotope/js/ko.isotope',
               uberGrid: 'lib/ubergrid/js/uberGrid',
               tinymce: 'lib/tiny_mce/tiny_mce',
               ckeditor: 'lib/ckeditor/ckeditor',
               jquery_ckeditor: 'lib/ckeditor/adapters/jquery',
-              Davis: 'lib/davisjs/js/davis.min'
+              Davis: 'lib/davisjs/js/davis.min',
+              isotope: 'lib/isotope/jquery.isotope.min'
           }
       };
   </script>
