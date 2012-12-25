@@ -44,8 +44,8 @@
 					<li class="{% navactive request 'course.list' %}">
 						<a href={% url course.list %}>Courses</a>
 					</li>
-					<li class="{% navactive request 'about' %}">
-						<a href={% url about %}>About</a>
+					<li class="{% navactive request 'flatpages.about' %}">
+						<a href={% url flatpages.about %}>About</a>
 					</li>
 				</ul>
 			</div>
@@ -72,6 +72,12 @@
 				, licensed under 
 				<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a>.
 			</p>
+            <p>
+                <a href={% url flatpages.about %}>About Us</a> |
+                <a href={% url flatpages.terms %}>Terms of Use</a> |
+                <a href={% url flatpages.privacy %}>Privacy Policy</a> |
+                <a href={% url flatpages.contact-us %}>Contact Us</a>
+            </p>
 		</footer>
 	{% endblock %}
 </div>
