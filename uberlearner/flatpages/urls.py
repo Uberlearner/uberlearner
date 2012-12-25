@@ -25,5 +25,5 @@ urlpatterns = patterns('',
         'extra_context': {
             'main_js_module': 'uberlearner/js/flatpages/base'
         }
-    }, name='flatpages.contact-us'),
+    }, name='flatpages.contact'),
 )
