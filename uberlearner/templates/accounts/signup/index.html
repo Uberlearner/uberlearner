@@ -2,7 +2,7 @@
 {% load bootstrap_toolkit %}
 
 {% block content %}
-    <div class="row">
+    <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="span6 offset3 well">
             <h1>Sign Up</h1>
             <p>Already have an account? Then please <a href="{{ login_url }}">sign in</a>.</p>
@@ -17,6 +17,14 @@
                 {% endif %}
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Sign Up &raquo;</button>
+                    <p>
+                        <h6>
+                            By signing up, you agree to our
+                            <a href={% url flatpages.terms %}>Terms of Use</a>
+                            and
+                            <a href={% url flatpages.privacy %}>Privacy policy</a>
+                        </h6>
+                    </p>
                 </div>
             </form>
         </div>
