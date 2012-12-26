@@ -20,7 +20,7 @@ path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if path not in sys.path:
     sys.path.append(path)
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uberlearner.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uberlearner.settings.deployment")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
