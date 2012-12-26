@@ -20,13 +20,18 @@ path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if path not in sys.path:
     sys.path.append(path)
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uberlearner.settings.deployment")
+os.environ['DJANGO_SETTINGS_MODULE'] = 'uberlearner.settings'
+
+import django.core.handlers.wsgi
+application = django.core.handlers.wsgi.WSGIHandler()
+
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uberlearner.settings.deployment")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
-from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
+#from django.core.wsgi import get_wsgi_application
+#application = get_wsgi_application()
 
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
