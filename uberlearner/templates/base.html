@@ -82,6 +82,15 @@
               jquery_ckeditor: 'lib/ckeditor/adapters/jquery',
               Davis: 'lib/davisjs/js/davis.min',
               isotope: 'lib/isotope/jquery.isotope.min'
+          },
+          config: {
+              {% if not debug %}
+              text: {
+                  useXhr: function (url, protocol, hostname, port) {
+                      return /http:\/\/uberlearner.s3.amazonaws.com\/[0-9a-zA-Z\/]*.html/.test(url);
+                  }
+              }
+              {% endif %}
           }
       };
   </script>

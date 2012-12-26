@@ -3,24 +3,13 @@ from os.path import join, abspath, dirname
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-PROJECT_ROOT = abspath(join(dirname(__file__), '..'))
+PROJECT_ROOT = abspath(join(dirname(__file__), '..', '..'))
 
 ADMINS = (
-    ('Abhin Chhabra', 'chhabra.abhin@gmail.com'),
+    ('Uber Mailman', 'mailman@uberlearner.com'),
 )
 
 MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'uberlearner',
-        'USER': 'uberlearner',
-        'PASSWORD': 'angelshit',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -80,7 +69,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -90,7 +79,7 @@ SECRET_KEY = '%30_ae&amp;ikyk2adxlykhdf4gjo4rfz!t9h(%n!b^06&amp;^u908dmc'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    #'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -113,7 +102,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     join(PROJECT_ROOT, 'templates'),
-#    "/home/abhin/djangoworkspace/uberlearner/uberlearner/templates/",
+    #    "/home/abhin/djangoworkspace/uberlearner/uberlearner/templates/",
 )
 
 INSTALLED_APPS = (
@@ -123,6 +112,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'main',
     'django.contrib.admin',
     'emailconfirmation',
@@ -168,8 +158,8 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-        },
-    }
+            },
+        }
 }
 
 # Email server settings
@@ -201,7 +191,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
     'django.core.context_processors.debug',
     'allauth.context_processors.allauth',
-    'allauth.account.context_processors.account', 
+    'allauth.account.context_processors.account',
 )
 
 INTERNAL_IPS = ('192.168.1.65', '127.0.0.1')
@@ -234,11 +224,3 @@ THUMBNAIL_ALIASES = {
 THUMBNAIL_SUBDIR = 'thumbnails'
 
 FILESTORAGE_ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
-
-# Over-ride some of this behavious using settings_local.py
-try:
-    from uberlearner.settings_local import *
-except ImportError:
-    # settings_local.py has not been defined. That is all right.
-    pass
-
