@@ -73,6 +73,17 @@ require([
                 });
             };
 
+            /* View related methods */
+            var loadMoreButtonText = ko.computed(function() {
+                if (courses().length === 0) {
+                    return "Unfortunately, No courses exist at the moment";
+                } else if (loading()) {
+                    return "LOADING...";
+                } else {
+                    return "LOAD MORE COURSES";
+                }
+            });
+
             /* Initialize */
             var _init = function() {
                 isotope({
@@ -101,7 +112,8 @@ require([
                 loadMoreCourses: loadMoreCourses,
                 loading: loading,
                 sortAsPopularFirst: sortAsPopularFirst,
-                sortAsNewestFirst: sortAsNewestFirst
+                sortAsNewestFirst: sortAsNewestFirst,
+                loadMoreButtonText: loadMoreButtonText
             };
         };
         var courseListTilesViewModel = courseListTilesViewModelGenerator();

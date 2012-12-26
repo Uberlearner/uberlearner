@@ -19,7 +19,11 @@
 	<div class="span2">
 		<ul class="thumbnails">
             <li class="thumbnail">
+                {% if course %}
                 <img src="{{ course.photo|thumbnail_url:'thumbnail' }}"/>
+                {% else %}
+                <img src="{{ STATIC_URL }}uberlearner/img/defaultCourseImage.png"/>
+                {% endif %}
             </li>
 		</ul>
 	</div>

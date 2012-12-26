@@ -5,15 +5,14 @@ from courses import JS_BASE_DIR_COURSE
 import os
 
 urlpatterns = patterns('',
-    url(r'^$', CourseList.as_view(), name='course.list'),
-    url(r'^isotope/$',
+    url(r'^$',
         direct_to_template, {
             'template': 'courses/course/read/list/public/isotope.html',
             'extra_context': {
                 'main_js_module': os.path.join(JS_BASE_DIR_COURSE, 'list', 'public.js'),
             }
         },
-        'course.list.isotope'
+        'course.list'
     ),
     url(r'^create/$', CourseCreate.as_view(), name='course.create'),
 
