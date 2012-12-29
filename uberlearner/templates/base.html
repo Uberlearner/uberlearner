@@ -57,8 +57,6 @@
               }
           },
           paths: {
-              text: 'lib/require/plugins/text/text',
-              css: 'lib/require/plugins/css/css',
               'css.api': 'lib/require/plugins/css/css.api',
               'css.pluginBuilder': 'lib/require/plugins/css/css.pluginBuilder',
               jquery: [
@@ -82,6 +80,12 @@
               jquery_ckeditor: 'lib/ckeditor/adapters/jquery',
               Davis: 'lib/davisjs/js/davis.min',
               isotope: 'lib/isotope/jquery.isotope.min'
+          },
+          map: {
+              '*': {
+                  'css': 'lib/require/plugins/css/css',
+                  'text': 'lib/require/plugins/text/text'
+              }
           },
           config: {
               {% if not debug %}
