@@ -90,6 +90,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'uberlogger.middleware.ExceptionLoggerMiddleware',
 )
 
 ROOT_URLCONF = 'uberlearner.urls'

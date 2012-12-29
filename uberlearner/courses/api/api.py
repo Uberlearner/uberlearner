@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
@@ -212,6 +213,15 @@ class CourseResource(ModelResource):
                 if 'html' in page.data:
                     page.data.pop('html')
             return bundle.data['pages']
+
+    def hydrate_photo(self, bundle):
+        if 'photo' in bundle.data:
+            #either the photo url is absolute or not. This can be determined by using a split on .com
+            url_split = bundle.data['photo'].split('.com')
+            if len(url_split) == 2:
+                #This must mean that ".com" existed in the url and hence the url was absolute
+                bundle.data['photo'] = url_split[1].replace('/courses/', '')
+        return bundle
 
     def dehydrate(self, bundle):
         """
