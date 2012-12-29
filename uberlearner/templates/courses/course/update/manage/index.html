@@ -79,7 +79,9 @@
                            data-bind="value: currentPage() && currentPage().title"/><br><br>
 
                     {% comment %}THE WYSIWYG EDITOR{% endcomment %}
-                    <textarea class="editor" data-bind="ckeditor: currentHtml, ckeditorOptions: ckeditorOptions, ckeditorOnInit: ckeditorOnInit"></textarea>
+                    <textarea class="editor" data-bind="ckeditor: currentHtml,
+                    ckeditorOptions: { customConfig: '{{ STATIC_URL }}uberlearner/js/main/ckeditorCustomConfig.js' },
+                    ckeditorOnInit: ckeditorOnInit"></textarea>
 
                 </div>
                 {% comment %}Div that is visible if there are no pages in the course.{% endcomment %}

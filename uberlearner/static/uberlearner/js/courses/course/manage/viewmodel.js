@@ -110,10 +110,6 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
             }
         });
 
-        self.ckeditorOptions = {
-            customConfig: '/static/uberlearner/js/main/ckeditorCustomConfig.js'
-        };
-
         self.ckeditorOnInit = function() {
             editorHasLoaded = true;
 
