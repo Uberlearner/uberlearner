@@ -89,7 +89,7 @@
           },
           config: {
               {% if not debug %}
-              text: {
+              'lib/require/plugins/text/text': {
                   useXhr: function (url, protocol, hostname, port) {
                       return /http:\/\/uberlearner-static.s3.amazonaws.com\/[0-9a-zA-Z\/]*/.test(url);
                   }
