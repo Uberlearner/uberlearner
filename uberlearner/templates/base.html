@@ -87,7 +87,7 @@
               {% if not debug %}
               text: {
                   useXhr: function (url, protocol, hostname, port) {
-                      return /http:\/\/uberlearner.s3.amazonaws.com\/[0-9a-zA-Z\/]*/.test(url);
+                      return /http:\/\/uberlearner-static.s3.amazonaws.com\/[0-9a-zA-Z\/]*/.test(url);
                   }
               }
               {% endif %}
