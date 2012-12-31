@@ -10,3 +10,5 @@ DATABASES = {
         'NAME': os.path.join(PROJECT_ROOT, 'uberlearner.db'),
     }
 }
+
+AWS_STORAGE_BUCKET_NAME = 'uberlearner-dev'

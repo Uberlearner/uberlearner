@@ -204,7 +204,6 @@ AUTHENTICATION_BACKENDS += (
 
 # Amazon S3 storage settings
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-AWS_STORAGE_BUCKET_NAME = 'uberlearner'
 # The current AWS_S3_CALLING_FORMAT is 'subdomain' and that is good enough for this
 
 # Course related settings
