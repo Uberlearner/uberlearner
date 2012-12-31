@@ -8,7 +8,7 @@ from django.template.defaultfilters import slugify
 from storages.backends.s3boto import S3BotoStorage
 from main.models import TimestampedModel
 from django.db.models.signals import post_save
-from django.conf import settings
+
 ################################
 # Main models
 ################################

@@ -226,3 +226,5 @@ THUMBNAIL_ALIASES = {
 THUMBNAIL_SUBDIR = 'thumbnails'
 
 FILESTORAGE_ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
+
+LOGGLY_TOKEN = 'e86b110d-d51d-4570-91f5-f566a80ad6e2'

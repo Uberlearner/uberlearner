@@ -12,3 +12,4 @@ pytz
 django-storages
 easy-thumbnails
 python-magic>=0.4.3
+hoover
