@@ -1,6 +1,4 @@
-from django.conf import settings
 from django.conf.urls import url
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
