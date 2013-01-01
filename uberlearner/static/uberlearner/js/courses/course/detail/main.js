@@ -5,6 +5,6 @@ require([
     'bootstrap'
 ], function(ko, $, ViewModel) {
     $(function() {
-        ko.applyBindings(new ViewModel(), $('course-detail-block')[0]);
+        ko.applyBindings(new ViewModel(), $('#course-detail-block')[0]);
     });
 });

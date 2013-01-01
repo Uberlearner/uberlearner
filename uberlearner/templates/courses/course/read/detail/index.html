@@ -29,6 +29,14 @@
         {% endif %}
 		<div class="row">
 			<div class="span7">
+                {% if request.user.is_anonymous %}
+                <div class="alert alert-info">
+                    <h4>
+                        You cannot enroll into a course without
+                        <a href="{% url account_login %}" class="btn btn-success"> logging in </a> first.
+                    </h4>
+                </div>
+                {% endif %}
 				<h1>{{course.title}} <span class="label label-info">{{course.popularity}} enrollment{{course.popularity|pluralize}}</span></h1>
 				<i>- Authored by {{course.instructor}}</i>
 			</div>
@@ -47,31 +55,18 @@
                             <i data-bind="css: { 'icon-eye-open': !course().isPublic() , 'icon-eye-close': course().isPublic() }">
                             </i> <span data-bind="text: course().isPublic() ? 'Make private' : 'Make public'"></span>
                         </a>
-                    {% comment %}
-						{% if not course.is_public %}
-							<a href="javascript:alert('not implemented');" class="btn btn-success">
-								<i class="icon-eye-open icon-white"></i> Make public
-							</a>
-						{% else %}
-							<a href="javascript:alert('not implemented');" class="btn btn-primary">
-								<i class="icon-eye-close icon-white"></i> Make private
-							</a>
-						{% endif %}
-                    {% endcomment %}
 					</p>
 				{% else %}
-					{% comment %}
-					When the enrollment modelling is done, show an enroll button when appropriate
-					(ie., when the student isn't already enrolled and is not the instructor)
-					{% endcomment %}
                     <p class="pull-right">
                     {% if not enrollment %}
-                        <button href="javascript: void(0);"
-                           class="btn btn-success btn-large"
-                           data-bind="disable: isEnrolled(), click: toggleEnrollment">
+                        <a href="javascript: void(0);"
+                           class="btn btn-success btn-large {% if request.user.is_anonymous %}disabled{% endif %}"
+                           {% if not request.user.is_anonymous %}
+                           data-bind="disable: isEnrolled(), click: toggleEnrollment"
+                           {% endif %} >
                             <i class="icon-white" data-bind="css: {'icon-star-empty': !isEnrolled(), 'icon-star': isEnrolled}"></i>
                             <span data-bind="text: isEnrolled() ? 'Enrolled' : 'Enroll'"></span>
-                        </button>
+                        </a>
                     {% else %}
                         <a href="{% url page.first.view course.instructor.username course.slug %}"
                            class="btn btn-success btn-large"
