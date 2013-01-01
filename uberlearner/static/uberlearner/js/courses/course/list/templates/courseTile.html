@@ -1,5 +1,10 @@
 <script type="text/html" id="course_tile">
     <div class="course-tile" data-bind="">
+        <div class="alert alert-info" data-bind="visible: isPublic()">
+            <a class="close" data-dismiss="alert" href="#"><i class="icon-remove-sign"></i></a>
+            <h4>Private course</h4>
+            <p>Others can't see this course just yet!</p>
+        </div>
         <img data-bind="attr: { src: thumbnail }" class="course-tile-image"/>
         <a data-bind="attr: { href: absoluteUrl }">
             <h3 data-bind="text: title" class="course-tile-title"></h3>
