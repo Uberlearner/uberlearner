@@ -189,7 +189,7 @@ class CourseResource(ModelResource):
         if 'instructor__exact' in applicable_filters:
             instructor_username = applicable_filters['instructor__exact'] 
             if isinstance(instructor_username, basestring):
-                applicable_filters['instructor__exact'] = Instructor.objects.get(user__username=instructor_username)
+                applicable_filters['instructor__exact'] = User.objects.get(username=instructor_username)
         
         result = super(CourseResource, self).apply_filters(request, applicable_filters)
         return result
