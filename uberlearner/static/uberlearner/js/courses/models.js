@@ -160,7 +160,11 @@ define(['ko'], function(ko) {
         this.username = data.username;
 
         this.getFullName = function() {
-            return this.firstName + ' ' + this.lastName;
+            if (!this.firstName && !this.lastName){
+                return "Anonymous";
+            } else {
+                return this.firstName + ' ' + this.lastName;
+            }
         };
     }
 
@@ -188,6 +192,7 @@ define(['ko'], function(ko) {
         self.photo = data.photo;
         self.thumbnail = data.thumbnail || '';
         self.creationTimePrecise = data.creationTimePrecise || '';
+        self.enrolled = data.enrolled || false;
 
         self.truncatedDescription = function(length) {
             if (self.description.length > length) {

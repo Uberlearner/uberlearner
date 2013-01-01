@@ -238,4 +238,10 @@ class CourseResource(ModelResource):
             if bundle.obj.photo:
                 bundle.data['thumbnail'] = get_thumbnailer(bundle.obj.photo)['tile'].url
             bundle.data['creationTimePrecise'] = str(time.mktime(bundle.obj.creation_timestamp.timetuple())*1000)
+            if bundle.request.user.is_anonymous():
+                bundle.data['enrolled'] = None
+            elif bundle.obj.enrollments.filter(student=bundle.request.user).exists():
+                bundle.data['enrolled'] = True
+            else:
+                bundle.data['enrolled'] = False
         return bundle
