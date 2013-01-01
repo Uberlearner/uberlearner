@@ -98,14 +98,14 @@ class CoursePage(CourseView):
         context_data['course'] = self.course #we do this because the page variable might be None and the course will not be accessible
         return context_data
     
-class CourseEdit(UpdateView):
+class CourseSettings(UpdateView):
     """
     This is the view that the instructor uses to edit the basic properties of the course. These include course title,
     description, visibility etc.
     """
     model = Course
     form_class = CourseForm
-    template_name = 'courses/course/update/edit/index.html'
+    template_name = 'courses/course/update/settings/index.html'
 
     def get_object(self, queryset=None):
         instructor = get_object_or_404(User, username=self.kwargs['username'])
@@ -128,7 +128,7 @@ class CourseEdit(UpdateView):
         return course
 
     def get_context_data(self, **kwargs):
-        context_data = super(CourseEdit, self).get_context_data(**kwargs)
+        context_data = super(CourseSettings, self).get_context_data(**kwargs)
         context_data['main_js_module'] = 'uberlearner/js/main/under-construction.js' #we just need jquery and bootstrap
         return context_data
     

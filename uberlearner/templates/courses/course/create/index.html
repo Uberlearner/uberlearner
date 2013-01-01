@@ -2,12 +2,18 @@
 {% load thumbnail %}
 {% load bootstrap_toolkit %}
 
-{% block title %}{{block.super}} | {% if course %}Edit{% else %}Create{% endif %} course{% endblock %}
+{% block title %}{{block.super}} |
+    {% if course %}
+        "{{ course.title }}" settings
+    {% else %}
+        Create course
+    {% endif %}
+{% endblock %}
 
 {% block content_title %}
 <h1>
 {% if course %}
-	Edit "{{course.title}}"
+	"{{course.title}}" Settings
 {% else %}
 	Create a new course!
 {% endif %}

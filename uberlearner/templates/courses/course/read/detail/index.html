@@ -24,7 +24,7 @@
         {% if not course.pages.all and course.instructor == user %}
             <div class="alert alert-info">
                 <button class="close" data-dismiss="alert">×</button>
-                Use the manage button to add and remove pages from this course.
+                Use the "Manage content" button to add and remove pages from this course.
             </div>
         {% endif %}
 		<div class="row">
@@ -44,10 +44,12 @@
 				{% if request.user == course.instructor %}
 					<p class="pull-right">
 						<a href='{% url course.manage username=request.user.username slug=course.slug %}' class="btn btn-primary">
-							<i class="icon-edit icon-white"></i> Manage
+							<i class="icon-pencil icon-white"></i> Manage content
 						</a>
-						<a href='{% url course.edit username=request.user.username slug=course.slug %}' class="btn btn-primary">
-							<i class="icon-pencil icon-white"></i> Edit
+                    </p>
+                    <p class="pull-right">
+						<a href='{% url course.settings username=request.user.username slug=course.slug %}' class="btn btn-primary">
+							<i class="icon-cog icon-white"></i> Course settings
 						</a>
 					</p>
 					<p class="pull-right">
