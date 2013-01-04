@@ -4,7 +4,7 @@ from accounts.models import UserProfile
 class UserProfileAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Basic Information', {
-            'fields': ('user', 'dob', 'summary'),
+            'fields': ('user', 'summary'),
         }),
     )
 

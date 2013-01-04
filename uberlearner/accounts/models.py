@@ -11,7 +11,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name="profile")
 
     # Other fields here
-    dob = models.DateField(null=True, blank=True)
     summary = models.TextField(blank=True)
 
     def __unicode__(self):

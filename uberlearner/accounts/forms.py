@@ -13,7 +13,6 @@ class CaptchaSignupForm(SignupForm):
 class UserProfileForm(UploadAvatarForm):
     first_name = forms.CharField(label='First name', required=False)
     last_name = forms.CharField(label='Last name', required=False)
-    dob = forms.DateField(label='Date of birth', widget=DateWidget, required=False)
     summary = forms.CharField(label='Summary', widget=forms.Textarea, required=False)
 
     def wrap_clean_avatar(self, clean_avatar):

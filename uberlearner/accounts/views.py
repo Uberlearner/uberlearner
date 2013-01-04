@@ -65,7 +65,6 @@ def edit_user_profile_with_username(request, username=''):
                 avatar_updated.send(sender=Avatar, user=user, avatar=avatar)
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
-            user.profile.dob = form.cleaned_data['dob']
             user.profile.summary = form.cleaned_data['summary']
             user.profile.save()
             user.save()
@@ -74,7 +73,6 @@ def edit_user_profile_with_username(request, username=''):
         form = UserProfileForm(initial={
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'dob': user.profile.dob,
             'summary': user.profile.summary,
             'avatar': avatar
         }, user=user)

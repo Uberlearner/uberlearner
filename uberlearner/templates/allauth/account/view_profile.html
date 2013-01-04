@@ -29,10 +29,6 @@
       {% if profile_owner.first_name %}
       Full name: {{profile_owner.first_name}} {{profile_owner.last_name}} <br />
       {% endif %}
-
-      {% if profile_owner.get_profile.dob %}
-      Date of birth: {{profile_owner.get_profile.dob}} <br />
-      {% endif %}
     </p>
 	<h3>Summary</h3>
 	  {% if profile_owner.get_profile.summary %}
