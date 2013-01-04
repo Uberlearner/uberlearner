@@ -64,12 +64,14 @@ require([
             };
             var sortAsPopularFirst = function() {
                 isotope({
-                    sortBy: 'popularity'
+                    sortBy: 'popularity',
+                    sortAscending: false
                 });
             };
             var sortAsNewestFirst = function() {
                 isotope({
-                    sortBy: 'dateCreated'
+                    sortBy: 'dateCreated',
+                    sortAscending: false
                 });
             };
 
