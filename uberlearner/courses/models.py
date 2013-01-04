@@ -100,7 +100,6 @@ class Course(TimestampedModel):
             querystring_auth=False
         ),
         default='defaultCourseImage.png',
-        null=True,
         blank=True
     )
     description = models.TextField(blank=True)
