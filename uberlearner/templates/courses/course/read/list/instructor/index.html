@@ -4,11 +4,11 @@
 {% block content_title %}
 <div class="row">
 	<div class="span8">
-		<h1>Courses taught by {{instructor.username}}</h1>
+		<h1>Courses taught by {{instructor.profile.get_best_name}}</h1>
 	</div>
 	<div class="span4">
 		<span class="pull-right">
-			<a href={% url course.create %} class="btn btn-primary"><i class="icon-plus-sign icon-white"></i> Create a course!</a>
+			<a class="btn btn-primary" href={% url course.create %}><i class="icon-plus-sign icon-white"></i> Create a course!</a>
 		</span>
 	</div>
 </div><br>

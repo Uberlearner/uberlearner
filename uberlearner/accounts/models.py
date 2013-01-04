@@ -15,6 +15,20 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.user.username
+
+    def get_best_name(self):
+        """
+        Returns the best possible name for the user.
+        - If both the first name and last name are defined, then it uses a concatenation of the two.
+        - If only the first_name is defined, then it uses it.
+        - If none are defined, then it uses the username.
+        """
+        if self.user.first_name and self.user.last_name:
+            return self.user.get_full_name()
+        elif self.user.first_name:
+            return self.user.first_name
+        else:
+            return self.user.username
     
     def get_absolute_url(self):
         return reverse('account_user_profile_with_username', kwargs={'username': self.user.username})

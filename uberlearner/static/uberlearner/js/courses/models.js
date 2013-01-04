@@ -158,6 +158,7 @@ define(['ko'], function(ko) {
         this.lastLogin = data.lastLogin;
         this.resourceUri = data.resourceUri;
         this.username = data.username;
+        this.bestName = data.bestName;
 
         this.getFullName = function() {
             if (!this.firstName && !this.lastName){
