@@ -1,4 +1,3 @@
-from cups import modelSort
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.views.generic.edit import CreateView, UpdateView, FormView, DeletionMixin
 from courses.models import Course, Page
