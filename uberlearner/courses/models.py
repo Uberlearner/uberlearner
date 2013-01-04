@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db.models import F
 from easy_thumbnails.fields import ThumbnailerImageField
 import os
@@ -75,6 +76,10 @@ def course_image_path(instance=None, filename=None):
     path = os.path.join(instance.instructor.username, filename)
     return path
 
+class NonDeletedCoursesManager(models.Manager):
+    def get_query_set(self):
+        return super(NonDeletedCoursesManager, self).get_query_set().filter(deleted=False)
+
 class Course(TimestampedModel):
     """
     This model encapsulates the various parameters of a course.
@@ -108,8 +113,12 @@ class Course(TimestampedModel):
     #rating = models.FloatField(default=0, editable=False)
     is_public = models.BooleanField(default=False, help_text="If checked, it will enable anyone to see your course.")
     students = models.ManyToManyField(User, through=Enrollment, blank=True, null=True, related_name='enrolled_courses')
+    # a boolean used to mark courses deleted without actually deleting them
+    deleted = models.BooleanField(default=False, help_text="Marks a course as deleted.")
 
     refresh_slug = False # a boolean indicating whether the save method should re-create the slug
+    objects = NonDeletedCoursesManager()
+    all_objects = models.Manager()
     
     class Meta:
         unique_together = (('slug', 'instructor'), )
@@ -139,6 +148,20 @@ class Course(TimestampedModel):
     def get_enrollment_resource_uri(self):
         return self.get_resource_uri(url_name='api_course_enroll')
 
+    def clean(self):
+        """
+        This is the method that gets called by Django for the validation of the model as a whole:
+        (https://docs.djangoproject.com/en/dev/ref/models/instances/?from=olddocs#validating-objects).
+
+        This method checks for the following:
+        1) A model cannot be marked "deleted" if someone is already enrolled in the course.
+        2) A model cannot be marked "private" if someone is already enrolled in the course.
+        """
+        if self.deleted and self.enrollments.exists():
+            raise ValidationError("A course with active enrollments cannot be deleted")
+        if not self.is_public and self.enrollments.exists():
+            raise ValidationError("A course with active enrollments cannot be made private")
+
     def save(self, force_insert=False, force_update=False, using=None):
         """
         The slug field for the course model is supposed to be auto-generated. Django doesn't provide this
@@ -160,6 +183,18 @@ class Course(TimestampedModel):
             self.slug = slug
             self.refresh_slug = False
         return super(Course, self).save(force_insert, force_update, using)
+
+    def delete(self, using=None, real_delete=False):
+        """
+        For deletion, the courses will be merely marked as deleted. If the actual data has to be deleted, then the real_delete
+        parameter will have to be true.
+        """
+        if not real_delete:
+            self.deleted = True
+            self.clean()
+            self.save()
+        else:
+            return super(Course, self).delete(using=using)
 
 class Page(TimestampedModel):
     """

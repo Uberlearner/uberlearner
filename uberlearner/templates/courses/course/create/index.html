@@ -54,8 +54,14 @@
 						Cancel
 					</a>
 				{% endif %}
+                {% if not course.enrollments.exists %}
+                <a href="#course-delete-warning-modal" class="btn btn-danger" data-toggle="modal">Delete this course!</a>
+                {% endif %}
 			</div>
 		</form>
 	</div>
 </div>
+{% if not course.enrollments.exists %}
+{% include 'courses/course/delete/modals/delete-warning.html' %}
+{% endif %}
 {% endblock %}

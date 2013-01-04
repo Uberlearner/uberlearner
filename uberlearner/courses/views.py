@@ -1,10 +1,11 @@
+from cups import modelSort
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.views.generic.edit import CreateView, UpdateView, FormView, DeletionMixin
 from courses.models import Course, Page
 from courses.forms import CourseForm, CoursePageForm
 from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.base import View, TemplateView
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
@@ -129,8 +130,16 @@ class CourseSettings(UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super(CourseSettings, self).get_context_data(**kwargs)
-        context_data['main_js_module'] = 'uberlearner/js/main/under-construction.js' #we just need jquery and bootstrap
+        context_data['main_js_module'] = 'uberlearner/js/courses/course/settings/main.js'
         return context_data
+
+    def post(self, request, *args, **kwargs):
+        course = self.get_object()
+        if 'deleted' in request.POST and request.POST['deleted'] == 'on':
+            course.delete()
+            return redirect('course.by_user', username=request.user.username)
+        else:
+            return super(CourseSettings, self).post(request, *args, **kwargs)
     
 class CourseManage(CourseView):
     template_name = 'courses/course/update/manage/index.html'
