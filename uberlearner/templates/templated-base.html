@@ -54,16 +54,17 @@
 </div><!-- top nav-bar -->
 
 <div class="container">
+
     {% block message_block %}
     <div class="row">
-    <div class="span6">
         {% for message in messages %}
+        <div class="span6">
         <div class="alert {{ message.tags }}">
         <button class="close" data-dismiss="alert">&times;</button>
         {{ message }}
         </div>
+        </div>
         {% endfor %}
-    </div>
     </div>
     {% endblock %}
 
