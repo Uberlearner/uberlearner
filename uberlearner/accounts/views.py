@@ -21,7 +21,7 @@ def login(request, **kwargs):
     the user into the system.
     """
     if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('account_user_profile'))
+        return kwargs.get('logged_in_view')(request, **kwargs)
     else:
         return allauth.account.views.login(request, **kwargs)
 

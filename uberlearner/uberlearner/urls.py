@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
 from courses.api import CourseResource, UserResource, PageResource
+from courses.views import CourseList
 from tastypie.api import Api
 from accounts import views as accounts_views
 
@@ -18,7 +19,8 @@ urlpatterns = patterns('',
         'verification_sent_template': 'allauth/account/verification_sent.html',
         'extra_context': {
             'main_js_module': 'uberlearner/js/main/under-construction.js'
-        }
+        },
+        'logged_in_view': CourseList.as_view()
     }, name="home"),
     url(r'^api/', include(v1_api.urls)),
     url(r'^accounts/', include('accounts.urls'), name="accounts"),

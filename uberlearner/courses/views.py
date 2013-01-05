@@ -177,11 +177,11 @@ class CourseList(TemplateView):
     """
     This view shows a list of all the courses available.
     """
-    template_name = 'courses/course/read/list/public/index.html'
+    template_name = 'courses/course/read/list/public/isotope.html'
     
     def get_context_data(self, **kwargs):
         context_data = super(CourseList, self).get_context_data(**kwargs)
-        context_data['main_js_module'] = os.path.join(JS_BASE_DIR_COURSE, 'course-list.js')
+        context_data['main_js_module'] = os.path.join(JS_BASE_DIR_COURSE, 'list', 'public.js')
         return context_data
     
 class UserCourses(TemplateView):
