@@ -16,6 +16,9 @@ urlpatterns = patterns('',
     url(r"^$", accounts_views.login, {
         'template_name': 'index.html',
         'verification_sent_template': 'allauth/account/verification_sent.html',
+        'extra_context': {
+            'main_js_module': 'uberlearner/js/main/under-construction.js'
+        }
     }, name="home"),
     url(r'^api/', include(v1_api.urls)),
     url(r'^accounts/', include('accounts.urls'), name="accounts"),

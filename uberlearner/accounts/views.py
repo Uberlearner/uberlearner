@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 import allauth.account
 from django.core.urlresolvers import reverse
@@ -68,7 +69,10 @@ def edit_user_profile_with_username(request, username=''):
             user.profile.summary = form.cleaned_data['summary']
             user.profile.save()
             user.save()
+            messages.add_message(request, messages.SUCCESS, 'Your profile has been successfully updated')
             return user_profile_with_username(request, '', user)
+        else:
+            messages.add_message(request, messages.ERROR, 'Your profile could not be updated')
     else:
         form = UserProfileForm(initial={
             'first_name': user.first_name,

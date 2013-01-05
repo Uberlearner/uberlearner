@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.views.generic.edit import CreateView, UpdateView, FormView, DeletionMixin
 from courses.models import Course, Page
@@ -18,10 +19,15 @@ class CourseCreate(CreateView):
 
     def form_valid(self, form):
         form.instance.instructor = self.request.user
+        messages.add_message(self.request, messages.SUCCESS, 'Your course has been successfully created!')
         return super(CourseCreate, self).form_valid(form)
 
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, 'Your course could not be created')
+        return super(CourseCreate, self).form_invalid(form)
+
     def get_success_url(self):
-        return reverse('course.edit', kwargs={'username': self.object.instructor.username, 'slug': self.object.slug})
+        return reverse('course.view', kwargs={'username': self.object.instructor.username, 'slug': self.object.slug})
 
 class CourseView(DetailView):
     """
@@ -139,6 +145,14 @@ class CourseSettings(UpdateView):
             return redirect('course.by_user', username=request.user.username)
         else:
             return super(CourseSettings, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS, 'Successfully updated the course settings')
+        return super(CourseSettings, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, 'Could not update course settings')
+        return super(CourseSettings, self).form_invalid(form)
     
 class CourseManage(CourseView):
     template_name = 'courses/course/update/manage/index.html'
