@@ -114,7 +114,8 @@
           }
       };
   </script>
-  <script data-main="{{ main_js_module }}" src="{{ STATIC_URL }}lib/require/require.js"></script>
+  <script data-main="{% block main_js_module_block %}{{ main_js_module }}{% endblock %}"
+          src="{{ STATIC_URL }}lib/require/require.js"></script>
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   {% comment %}

@@ -1,5 +1,5 @@
-{% extends 'templated-base.html' %}
-
+{% extends 'flatpages/basicflatpage.html' %}
+{% load flatpages %}
 {% block content_title %}
 <h1>Privacy Policy</h1>
 {% endblock %}
@@ -74,7 +74,7 @@
         stored on our servers.
     </p>
 
-    <h2>Do we use cookies?</h2
+    <h2>Do we use cookies?</h2>
     <p>
         Yes (Cookies are small files that a site or its service provider transfers to your computers hard drive through
         your
@@ -115,7 +115,7 @@
         and
         welcome any feedback about these sites.
     </p>
-    <h2California Online Privacy Protection Act Compliance</h2>
+    <h2>California Online Privacy Protection Act Compliance</h2>
     <p>
         Because we value your privacy we have taken the necessary precautions to be in compliance with the California
         Online
@@ -144,9 +144,14 @@
     </p>
     <h2>Terms and Conditions</h2>
     <p>
+    {% comment %}
+    TODO: find a better way to get the terms_url. Perhaps having a context processor that adds settings variables
+    to the context and using the FLATPAGE_CONFIG to access the url for the 'terms' name would be a better idea.
+    {% endcomment %}
+        {% url django.contrib.flatpages.views.flatpage url='/terms/' as terms_url %}
         Please also visit our Terms and Conditions section establishing the use, disclaimers, and limitations of
         liability
-        governing the use of our website at <a href={% url flatpages.terms %}>{{ request.META.HTTP_HOST }}{% url flatpages.terms %}</a>
+        governing the use of our website at <a href={{ terms_url }}>{{ request.META.HTTP_HOST }}{{ terms_url }}</a>
     </p>
     <h2>Your Consent</h2>
     <p>

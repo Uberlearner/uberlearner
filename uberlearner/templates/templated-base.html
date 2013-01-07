@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block body %}
+
 {% load navigation_tags %}
 {% load account_tags %}
+{% load flatpages %}
+
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
@@ -43,9 +46,6 @@
 				<ul class="nav">
 					<li class="{% navactive request 'course.list' %}">
 						<a href={% url course.list %}>Courses</a>
-					</li>
-					<li class="{% navactive request 'flatpages.about' %}">
-						<a href={% url flatpages.about %}>About</a>
 					</li>
 				</ul>
 			</div>
@@ -90,10 +90,12 @@
 				<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a>.
 			</p>
             <p>
-                <a href={% url flatpages.about %}>About Us</a> |
-                <a href={% url flatpages.terms %}>Terms of Use</a> |
-                <a href={% url flatpages.privacy %}>Privacy Policy</a> |
-                <a href={% url flatpages.contact %}>Contact Us</a>
+                {% get_flatpages as flatpages %}
+                {% for flatpage in flatpages %}
+                    <a href={% url django.contrib.flatpages.views.flatpage url=flatpage.url %}>{{ flatpage.title }}</a>
+                    {% if not forloop.last %} |{% endif %}
+                {% endfor %}
+                | <a href={% url sitemap_index %}>Sitemap</a>
             </p>
 		</footer>
 	{% endblock %}

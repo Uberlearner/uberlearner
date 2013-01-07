@@ -1,5 +1,5 @@
-from base import *
 import os
+from base.precustom import *
 
 DEBUG = True
 TEMPLATE_DEBUG = True
@@ -12,3 +12,5 @@ DATABASES = {
 }
 
 AWS_STORAGE_BUCKET_NAME = 'uberlearner-dev'
+
+from base.postcustom import *

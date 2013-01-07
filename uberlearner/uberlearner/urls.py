@@ -27,7 +27,9 @@ urlpatterns = patterns('',
     url(r'^courses/', include('courses.urls'), name="courses"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^filestorage/', include('filestorage.urls'), name='filestorage'),
-    url(r'^pages/', include('flatpages.urls'), name='flatpages'),
+    url(r'^pages', include('django.contrib.flatpages.urls'), name='flatpages'),
+    url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.index', {'sitemaps': settings.SITEMAPS}, name='sitemap_index'),
+    url(r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': settings.SITEMAPS}),
 )
 
 if settings.DEBUG:
