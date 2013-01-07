@@ -8,6 +8,6 @@ require([
     'uberlearner/js/utils/bindings/url-list'
 ], function(ko, $, ManageCourseViewModel) {
     $(function() {
-        ko.applyBindings(new ManageCourseViewModel());
+        ko.applyBindings(new ManageCourseViewModel(), $('#content-envelope')[0]);
     });
 });

@@ -135,7 +135,7 @@ class CourseSettings(UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super(CourseSettings, self).get_context_data(**kwargs)
-        context_data['main_js_module'] = 'uberlearner/js/courses/course/settings/main.js'
+        context_data['main_js_module'] = 'uberlearner/js/main/base.js'
         return context_data
 
     def post(self, request, *args, **kwargs):

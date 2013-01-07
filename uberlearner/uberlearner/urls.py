@@ -18,7 +18,7 @@ urlpatterns = patterns('',
         'template_name': 'index.html',
         'verification_sent_template': 'allauth/account/verification_sent.html',
         'extra_context': {
-            'main_js_module': 'uberlearner/js/main/under-construction.js'
+            'main_js_module': 'uberlearner/js/main/base.js'
         },
         'logged_in_view': CourseList.as_view()
     }, name="home"),

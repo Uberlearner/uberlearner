@@ -4,6 +4,10 @@
 
 define([], function() {
     return function() {
+        /**
+         * Gets the GET parameters in the url in the form of an Javascript object.
+         * @return {*} A javascript object containing the GET parameters in the url of the page
+         */
         var urlParams = function() {
             return decodeURIComponent(window.location.search.slice(1))
                 .split('&')

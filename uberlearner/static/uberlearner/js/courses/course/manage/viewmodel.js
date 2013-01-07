@@ -1,4 +1,6 @@
-define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'], function(ko, Models) {
+define([
+    'ko', 'uberlearner/js/courses/models', 'uberlearner/js/utils/messages/viewmodel', 'uberlearner/js/courses/bindings'
+], function(ko, Models, messages) {
     var ManageCourseViewModel = function() {
         var self = this;
         var editorHasLoaded = false; //this is just an internal flag
@@ -148,6 +150,7 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/courses/bindings'
                     console.log("error textStatus: " + textStatus);
                     console.log("error thrown: " + errorThrown);
                     console.log("response text: " + jqXHR.responseText);
+                    messages.error('Page order could not be saved!');
                 }
             })
         };

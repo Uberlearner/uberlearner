@@ -1,4 +1,4 @@
-define(['ko'], function(ko) {
+define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages) {
     var Models = {};
     Models.Page = function (data) {
         var self = this;
@@ -118,6 +118,7 @@ define(['ko'], function(ko) {
                     console.log("error textStatus: " + textStatus);
                     console.log("error thrown: " + errorThrown);
                     console.log("response text: " + jqXHR.responseText);
+                    messages.error("The page could not be saved!");
                 }
             });
         };

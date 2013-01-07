@@ -1,4 +1,6 @@
-require(['jquery', 'ko', 'uberGrid', 'bootstrap'], function($, ko, uberGrid, bootstrap) {
+require([
+    'jquery', 'ko', 'uberGrid', 'bootstrap', 'uberlearner/js/utils/messages/viewmodel'
+], function($, ko, uberGrid, bootstrap) {
     var InstructorCoursesPagedGridModel = function() {
         var self = this;
 

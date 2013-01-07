@@ -1,10 +1,2 @@
-require(['jquery', 'jquery-ui', 'css!lib/jquery_ui/css/smoothness/jquery-ui.min', 'bootstrap'], function($) {
-    $(function(){
-        $('.date-widget').datepicker({
-            dateFormat: 'yy-mm-dd',
-            changeMonth: true,
-            changeYear: true,
-            yearRange: '-90:+0'
-        });
-    });
+require(['jquery', 'jquery-ui', 'bootstrap', 'uberlearner/js/utils/messages/viewmodel'], function($) {
 });

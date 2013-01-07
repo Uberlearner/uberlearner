@@ -226,12 +226,3 @@ THUMBNAIL_SUBDIR = 'thumbnails'
 FILESTORAGE_ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
 
 LOGGLY_TOKEN = 'e86b110d-d51d-4570-91f5-f566a80ad6e2'
-
-from django.contrib.messages import constants as messages
-MESSAGE_TAGS = {
-    messages.DEBUG: '',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-danger',
-    messages.ERROR: 'alert-error',
-}

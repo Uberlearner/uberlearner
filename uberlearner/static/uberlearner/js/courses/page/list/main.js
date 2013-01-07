@@ -10,6 +10,6 @@ require(['jquery', 'ko', 'uberlearner/js/courses/page/list/viewmodel', 'bootstra
 });
 */
 
-require(['jquery', 'bootstrap', 'uberlearner/js/utils/bindings/url-list'], function($) {
+require(['jquery', 'bootstrap', 'uberlearner/js/utils/bindings/url-list', 'uberlearner/js/utils/messages/viewmodel'], function($) {
 
 });

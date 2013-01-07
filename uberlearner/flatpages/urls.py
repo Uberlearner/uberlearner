@@ -5,25 +5,25 @@ urlpatterns = patterns('',
     url(r'^terms/$', direct_to_template, {
         'template': 'flatpages/terms.html',
         'extra_context': {
-            'main_js_module': 'uberlearner/js/flatpages/base'
+            'main_js_module': 'uberlearner/js/utils/messages/viewmodel',
         }
     }, name='flatpages.terms'),
     url(r'^about/$', direct_to_template, {
         'template': 'flatpages/about.html',
         'extra_context': {
-            'main_js_module': 'uberlearner/js/flatpages/base'
+            'main_js_module': 'uberlearner/js/utils/messages/viewmodel',
         }
     }, name='flatpages.about'),
     url(r'^privacy/$', direct_to_template, {
         'template': 'flatpages/privacy.html',
         'extra_context': {
-            'main_js_module': 'uberlearner/js/flatpages/base'
+            'main_js_module': 'uberlearner/js/utils/messages/viewmodel',
         }
     }, name='flatpages.privacy'),
     url(r'^contact-us/$', direct_to_template, {
         'template': 'flatpages/contact-us.html',
         'extra_context': {
-            'main_js_module': 'uberlearner/js/flatpages/base'
+            'main_js_module': 'uberlearner/js/utils/messages/viewmodel',
         }
     }, name='flatpages.contact'),
 )

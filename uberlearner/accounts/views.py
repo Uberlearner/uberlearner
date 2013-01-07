@@ -41,7 +41,7 @@ def user_profile_with_username(request, username='', user=None):
     if not user:
         user = get_object_or_404(User, username=username)
     return render_to_response('allauth/account/view_profile.html',
-                              {'profile_owner': user, 'main_js_module': 'uberlearner/js/accounts/profile-view'},
+                              {'profile_owner': user, 'main_js_module': 'uberlearner/js/main/base'},
                               context_instance=RequestContext(request))
 
 @login_required

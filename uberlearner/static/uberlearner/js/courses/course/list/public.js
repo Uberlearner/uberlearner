@@ -5,7 +5,8 @@ require([
     'text!uberlearner/js/courses/course/list/templates/courseTile.html',
     'uberlearner/js/utils/bindings/url-list',
     'bootstrap',
-    'uberlearner/js/courses/course/list/bindings/isotope'
+    'uberlearner/js/courses/course/list/bindings/isotope',
+    'uberlearner/js/utils/messages/viewmodel'
 ], function($, ko, courseModels, courseTileTemplate) {
     $(function() {
         var courseListTilesViewModelGenerator = function() {
@@ -120,6 +121,6 @@ require([
         };
         var courseListTilesViewModel = courseListTilesViewModelGenerator();
         $('body').append(courseTileTemplate); //add the template to the html to make it accessible by the template binding
-        ko.applyBindings(courseListTilesViewModel);
+        ko.applyBindings(courseListTilesViewModel, $('#isotope-envelope')[0]);
     });
 });

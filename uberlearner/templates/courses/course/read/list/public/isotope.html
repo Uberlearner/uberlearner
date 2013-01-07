@@ -1,6 +1,7 @@
 {% extends 'templated-base.html' %}
 
 {% block content %}
+<div id="isotope-envelope">
 <div class="course-tile-sort-options">
     <div class="btn-group">
         <button class="btn btn-inverse" data-bind="click: sortAsPopularFirst">Most popular first</button>
@@ -27,4 +28,5 @@
        attr: { disabled: loading() || (courses().length === 0) }"
    class="btn btn-primary span6 offset3">LOADING...</a>
 <br />
+</div>
 {% endblock %}

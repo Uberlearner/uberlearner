@@ -56,24 +56,27 @@
 <div class="container">
 
     {% block message_block %}
-    <div class="row">
+    <div class="row" id="message-list" data-bind="foreach: messages, initialMessages: [
         {% for message in messages %}
-        <div class="span6">
-        <div class="alert {{ message.tags }}">
-        <button class="close" data-dismiss="alert">&times;</button>
-        {{ message }}
-        </div>
-        </div>
+        {message: '{{ message }}', level: '{{ message.tags }}'}
         {% endfor %}
+    ]">
+    <div class="span6">
+        <div data-bind="attr: {class: 'alert ' + $data.getClass()}">
+            <button class="close" data-dismiss="alert">&times;</button>
+            <span data-bind="text: $data.message"></span>
+        </div>
+    </div>
     </div>
     {% endblock %}
 
 	{% block hero %}{% endblock %}
-	
+
+<div id="content-envelope">
 	{% block content_title %}{% endblock %}
 	
 	{% block content %}{% endblock %}
-	
+</div>
 	<hr />
 	
 	{% block footer %}
