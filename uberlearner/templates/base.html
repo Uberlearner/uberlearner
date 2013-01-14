@@ -58,6 +58,7 @@
                   deps: ['jquery'],
                   exports: 'bootstrap'
               },
+              'bootstrap-tab': ['bootstrap'],
               'jquery-ui': ['jquery'],
               'Davis': {
                   deps: ['jquery'],
@@ -85,6 +86,7 @@
               ],
               bootstrap: 'lib/bootstrap/js/bootstrap.min',
               'bootstrap-carousel': 'lib/bootstrap/js/bootstrap-carousel',
+              'bootstrap-tab': 'lib/bootstrap/js/bootstrap-tab',
               ko: [
                   'http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.1.0',
                   'lib/knockoutjs/js/knockout-2.1.0'
@@ -114,7 +116,7 @@
           }
       };
   </script>
-  <script data-main="{% block main_js_module_block %}{{ main_js_module }}{% endblock %}"
+  <script data-main="{% block main_js_module_block %}{{ main_js_module|default:"uberlearner/js/main/base.js" }}{% endblock %}"
           src="{{ STATIC_URL }}lib/require/require.js"></script>
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->

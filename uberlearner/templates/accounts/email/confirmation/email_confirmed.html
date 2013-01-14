@@ -1,0 +1,15 @@
+{% extends 'templated-base.html' %}
+
+{% load account %}
+
+{% block content_title %}
+<h1>Email address confirmed</h1>
+{% endblock %}
+
+{% block content %}
+<p>
+{% with email=email_address.email user_display=email_address.user.profile.get_best_name %}
+You have confirmed that <a href="mailto:{{ email }}">{{ email }}</a> is registered with user "{{ user_display }}".
+{% endwith %}
+</p>
+{% endblock %}

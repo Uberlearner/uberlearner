@@ -1,0 +1,15 @@
+{% load bootstrap_toolkit %}
+
+<form action="{% url account_edit_user_profile_change_password username=request.user.username %}" method="post"
+      class="form-horizontal">
+    {% csrf_token %}
+    <div class="span6 offset2 well">
+        {{ form|as_bootstrap }}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <a class="btn btn-inverse" href="{% url account_user_profile_with_username username=request.user.username %}">
+                Cancel
+            </a>
+        </div>
+    </div>
+</form>
