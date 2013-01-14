@@ -7,7 +7,7 @@ PROJECT_ROOT = abspath(join(dirname(__file__), '..', '..', '..'))
 
 ADMINS = (
     ('Uber Mailman', 'mailman@uberlearner.com'),
-    )
+)
 
 MANAGERS = ADMINS
 
@@ -62,7 +62,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     join(PROJECT_ROOT, 'static'),
-    )
+)
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -70,7 +70,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    )
+)
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '%30_ae&amp;ikyk2adxlykhdf4gjo4rfz!t9h(%n!b^06&amp;^u908dmc'
@@ -80,7 +80,7 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
     #'django.template.loaders.eggs.Loader',
-    )
+)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -90,7 +90,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    )
+)
 
 ROOT_URLCONF = 'uberlearner.urls'
 
@@ -102,8 +102,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     join(PROJECT_ROOT, 'templates'),
-    #    "/home/abhin/djangoworkspace/uberlearner/uberlearner/templates/",
-    )
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -114,12 +113,12 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
+    'django.contrib.admin',
     'storages',
     'main',
-    'django.contrib.admin',
-    'emailconfirmation',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'bootstrap_toolkit',
     'captcha',
     'accounts',
@@ -127,11 +126,9 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'tastypie',
     'courses',
-    'courses.uberwidgets',
-    'courses.uberwidgets.text',
     'filestorage',
     'south',
-    )
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -158,52 +155,17 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-            },
-        }
+        },
+    }
 }
-
-# Email server settings
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = 'django_ses.SESBackend'
-EMAIL_SUBJECT_PREFIX = "[Uberlearner] "
-AWS_ACCESS_KEY_ID = 'AKIAIYSEGJ5HLGMDPP2Q'
-AWS_SECRET_ACCESS_KEY = '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'
-DEFAULT_FROM_EMAIL = 'abhin@uberlearner.com'
-
-# Authentication and registration constants
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = True
-ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Uberlearner] "
-LOGIN_REDIRECT_URLNAME = "account_user_profile"
-EMAIL_CONFIRMATION_DAYS = 7
-RECAPTCHA_PUBLIC_KEY = '6Ldk99ISAAAAAKBOZgQ8gyoaCKmHJ_2Pf-nhY4vv'
-RECAPTCHA_PRIVATE_KEY = '6Ldk99ISAAAAALgZgEV1PKpGYlcoKl1x40taL4jO'
-AUTH_PROFILE_MODULE = 'accounts.UserProfile'
-
-# Avatar related settings
-AVATAR_DEFAULT_SIZE = 150
-AVATAR_MAX_AVATARS_PER_USER = 1
-AVATAR_MAX_SIZE = 5 * 1024 * 1024 #5MB in bytes
 
 # Add to TEMPLATE_CONTEXT_PROCESSORS and AUTHENTICATION_BACKENDS
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS, AUTHENTICATION_BACKENDS
 TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
-    'django.core.context_processors.debug',
-    'allauth.context_processors.allauth',
-    'allauth.account.context_processors.account',
-    )
+)
 
 INTERNAL_IPS = ('192.168.1.65', '127.0.0.1')
-
-AUTHENTICATION_BACKENDS += (
-    'allauth.account.auth_backends.AuthenticationBackend',
-    )
-
-# Amazon S3 storage settings
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-# The current AWS_S3_CALLING_FORMAT is 'subdomain' and that is good enough for this
 
 # Course related settings
 COURSE_PHOTO_THUMB_SIZE = (80, 80)
@@ -226,3 +188,5 @@ THUMBNAIL_SUBDIR = 'thumbnails'
 FILESTORAGE_ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
 
 LOGGLY_TOKEN = 'e86b110d-d51d-4570-91f5-f566a80ad6e2'
+
+from aws_settings import *

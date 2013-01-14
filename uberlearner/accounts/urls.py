@@ -4,9 +4,9 @@ from accounts.forms import CaptchaSignupForm, ReplacementPrimaryAvatarForm
 from allauth.account import views as allauth_views
 from accounts import views as accounts_views
 from django.core.urlresolvers import reverse_lazy
+from courses.views import CourseList
 
 urlpatterns = patterns("",
-    url(r"^email/$", allauth_views.email, name="account_email"),
     url(r"^signup/$", accounts_views.signup, {
         'template_name': 'accounts/signup/index.html',
         'verification_sent_template': 'allauth/account/verification_sent.html',
@@ -14,7 +14,11 @@ urlpatterns = patterns("",
     }, name="account_signup"),
     url(r"^login/$", accounts_views.login, {
         'template_name': 'accounts/login/index.html',
-        'verification_sent_template': 'allauth/account/verification_sent.html',        
+        'verification_sent_template': 'allauth/account/verification_sent.html',
+        'extra_context': {
+            'main_js_module': 'uberlearner/js/main/base.js'
+        },
+        'logged_in_view': CourseList.as_view()
     }, name="account_login"),
     url(r"^password/change/$", allauth_views.password_change, name="account_change_password"),
     url(r"^password/set/$", allauth_views.password_set, name="account_set_password"),
@@ -22,12 +26,21 @@ urlpatterns = patterns("",
         'next_page': '/'
     }, name="account_logout"),
     
-    url(r"^confirm_email/(\w+)/$", "emailconfirmation.views.confirm_email", name="account_confirm_email"),
+    url(r"^confirm_email/(?P<key>\w+)/$", accounts_views.ConfirmEmailView.as_view(
+        email_confirm_template='accounts/email/confirmation/email_confirm.html',
+        email_confirmed_template='accounts/email/confirmation/email_confirmed.html',
+    ), name="account_confirm_email"),
     
     # password reset
-    url(r"^password/reset/$", allauth_views.password_reset, name="account_reset_password"),
-    url(r"^password/reset/done/$", allauth_views.password_reset_done, name="account_reset_password_done"),
-    url(r"^password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$", allauth_views.password_reset_from_key, name="account_reset_password_from_key"),
+    url(r"^password/reset/$", allauth_views.password_reset, {
+        'template_name': 'accounts/email/password_reset/password_reset.html'
+    }, name="account_reset_password"),
+    url(r"^password/reset/done/$", allauth_views.password_reset_done, {
+        'template_name': 'accounts/email/password_reset/password_reset_done.html'
+    }, name="account_reset_password_done"),
+    url(r"^password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$", accounts_views.password_reset_from_key, {
+        'template_name': 'accounts/email/password_reset/password_reset_from_key.html'
+    }, name="account_reset_password_from_key"),
     
     # user profile
     url(r"^profile/$", accounts_views.user_profile, name="account_user_profile"),

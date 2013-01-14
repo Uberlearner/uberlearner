@@ -1,5 +1,8 @@
 {% extends 'templated-base.html' %}
 {% load bootstrap_toolkit %}
+{% load flatpages %}
+{% url django.contrib.flatpages.views.flatpage url='/terms/' as terms_url %}
+{% url django.contrib.flatpages.views.flatpage url='/privacy/' as privacy_url %}
 
 {% block content %}
     <div class="row" xmlns="http://www.w3.org/1999/html">
@@ -20,9 +23,9 @@
                     <p>
                         <h6>
                             By signing up, you agree to our
-                            <a href={% url flatpages.terms %}>Terms of Use</a>
+                            <a href={{ terms_url }}>Terms of Use</a>
                             and
-                            <a href={% url flatpages.privacy %}>Privacy policy</a>
+                            <a href={{ privacy_url }}>Privacy policy</a>
                         </h6>
                     </p>
                 </div>

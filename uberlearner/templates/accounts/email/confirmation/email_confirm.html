@@ -1,0 +1,40 @@
+{% extends 'templated-base.html' %}
+{% load account %}
+
+{% block content_title %}
+    <h1>Confirm E-mail Address</h1>
+{% endblock %}
+
+{% block content %}
+
+    {% if confirmation %}
+        <br/>
+        <div class="row">
+        <div class="well span6">
+        <p>
+            {% with email=confirmation.email_address.email user_display=confirmation.email_address.user.profile.get_best_name %}
+                Please confirm that <a href="mailto:{{email}}">{{ email }}</a> is an e-mail address for user "{{ user_display }}".
+            {% endwith %}
+        </p>
+
+        <form method="post" action="">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Confirm</button>
+        </form>
+        </div>
+        </div>
+    {% else %}
+
+        {% url account_email as email_url %}
+        <div class="alert alert-danger">
+        <h3>Error!</h3>
+        <p>
+            This e-mail confirmation link expired or is invalid.
+            Please attempt to login with the email-address to issue a new confirmation link.
+        </p>
+        <p>
+            For more help, please {% include 'utils/snippets/contact_support_inline_link.html' %}.
+        </p>
+        </div>
+    {% endif %}
+{% endblock %}

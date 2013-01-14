@@ -1,11 +1,18 @@
+from allauth.account import signals
+from allauth.account.forms import ResetPasswordKeyForm
+from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.tokens import default_token_generator
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 import allauth.account
+import allauth.account.views
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
+from django.utils.http import base36_to_int
+from django.utils.translation import ugettext
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render_to_response, render
+from django.shortcuts import get_object_or_404, render_to_response, render, redirect
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from accounts.forms import UserProfileForm
@@ -92,5 +99,60 @@ def edit_user_profile(request):
             kwargs={'username': request.user.username})
     )
 
+class ConfirmEmailView(allauth.account.views.ConfirmEmailView):
+    """
+    This view class over-rides the one provided by django-allauth. The reason for the over-ride is to be
+    able to use a different template file name than the one that is hard-coded into django-allauth.
+    """
+    email_confirm_template = None
+    email_confirmed_template = None
 
+    def __init__(self, email_confirm_template='account/email_confirm.html',
+                 email_confirmed_template='account/email_confirmed.html', **kwargs):
+        self.email_confirm_template = email_confirm_template
+        self.email_confirmed_template = email_confirmed_template
+        super(ConfirmEmailView, self).__init__(**kwargs)
 
+    def get_template_names(self):
+        if self.request.method == "GET":
+            return [self.email_confirm_template]
+        elif self.request.method == "POST":
+            return [self.email_confirmed_template]
+
+def password_reset_from_key(request, uidb36, key, **kwargs):
+    """
+    This view replaces the view provided by allauth for the actual password reset. Since this view was
+    not a class, it could not be extended.
+    TODO: convert this view to a class-based view and send the changes upstream.
+    """
+    form_class = kwargs.get("form_class", ResetPasswordKeyForm)
+    template_name = kwargs.get("template_name", "account/password_reset_from_key.html")
+    token_generator = kwargs.get("token_generator", default_token_generator)
+
+    # pull out user
+    try:
+        uid_int = base36_to_int(uidb36)
+    except ValueError:
+        raise Http404
+
+    user = get_object_or_404(User, id=uid_int)
+
+    if token_generator.check_token(user, key):
+        if request.method == "POST":
+            password_reset_key_form = form_class(request.POST, user=user, temp_key=key)
+            if password_reset_key_form.is_valid():
+                password_reset_key_form.save()
+                messages.add_message(request, messages.SUCCESS,
+                    ugettext(u"Password successfully changed.")
+                )
+                signals.password_reset.send(sender=request.user.__class__,
+                    request=request, user=request.user)
+                password_reset_key_form = None
+                return redirect('account_login')
+        else:
+            password_reset_key_form = form_class()
+        ctx = { "form": password_reset_key_form, }
+    else:
+        ctx = { "token_fail": True, }
+
+    return render_to_response(template_name, RequestContext(request, ctx))
