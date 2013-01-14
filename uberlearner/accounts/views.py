@@ -1,15 +1,17 @@
 from allauth.account import signals
-from allauth.account.forms import ResetPasswordKeyForm
+from allauth.account.forms import ResetPasswordKeyForm, ChangePasswordForm
+from avatar.forms import UploadAvatarForm
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotAllowed
 import allauth.account
 import allauth.account.views
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.utils.http import base36_to_int
 from django.utils.translation import ugettext
+from django.views.decorators.http import require_POST, require_GET
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render_to_response, render, redirect
@@ -57,41 +59,69 @@ def user_profile(request):
                                 kwargs={'username': request.user.username}))
 
 @login_required
-def edit_user_profile_with_username(request, username=''):
+@require_GET
+def edit_user_profile_with_username(request, username):
     if request.user and request.user.username != username:
         raise PermissionDenied("You can't edit another user's profile")
-    user = get_object_or_404(User, username=username)
-    avatar, avatars = _get_avatars(request.user)
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, user=user)
-        if form.is_valid():
-            if 'avatar' in request.FILES:
-                avatar = Avatar(user=user, primary=True)
-                image_file = request.FILES['avatar']
-                avatar.avatar.save(image_file.name, image_file)
-                avatar.save()
-                avatar_updated.send(sender=Avatar, user=user, avatar=avatar)
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.profile.summary = form.cleaned_data['summary']
-            user.profile.save()
-            user.save()
-            messages.add_message(request, messages.SUCCESS, 'Your profile has been successfully updated')
-            return user_profile_with_username(request, '', user)
-        else:
-            messages.add_message(request, messages.ERROR, 'Your profile could not be updated')
+    user = request.user
+    avatar, avatars = _get_avatars(user)
+    if 'basic_info_form' in request.session:
+        basic_info_form = request.session.pop('basic_info_form')
     else:
-        form = UserProfileForm(initial={
+        basic_info_form = UserProfileForm(initial={
             'first_name': user.first_name,
             'last_name': user.last_name,
             'summary': user.profile.summary,
             'avatar': avatar
         }, user=user)
+    if 'change_password_form' in request.session:
+        change_password_form = request.session.pop('change_password_form')
+    else:
+        change_password_form = ChangePasswordForm(user=user)
 
-    return render(request, 'allauth/account/edit_profile.html', {
-        'form': form,
+    return render(request, 'allauth/account/edit_profile/index.html', {
+        'basic_info_form': basic_info_form,
+        'change_password_form': change_password_form,
         'main_js_module': 'uberlearner/js/accounts/profile-edit'
-    }) 
+    })
+
+@login_required
+@require_POST
+def edit_user_profile_basic_info(request, username):
+    if request.user and request.user.username != username:
+        raise PermissionDenied("You can't edit another user's profile")
+    user = request.user
+    avatar, avatars = _get_avatars(request.user)
+    form = UserProfileForm(request.POST, request.FILES, user=user)
+    if form.is_valid():
+        form.save()
+        messages.add_message(request, messages.SUCCESS, "Your profile has been successfully updated")
+        return redirect('account_user_profile_with_username', username=user.username)
+    else:
+        messages.add_message(request, messages.ERROR, "Your profile could not be updated")
+        request.session['basic_info_form'] = form
+        return redirect(reverse('account_edit_user_profile_with_username', kwargs={
+            'username':user.username
+        }) + '#!/basic-info-tab')
+
+@login_required
+@require_POST
+def edit_user_profile_change_password(request, username, **kwargs):
+    if request.user and request.user.username != username:
+        raise PermissionDenied("You can't edit another user's profile")
+    user = request.user
+
+    form = ChangePasswordForm(user, request.POST)
+    if form.is_valid():
+        form.save()
+        messages.add_message(request, messages.SUCCESS, "Password successfully updated")
+        return redirect('account_user_profile_with_username', username=user.username)
+    else:
+        messages.add_message(request, messages.ERROR, "Could not update password")
+        request.session['change_password_form'] = form
+        return redirect(reverse('account_edit_user_profile_with_username', kwargs={
+            'username':user.username
+        }) + "#!/accounts-tab")
 
 def edit_user_profile(request):
     return HttpResponseRedirect(

@@ -1,0 +1,33 @@
+{% extends "templated-base.html" %}
+
+{% load i18n %}
+{% load account %}
+{% load bootstrap_toolkit %}
+{% load avatar_tags %}
+
+{% block title %}{{block.super}} | {% trans "Edit Profile" %}{% endblock %}
+
+{% block content_title %}
+<h1>User settings</h1><br/>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="tabbable tabs-left">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#basic-info-tab" data-toggle="tab">Basic information</a></li>
+        <li><a href="#accounts-tab" data-toggle="tab">Accounts</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="basic-info-tab">
+            {% include 'allauth/account/edit_profile/basic_info.html' with form=basic_info_form %}
+        </div>
+        <div class="tab-pane" id="accounts-tab">
+            {% include 'allauth/account/edit_profile/accounts.html' with form=change_password_form %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+

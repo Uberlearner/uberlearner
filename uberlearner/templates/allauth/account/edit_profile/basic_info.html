@@ -1,0 +1,26 @@
+{% load bootstrap_toolkit %}
+
+<form action="{% url account_edit_user_profile_basic_info username=request.user.username %}" method="post"
+      enctype="multipart/form-data" class="form-horizontal">
+    {% csrf_token %}
+    <div class="span2" id="avatar">
+        {% with request.user as profile_owner %}
+            {% include 'avatar/profile_thumbnail.html' %}
+        {% endwith %}
+    </div>
+    <div class="span6 well">
+        {% if not form.avatar %}
+            <div class="alert alert-info">
+                <a class="close" data-dismiss="alert" href="#">×</a>
+                Note that if you never upload an avatar image, &Uuml;berlearner will fall-back to Gravatar.
+            </div>
+        {% endif %}
+        {{ form|as_bootstrap }}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <a class="btn btn-inverse" href="{% url account_user_profile_with_username username=request.user.username %}">
+                Cancel
+            </a>
+        </div>
+    </div>
+</form>

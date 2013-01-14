@@ -1,4 +1,6 @@
-from allauth.account.forms import SignupForm
+from allauth.account.forms import SignupForm, ChangePasswordForm
+from avatar.models import Avatar
+from avatar.signals import avatar_updated
 from captcha.fields import ReCaptchaField
 from django import forms
 from main.widgets import DateWidget
@@ -26,6 +28,19 @@ class UserProfileForm(UploadAvatarForm):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         self.fields['avatar'].required = False
         self.clean_avatar = self.wrap_clean_avatar(self.clean_avatar)
+
+    def save(self):
+        if 'avatar' in self.files:
+            avatar = Avatar(user=self.user, primary=True)
+            image_file = self.files['avatar']
+            avatar.avatar.save(image_file.name, image_file)
+            avatar.save()
+            avatar_updated.send(sender=Avatar, user=self.user, avatar=avatar)
+        self.user.first_name = self.cleaned_data['first_name']
+        self.user.last_name = self.cleaned_data['last_name']
+        self.user.profile.summary = self.cleaned_data['summary']
+        self.user.profile.save()
+        self.user.save()
         
 class ReplacementPrimaryAvatarForm(forms.Form):    
     def __init__(self, *args, **kwargs):

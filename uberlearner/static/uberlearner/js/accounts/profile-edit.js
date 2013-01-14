@@ -1,2 +1,2 @@
-require(['jquery', 'jquery-ui', 'bootstrap', 'uberlearner/js/utils/messages/viewmodel'], function($) {
+require(['jquery', 'jquery-ui', 'bootstrap', 'bootstrap-tab', 'uberlearner/js/utils/messages/viewmodel'], function($) {
 });
