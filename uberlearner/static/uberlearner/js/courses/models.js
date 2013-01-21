@@ -37,9 +37,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
 
         //TODO: the ui stuff doesn't belong in the model. take it out.
         self.isSaveButtonDisabled = ko.computed(function() {
-            if (self.saving() || self.inSync())
-                return true;
-            return false;
+            return (self.saving() || self.inSync());
         });
 
         self.title.subscribe(function(newValue) {
@@ -80,7 +78,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
                 title: self.title(),
                 html: self.html()
             };
-        }
+        };
         self.save = function() {
             var uri, method;
             if (self.resourceUri && self.id != -1) {
@@ -124,7 +122,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
             });
         };
 
-        self.delete = function() {
+        self.del = function() {
             if (self.resourceUri) {
                 // only if the object exists on the server does this request get made
                 $.ajax({
@@ -151,7 +149,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
                 });
             }
         };
-    }
+    };
 
     Models.Instructor = function(data) {
         if (typeof(data) == 'undefined') {
@@ -172,7 +170,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
                 return this.firstName + ' ' + this.lastName;
             }
         };
-    }
+    };
 
     Models.Course = function (data) {
         var self = this;
