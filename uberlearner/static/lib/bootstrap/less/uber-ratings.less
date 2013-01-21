@@ -1,0 +1,38 @@
+.rating {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  font-size: @ratingStarSize;
+
+  span.star {
+    font-family: FontAwesome;
+    font-weight: normal;
+    font-style: normal;
+    display: inline-block;
+
+    &:before {
+      content: @emptyRatingStarCharacter;
+      color: @nonRatableStarColor;
+      padding-right: 5px;
+    }
+
+    &.selected {
+      &:before, &~span:before {
+        content: @filledRatingStarCharacter;
+      }
+    }
+  }
+  &.ratable {
+    span.star {
+      &:before {
+        color: @ratableStarColor;
+      }
+      &:hover {
+        cursor: pointer;
+        &:before, &~span:before {
+          content: @filledRatingStarCharacter;
+          color: lighten(@red, 20%);
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,9 @@
+import json
 from django.conf.urls import url
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
+from django.views.decorators.http import require_POST, require_http_methods
 from easy_thumbnails.files import get_thumbnailer
 from tastypie.authentication import Authentication
 from tastypie.exceptions import ImmediateHttpResponse, BadRequest
@@ -17,6 +19,9 @@ from django.contrib.auth.models import User
 from tastypie.constants import ALL_WITH_RELATIONS
 from django.core.urlresolvers import reverse
 import time
+from django.conf import settings
+
+MAX_COURSE_SCORE = settings.COURSE_RATING_RANGE
 
 class UserResource(ModelResource):
     class Meta:
@@ -37,7 +42,7 @@ class UserResource(ModelResource):
 class PageResource(ModelResource):
     class Meta:
         queryset = Page.objects.all()
-        authentication = Authentication()
+        authentication = UberAuthentication()
         #authorization = UberAuthorization()
         resource_name = 'pages'
         serializer = UberSerializer()
@@ -141,15 +146,22 @@ class CourseResource(ModelResource):
         }
         serializer = UberSerializer()
         include_absolute_url = True
-        excludes = []
+        excludes = ['rating_score']
 
     def prepend_urls(self):
         return [
             url(r'^(?P<resource_name>{resource})/(?P<pk>\w[\w/-]*)/enroll{slash}'.format(
                 resource=self._meta.resource_name,
                 slash=trailing_slash()
-            ), self.wrap_view('enroll'), name='api_course_enroll')
+            ), self.wrap_view('enroll'), name='api_course_enroll'),
+            url(r'^(?P<resource_name>{resource})/(?P<pk>\w[\w/-]*)/rate{slash}'.format(
+                resource=self._meta.resource_name,
+                slash=trailing_slash()
+            ), self.wrap_view('rate'), name='api_course_rate'),
         ]
+
+    def _format_rating(self, rating):
+        return "{:.1f}".format(rating)
 
     def enroll(self, request, **kwargs):
         """
@@ -184,6 +196,45 @@ class CourseResource(ModelResource):
             # now that we have the course and the user, we should enroll the user in the course
             enrollment, created = Enrollment.objects.get_or_create(student=request.user, course=course)
             return HttpNoContent()
+
+    def rate(self, request, **kwargs):
+        """
+        This method is used by the client to let the user rate a particular course.
+        Only post requests will be allowed. The response will contain a set of parameters
+        indicating the new ratings of the course (weighted, unweighted and user).
+        """
+        # if the request is not of the desired types, then deny
+        if request.method != 'POST':
+            return BadRequest("Only a POST is allowed at this endpoint")
+
+        # if the user is not authenticated then deny
+        if not self._meta.authentication.is_authenticated(request):
+            return HttpForbidden("Operation not authorized")
+
+        try:
+            course = self.cached_obj_get(request=request, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI")
+
+        #In order for a user to rate a course, the user must be enrolled in that course
+        if not course.is_enrolled(request.user):
+            return HttpForbidden("You have to be enrolled in a course to rate it")
+
+        score = int(request.POST['score'])
+        if not (score >= 1 and score <= MAX_COURSE_SCORE):
+            return HttpForbidden('Scores for courses have to be between 1 and 5 (inclusive)')
+
+        response = course.rating.add(score=score, user=request.user, ip_address=request.META['REMOTE_ADDR'], commit=True)
+
+        if 'status_code' not in response or response.status_code == 200:
+            return HttpResponse(self._meta.serializer.to_json({
+                'overall_weighted_rating': course.rating.get_rating(),
+                'overall_unweighted_rating': self._format_rating(course.rating.get_real_rating()),
+            }))
+        else:
+            return response
 
     def apply_filters(self, request, applicable_filters):
         # if the filters list has instructor, then modify its value to be the actual user
@@ -229,6 +280,9 @@ class CourseResource(ModelResource):
         cover the scenario where there are no pages in the course. More importantly, it leaves some flexibility into
         the system.
         2) Adds the url of the thumbnail version of the photo.
+        3) Adds the overall rating of the course.
+        4) Adds the user's rating for the course if the user is not anonymous.
+        5) Adds the url at which ratings can be posted.n
         """
         from uberlearner.urls import v1_api
         if bundle.obj and bundle.data:
@@ -236,13 +290,23 @@ class CourseResource(ModelResource):
                 'resource_name': PageResource._meta.resource_name,
                 'api_name': v1_api.api_name
             })
+
             if bundle.obj.photo:
                 bundle.data['thumbnail'] = get_thumbnailer(bundle.obj.photo)['tile'].url
             bundle.data['creationTimePrecise'] = str(time.mktime(bundle.obj.creation_timestamp.timetuple())*1000)
+
             if bundle.request.user.is_anonymous():
                 bundle.data['enrolled'] = None
             elif bundle.obj.enrollments.filter(student=bundle.request.user).exists():
                 bundle.data['enrolled'] = True
             else:
                 bundle.data['enrolled'] = False
+
+            bundle.data['overall_unweighted_rating'] = self._format_rating(bundle.obj.rating.get_real_rating())
+            bundle.data['overall_weighted_rating'] = bundle.obj.rating.get_rating()
+
+            if not bundle.request.user.is_anonymous():
+                bundle.data['user_rating'] = bundle.obj.rating.get_rating_for_user(bundle.request.user)
+
+            bundle.data['rating_resource_uri'] = bundle.obj.get_rating_resource_uri()
         return bundle

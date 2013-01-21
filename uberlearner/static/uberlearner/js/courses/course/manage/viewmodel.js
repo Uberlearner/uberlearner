@@ -142,6 +142,9 @@ define([
                 contentType: 'application/json',
                 dataType: 'json',
                 processData: false,
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-CSRFToken', $('input[name=csrfmiddlewaretoken]').val());
+                },
                 success: function(data, textStatus, jqXHR) {
                     console.log("success data: " + data);
                     console.log("success textStatus: " + textStatus);

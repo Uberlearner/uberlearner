@@ -101,6 +101,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
                 processData: false,
                 beforeSend: function(jqXHR, settings) {
                     self.saving(true);
+                    jqXHR.setRequestHeader('X-CSRFToken', $('input[name=csrfmiddlewaretoken]').val());
                 },
                 complete: function(jqXHR, textStatus) {
                     self.saving(false);
@@ -133,6 +134,9 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
                     contentType: 'application/json',
                     dataType: 'json',
                     processData: false,
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-CSRFToken', $('input[name=csrfmiddlewaretoken]').val());
+                    },
                     success: function() {
                         console.log("'" + self.title() + "' page deleted successfully");
                         $('#page-delete-warning-modal').modal('hide');
@@ -195,6 +199,11 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
         self.thumbnail = data.thumbnail || '';
         self.creationTimePrecise = data.creationTimePrecise || '';
         self.enrolled = data.enrolled || false;
+        self.overallUnweightedRating = ko.observable(data.overallUnweightedRating || 0.0);
+        self.overallWeightedRating = ko.observable(data.overallWeightedRating || 0.0);
+        self.userRating = ko.observable(data.userRating);
+        self.votes = ko.observable(data.ratingVotes || 0);
+        var ratingResourceUri = data.ratingResourceUri;
 
         self.truncatedDescription = function(length) {
             if (self.description.length > length) {
@@ -202,8 +211,48 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
             } else {
                 return self.description;
             }
-        }
-    }
+        };
+        /**
+         * This method returns the rating of the course that should be displayed to the user.
+         */
+        self.displayedRating = ko.computed(function() {
+            if (typeof(self.userRating()) === 'undefined') {
+                return self.overallUnweightedRating();
+            } else {
+                return self.userRating();
+            }
+        });
+        self.rate = function(userRating) {
+            if (ratingResourceUri) {
+                $.ajax({
+                    type: 'POST',
+                    url: ratingResourceUri,
+                    data: {
+                        score: userRating
+                    },
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-CSRFToken', $('input[name=csrfmiddlewaretoken]').val());
+                    },
+                    success: function(data, textStatus, jqXHR) {
+                        if (!self.userRating()) { //covers null, undefined and 0
+                            //if the user is voting the first time, then increment the vote count that the user sees.
+                            self.votes(self.votes()+1);
+                        }
+                        self.userRating(userRating);
+                        self.overallUnweightedRating(data.overallUnweightedRating);
+                        self.overallWeightedRating(data.overallWeightedRating);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        messages.error('The course could not be rated');
+                    }
+                });
+            } else {
+                messages.error('The course could not be rated');
+            }
+        };
+    };
 
     return Models;
 });
