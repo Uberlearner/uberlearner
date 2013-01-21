@@ -9,6 +9,7 @@ from django.template.defaultfilters import slugify
 from storages.backends.s3boto import S3BotoStorage
 from main.models import TimestampedModel
 from django.db.models.signals import post_save
+from ratings.fields import RatingField
 
 ################################
 # Main models
@@ -101,7 +102,7 @@ class Course(TimestampedModel):
         ),
         thumbnail_storage=S3BotoStorage(
             location='courses',
-            reduced_redundancy=True, #this saves money!,
+            reduced_redundancy=True, #this saves money!
             querystring_auth=False
         ),
         default='defaultCourseImage.png',
@@ -110,7 +111,8 @@ class Course(TimestampedModel):
     description = models.TextField(blank=True)
     language = models.CharField(max_length=5, choices=settings.LANGUAGES, default='en')
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the course has been enrolled in
-    #rating = models.FloatField(default=0, editable=False)
+    rating = RatingField(range=settings.COURSE_RATING_RANGE, can_change_vote=True, allow_delete=False,
+        allow_anonymous=False, use_cookies=False, weight=settings.COURSE_RATING_WEIGHT)
     is_public = models.BooleanField(default=False, help_text="If checked, it will enable anyone to see your course.")
     students = models.ManyToManyField(User, through=Enrollment, blank=True, null=True, related_name='enrolled_courses')
     # a boolean used to mark courses deleted without actually deleting them
@@ -147,6 +149,12 @@ class Course(TimestampedModel):
 
     def get_enrollment_resource_uri(self):
         return self.get_resource_uri(url_name='api_course_enroll')
+
+    def get_rating_resource_uri(self):
+        return self.get_resource_uri(url_name='api_course_rate')
+
+    def is_enrolled(self, user):
+        return self.enrollments.filter(student=user).exists()
 
     def clean(self):
         """

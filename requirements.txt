@@ -13,3 +13,4 @@ easy-thumbnails
 python-magic>=0.4.3
 hoover
 -e git+https://github.com/madzak/python-json-logger.git@eafd89ae42dd7db2cedd80614e3b561378bdc413#egg=python-json-logger
+django-ratings==0.3.7

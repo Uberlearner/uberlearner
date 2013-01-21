@@ -114,6 +114,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
     'django.contrib.admin',
+    'djangoratings',
     'storages',
     'main',
     'allauth',
@@ -167,10 +168,6 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 
 INTERNAL_IPS = ('192.168.1.65', '127.0.0.1')
 
-# Course related settings
-COURSE_PHOTO_THUMB_SIZE = (80, 80)
-COURSE_PHOTO_THUMB_QUALITY = 85
-COURSE_PHOTO_THUMB_FORMAT = "JPEG"
 THUMBNAIL_ALIASES = {
     '': {
         'thumbnail': {
@@ -188,5 +185,7 @@ THUMBNAIL_SUBDIR = 'thumbnails'
 FILESTORAGE_ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
 
 LOGGLY_TOKEN = 'e86b110d-d51d-4570-91f5-f566a80ad6e2'
+
+SITE_WIDE_AVERAGE_RATING = 3
 
 from aws_settings import *

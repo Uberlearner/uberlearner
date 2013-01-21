@@ -4,9 +4,18 @@
             <h4>Private course</h4>
             <p>Others can't see this course just yet!</p>
         </div>
-        <div data-bind="visible: enrolled">
+        <div class="enrolled-row" data-bind="visible: enrolled">
             <span class="label label-success pull-right">Enrolled!</span>
-            <br/><br/>
+            <br/>
+        </div>
+        <div class="rating-row">
+            <span class="badge badge-info" data-bind="attr: {title: votes() + ' vote' + (votes() !== 1 ? 's' : '')}">
+                <span data-bind="text: overallUnweightedRating"></span>/5.0
+            </span>
+            <span class="pull-right badge">
+                <span data-bind="text: popularity"></span>
+                enrollments
+            </span>
         </div>
         <img data-bind="attr: { src: thumbnail }" class="course-tile-image"/>
         <a data-bind="attr: { href: absoluteUrl }">
