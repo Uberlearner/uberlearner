@@ -75,6 +75,12 @@ require([
                     sortAscending: false
                 });
             };
+            var sortAsTopRatedFirst = function() {
+                isotope({
+                    sortBy: 'rating',
+                    sortAscending: false
+                });
+            };
 
             /* View related methods */
             var loadMoreButtonText = ko.computed(function() {
@@ -101,6 +107,10 @@ require([
                         dateCreated: function($elem) {
                             var course = ko.dataFor($elem.context);
                             return course.creationTimePrecise;
+                        },
+                        rating: function($elem) {
+                            var course = ko.dataFor($elem.context);
+                            return course.overallWeightedRating();
                         }
                     }
                 });
@@ -116,6 +126,7 @@ require([
                 loading: loading,
                 sortAsPopularFirst: sortAsPopularFirst,
                 sortAsNewestFirst: sortAsNewestFirst,
+                sortAsTopRatedFirst: sortAsTopRatedFirst,
                 loadMoreButtonText: loadMoreButtonText
             };
         };
