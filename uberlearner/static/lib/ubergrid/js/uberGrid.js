@@ -1,10 +1,10 @@
 define([
     'jquery',
     'ko',
-    'text!lib/ubergrid/templates/sorting_options.html',
-    'text!lib/ubergrid/templates/page_links.html',
-    'text!lib/ubergrid/templates/grid.html',
-    'text!lib/ubergrid/templates/default_text.html'
+    'lib/ubergrid/templates/sorting_options',
+    'lib/ubergrid/templates/page_links',
+    'lib/ubergrid/templates/grid',
+    'lib/ubergrid/templates/default_text'
 ], function ($, ko, sortingOptions, pageLinks, grid, defaultText) {
     var uberGrid = {
         viewModel: function (configuration) {
@@ -150,11 +150,16 @@ define([
 
     // Templates used to render the grid
     var templateEngine = new ko.nativeTemplateEngine();
+    /*
+    * The following code was required when requirejs was being used to load the templates. But since stupid
+    * internet exploder has a problem with that, the html files were converted to js file that insert the
+    * appropriate code into the html themselves.
     $(function() {
         [sortingOptions, pageLinks, grid, defaultText].forEach(function(html) {
             $('body').append($(html));
         });
     });
+    */
 
     // The ubergrid url binding
     ko.bindingHandlers.uberGridUrl = {
