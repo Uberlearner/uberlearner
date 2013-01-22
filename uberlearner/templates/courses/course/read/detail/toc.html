@@ -18,7 +18,7 @@ the course model.
             {% if page.estimated_effort %}
                 <span class="badge badge-info pull-right">{{ page.estimated_effort|humanize_minutes }}</span><br/>
             {% endif %}
-            <p>{{ page.summary }}</p>
+            {% if page.summary %}<p>{{ page.summary }}</p>{% endif %}
             {% if not forloop.last %}
                 <hr/>
             {% endif %}
