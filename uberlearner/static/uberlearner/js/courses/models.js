@@ -5,6 +5,8 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
         self.slug = ko.observable();
         self.title = ko.observable();
         self.html = ko.observable();
+        self.summary = ko.observable();
+        self.estimatedEffort = ko.observable();
         /**
          * When the model is syncing with the server, it needs to keep the user involved. Some parameters in the
          * UI need to be changed to show the user what is going on. The saving attribute is used by some UI elements.
@@ -40,8 +42,11 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
             return (self.saving() || self.inSync());
         });
 
-        self.title.subscribe(function(newValue) {
-            self.inSync(false);
+        //if any of the parametrs change, then make inSync false
+        $.each([self.title, self.estimatedEffort, self.summary], function(idx, observable) {
+            observable.subscribe(function() {
+                self.inSync(false);
+            });
         });
 
         self.populate = function(data) {
@@ -54,6 +59,8 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
             self.resourceUri = data.resourceUri;
             self.slug(data.slug);
             self.title(data.title);
+            self.summary(data.summary);
+            self.estimatedEffort(data.estimatedEffort);
             self.html(data.html);
         };
 
@@ -76,10 +83,13 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
                 resourceUri: self.resourceUri,
                 slug: self.slug(),
                 title: self.title(),
-                html: self.html()
+                html: self.html(),
+                estimatedEffort: self.estimatedEffort(),
+                summary: self.summary()
             };
         };
-        self.save = function() {
+        self.save = function(data) {
+            data = data || {};
             var uri, method;
             if (self.resourceUri && self.id != -1) {
                 //This object has a record on the server already.
@@ -103,6 +113,8 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
                 },
                 complete: function(jqXHR, textStatus) {
                     self.saving(false);
+                    if (typeof(data.onComplete) === 'function')
+                        data.onComplete();
                 },
                 success: function(data, textStatus, jqXHR) {
                     if (data.resourceUri)

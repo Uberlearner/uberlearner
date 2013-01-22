@@ -189,9 +189,12 @@ define([
         self.goBack = function() {
             var currentPage = self.currentPage();
             if (currentPage) {
-                currentPage.save();
+                currentPage.save({
+                    onComplete: function() {
+                        window.location.href = self.backUrl();
+                    }
+                });
             }
-            window.location.href = self.backUrl();
         };
     };
     return ManageCourseViewModel;

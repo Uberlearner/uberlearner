@@ -1,10 +1,9 @@
-import sys
-from django.core.management.base import BaseCommand, CommandError
+from allauth.account.models import EmailAddress
+from django.core.management.base import BaseCommand
 from optparse import make_option
 from django.template.loader import render_to_string
-from emailconfirmation.models import EmailConfirmation, EmailAddress
 from courses.models import *
-from django.contrib.auth.models import User, UserManager
+from django.contrib.auth.models import User
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -18,8 +17,6 @@ class Command(BaseCommand):
     
     args = '<number of entries to be created>'
     help = 'Creates fake data for the Uberlearner project'
-
-    page_text = render_to_string('insert_fake_data/page.html', {})
             
     def _add_fake_data_to_courses(self, num):
         # create a pool of instructors
@@ -57,7 +54,9 @@ class Command(BaseCommand):
             Page(
                 course=course,
                 title='sample page ' + str(idx),
-                html= self.page_text
+                html=render_to_string('insert_fake_data/page.html', {'number': idx}),
+                estimated_effort='123',
+                summary="In this section, we will take an in-depth look into foo and bar"
             ).save()
     
     def handle(self, *args, **options):

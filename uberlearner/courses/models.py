@@ -109,6 +109,7 @@ class Course(TimestampedModel):
         blank=True
     )
     description = models.TextField(blank=True)
+
     language = models.CharField(max_length=5, choices=settings.LANGUAGES, default='en')
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the course has been enrolled in
     rating = RatingField(range=settings.COURSE_RATING_RANGE, can_change_vote=True, allow_delete=False,
@@ -214,7 +215,12 @@ class Page(TimestampedModel):
     """
     course = models.ForeignKey(Course, related_name='pages')
     #TODO: slug = models.SlugField(max_length=50)
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, help_text="50 characters max")
+    summary = models.CharField(max_length=300, help_text="300 characters max", null=True, blank=True)
+    estimated_effort = models.PositiveIntegerField(
+        help_text="Estimated study-time for this page (in minutes)",
+        null=True, blank=True
+    )
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the page has been viewed
     html = models.TextField()
     
