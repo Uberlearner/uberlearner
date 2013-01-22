@@ -24,7 +24,6 @@
                 <span class="label label-info pull-right">{{course.popularity}} enrollment{{course.popularity|pluralize}}</span>
             </li>
         </ul>
-        {% include 'courses/course/read/detail/toc.html' %}
 	</div>
 	<div class="span9">
 		{% if not course.is_public %}
@@ -97,6 +96,12 @@
                 {% if course.description %}
                     {{course.description|linebreaks}}
                 {% endif %}
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="span9">
+                {% include 'courses/course/read/detail/toc.html' %}
             </div>
         </div>
 	</div>

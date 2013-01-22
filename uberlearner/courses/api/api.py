@@ -11,6 +11,7 @@ from tastypie.http import HttpGone, HttpMultipleChoices, HttpNoContent, HttpForb
 from tastypie.resources import ModelResource, convert_post_to_patch
 from tastypie import fields, http
 from tastypie.utils import trailing_slash
+import types
 from courses.api.authentication import UberAuthentication
 from courses.api.authorization import UberAuthorization
 from courses.api.serializers import UberSerializer
@@ -68,6 +69,17 @@ class PageResource(ModelResource):
             if page.course.instructor != request.user and not request.user.is_superuser:
                 raise ImmediateHttpResponse(response=http.HttpUnauthorized())
         return super(PageResource, self).obj_update(bundle, request, skip_errors, **kwargs)
+
+    def hydrate_estimated_effort(self, bundle):
+        if 'estimated_effort' in bundle.data:
+            effort = bundle.data['estimated_effort']
+            if isinstance(effort, basestring):
+                effort = effort.strip()
+                if effort:
+                    bundle.data['estimated_effort'] = int(effort)
+                else:
+                    bundle.data['estimated_effort'] = None
+        return bundle
 
     def patch_list(self, request, **kwargs):
         """

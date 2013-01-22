@@ -4,12 +4,11 @@
 
 {% block content_title %}
     <div class="row">
-        <div class="span6">
+        <div class="span12">
             <h1>Manage: {{ course.title }}</h1><br>
         </div>
         {% comment %}
         Unfortunately, the back button is being placed in the content_title block because of the positional requirements.
-        {% endcomment %}
         <div class="span6" data-bind="urlList: { backUrl: '{% url course.view course.instructor.username course.slug %}' }">
             <span class="pull-right">
                 <a href="javascript: void(0)" class="btn btn-primary" data-bind="click: goBack">
@@ -17,6 +16,7 @@
                 </a>
             </span>
         </div>
+        {% endcomment %}
     </div>
 {% endblock %}
 
@@ -58,7 +58,9 @@
             <div class="row" data-bind="slideVisible: !isPreviewModeOn()">
                 {% comment %}Div that is visible if there are pages in the course{% endcomment %}
                 <div class="span9" data-bind="visible: course().pages().length">
-                    <span class="pull-right">
+                    <div class="row">
+                    <div class="span9">
+                    <span class="pull-right" data-bind="urlList: { backUrl: '{% url course.view course.instructor.username course.slug %}' }">
                         <button class="btn btn-primary"
                                 href="javascript: void(0);"
                                 data-bind="click: function(){currentPage() && currentPage().save()},
@@ -72,12 +74,47 @@
                                            click: togglePreviewMode">
                             Preview
                         </button>
+                        <a href="javascript: void(0)" class="btn btn-primary" data-bind="click: goBack">
+                            <i class="icon-home"></i> Course home
+                        </a>
                     </span>
-                    <br>
-                    <label for="page-title">Page title: </label>
-                    <input type="text" id="page-title" placeholder="Please make it relevant to the page content"
-                           data-bind="value: currentPage() && currentPage().title"/><br><br>
-
+                    </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                    <div class="span9">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <div class="control-group">
+                                <label for="page-title" class="control-label">Title: </label>
+                                <div class="controls">
+                                    <input type="text" id="page-title" class=""
+                                           placeholder="Please make it relevant to the page content"
+                                           data-bind="value: currentPage() && currentPage().title"/>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="page-summary" class="control-label">Summary: </label>
+                                <div class="controls">
+                                    <textarea id="page-summary" class="" placeholder="300 characters max."
+                                          data-bind="value: currentPage() && currentPage().summary"></textarea>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="page-estimated-effort" class="control-label">Estimated effort:</label>
+                                <div class="controls">
+                                    <div class="input-append">
+                                        <input type="text" id="page-estimated-effort"
+                                               data-bind="value: currentPage() && currentPage().estimatedEffort"
+                                               placeholder="Estimated study time"
+                                               class="span3"/><span class="add-on">minutes</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    </div>
+                    </div>
                     {% comment %}THE WYSIWYG EDITOR{% endcomment %}
                     <textarea class="editor" data-bind="ckeditor: currentHtml,
                     ckeditorOptions: { customConfig: '{{ STATIC_URL }}uberlearner/js/main/ckeditorCustomConfig.js' },

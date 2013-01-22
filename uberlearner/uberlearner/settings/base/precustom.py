@@ -115,6 +115,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.admin',
     'djangoratings',
+    'humanize',
     'storages',
     'main',
     'allauth',

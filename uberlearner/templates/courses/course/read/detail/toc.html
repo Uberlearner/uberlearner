@@ -3,17 +3,26 @@ This template generates the table-of-contents of a given page. It expects the co
 the course model.
 {% endcomment %}
 
+{% load humanize %}
+
 {% if not course.pages.all %}
 <div class="alert alert-info">
     <p>This course currently has no pages!</p>
 </div>
 {% else %}
-<div class="well well-small">
-    <ul class="nav nav-list">
-        <li class="nav-header">Table of contents</li>
-        {% for page in course.pages.all %}
-            <li><i class="icon-file"></i> {{ page.title }}</li>
-        {% endfor %}
-    </ul>
-</div>
+<h2>Table of contents</h2>
+<ul class="nav nav-list toc well">
+    {% for page in course.pages.all %}
+        <li>
+            <i class="icon-file"></i> <span class="toc-page-header">{{ page.title }}</span>
+            {% if page.estimated_effort %}
+                <span class="badge badge-info pull-right">{{ page.estimated_effort|humanize_minutes }}</span><br/>
+            {% endif %}
+            <p>{{ page.summary }}</p>
+            {% if not forloop.last %}
+                <hr/>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
 {% endif %}
