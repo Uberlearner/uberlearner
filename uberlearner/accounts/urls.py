@@ -11,6 +11,7 @@ urlpatterns = patterns("",
         'template_name': 'accounts/signup/index.html',
         'verification_sent_template': 'allauth/account/verification_sent.html',
         'form_class': CaptchaSignupForm,
+        'redirect_field_name': ''
     }, name="account_signup"),
     url(r"^login/$", accounts_views.login, {
         'template_name': 'accounts/login/index.html',
@@ -57,6 +58,6 @@ urlpatterns = patterns("",
         name="account_edit_user_profile_change_password"),
     url(r"^profile/(?P<username>[0-9a-zA-Z@.+-_]+)/edit/basic-info/$", accounts_views.edit_user_profile_basic_info,
         name="account_edit_user_profile_basic_info"),
-    url(r"^profile/(?P<username>[0-9a-zA-Z@.+-_]+)/$", accounts_views.user_profile_with_username,
+    url(r"^profile/(?P<username>[0-9a-zA-Z@.+-_]+)/$", accounts_views.UserProfileWithUsername.as_view(),
         name="account_user_profile_with_username"),
 )

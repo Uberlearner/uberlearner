@@ -1,0 +1,8 @@
+<hr/>
+<h2>Courses taught:</h2>
+<div    id="instructor-course-list"
+        class="span8 offset1"
+        data-bind="	uberGridUrl: '/api/v1/courses/',
+                    uberGrid: gridViewModel,
+                    uberGridGetParams: {'instructor': '{{profile_owner.username}}'}">
+</div>

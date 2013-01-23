@@ -12,6 +12,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.http import base36_to_int
 from django.utils.translation import ugettext
 from django.views.decorators.http import require_POST, require_GET
+from django.views.generic import TemplateView
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render_to_response, render, redirect
@@ -46,12 +47,14 @@ def signup(request, **kwargs):
     else:
         return allauth.account.views.signup(request, **kwargs)
 
-def user_profile_with_username(request, username='', user=None):
-    if not user:
-        user = get_object_or_404(User, username=username)
-    return render_to_response('allauth/account/view_profile.html',
-                              {'profile_owner': user, 'main_js_module': 'uberlearner/js/main/base'},
-                              context_instance=RequestContext(request))
+class UserProfileWithUsername(TemplateView):
+    template_name = 'allauth/account/view_profile/index.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super(UserProfileWithUsername, self).get_context_data(**kwargs)
+        context_data['profile_owner'] = get_object_or_404(User, username=kwargs['username'])
+        context_data['main_js_module'] = 'uberlearner/js/accounts/profile-view.js'
+        return context_data
 
 @login_required
 def user_profile(request):

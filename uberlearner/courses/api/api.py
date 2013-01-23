@@ -36,7 +36,7 @@ class UserResource(ModelResource):
         serializer = UberSerializer()
         
     def dehydrate(self, bundle):
-        bundle.data['absolute_url'] = reverse('course.by_user', kwargs={'username': bundle.obj.username})
+        bundle.data['absolute_url'] = reverse('account_user_profile_with_username', kwargs={'username': bundle.obj.username})
         bundle.data['best_name'] = bundle.obj.profile.get_best_name()
         return bundle
 
