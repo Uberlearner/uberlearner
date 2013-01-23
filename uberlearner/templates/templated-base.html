@@ -36,7 +36,8 @@
 							<li><a href={% url account_logout %}>Logout</a></li>
 						</ul>
 				{% else %}
-					<a class="btn btn-primary" href={% url account_login %}>Login</a>
+                    {% url account_login as login_url %}
+					<a class="btn btn-primary" href={% add_get_params login_url next=request.path %}>Login</a>
 					<a class="btn" href={% url account_signup %}>Sign Up</a>
 				{% endif %}
 			</div>

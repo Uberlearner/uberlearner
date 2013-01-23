@@ -1,3 +1,4 @@
+import urllib
 from django import template
 from django.core.urlresolvers import reverse
 
@@ -16,3 +17,11 @@ def navactive (request, urls, css_active_class="active", css_inactive_class=""):
     if request.path in (reverse(url) for url in urls.split()):
         return css_active_class
     return css_inactive_class
+
+@register.simple_tag
+def add_get_params(url, **params):
+    url += '?'
+    for key, value in params.iteritems():
+        url += urllib.quote(key, '') + '=' + urllib.quote(value, '')
+
+    return url

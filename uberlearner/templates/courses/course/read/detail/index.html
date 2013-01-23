@@ -1,5 +1,6 @@
 {% extends 'templated-base.html' %}
 {% load thumbnail %}
+{% load navigation_tags %}
 {% block title %}{{block.super}} | {{course.title}}{% endblock %}
 
 {% block content %}
@@ -44,7 +45,8 @@
                 <div class="alert alert-info">
                     <h4>
                         You cannot enroll into a course without
-                        <a href="{% url account_login %}" class="btn btn-success"> logging in </a> first.
+                        {% url account_login as login_url %}
+                        <a href="{% add_get_params login_url next=request.path %}" class="btn btn-success"> logging in </a> first.
                     </h4>
                 </div>
                 {% endif %}
