@@ -3,12 +3,8 @@ from django.conf import settings
 # Email server settings
 from django.core.urlresolvers import reverse_lazy
 
-if settings.DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    EMAIL_BACKEND = 'django_ses.SESBackend'
 EMAIL_SUBJECT_PREFIX = "[Uberlearner] "
-DEFAULT_FROM_EMAIL = 'abhin@uberlearner.com'
+DEFAULT_FROM_EMAIL = 'mailman@uberlearner.com'
 
 # Authentication and registration constants
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
@@ -30,7 +26,13 @@ AVATAR_DEFAULT_SIZE = 150
 AVATAR_MAX_AVATARS_PER_USER = 1
 AVATAR_MAX_SIZE = 5 * 1024 * 1024 #5MB in bytes
 
-TEMPLATE_CONTEXT_PROCESSORS = settings.TEMPLATE_CONTEXT_PROCESSORS + (
+# Note: Because of the way the settings files are imported, a request context processor was added to the
+# TEMPLATE_CONTEXT_PROCESSORS in the __init__ file. This change will not show up in the settings object till the
+# parsing of the settings files is over. This means that instead of importing from the django.conf.settings object,
+# we have to import directy from the base.__ini__ module.
+
+from __init__ import TEMPLATE_CONTEXT_PROCESSORS
+TEMPLATE_CONTEXT_PROCESSORS = TEMPLATE_CONTEXT_PROCESSORS + (
     'allauth.account.context_processors.account',
     'allauth.socialaccount.context_processors.socialaccount',
 )

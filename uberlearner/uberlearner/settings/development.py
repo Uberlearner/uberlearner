@@ -1,5 +1,5 @@
 import os
-from base.precustom import *
+from base import *
 
 DEBUG = True
 TEMPLATE_DEBUG = True
@@ -13,4 +13,4 @@ DATABASES = {
 
 AWS_STORAGE_BUCKET_NAME = 'uberlearner-dev'
 
-from base.postcustom import *
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
