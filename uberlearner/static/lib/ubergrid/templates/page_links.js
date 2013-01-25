@@ -1,35 +1,32 @@
 define(['jquery'], function() {
     $(function() {
-        $('body').append(
-            '<script type="text/html" id="ko_uberGrid_pageLinks">' +
-                '<div class="row" data-bind="visible: dataExists() && maxPageIndex() > 0">' +
-                    '<div class="span2">' +
-                        '<a href="javascript: void(0);" data-bind="visible: hasPrevious,	click: function() { currentPageIndex(0) }">' +
-                        'First' +
-                        '</a>' +
-                        '<a href="javascript: void(0);" data-bind="visible: hasPrevious, click: function() { currentPageIndex(currentPageIndex()-1) }">' +
-                        'Previous' +
-                        '</a>' +
+        if ($('#ko_uberGrid_pageLinks').length == 0) {
+            $('body').append(
+                '<script type="text/html" id="ko_uberGrid_pageLinks">' +
+                    '<div class="row" data-bind="visible: dataExists() && maxPageIndex() > 0">' +
+                    '<div class="pagination pagination-centered">' +
+                    '<ul>'+
+                    '<li data-bind="css: {disabled:!hasPrevious()}, click: function(){currentPageIndex(0)}">' +
+                    '<a href="#">First</a>' +
+                    '</li>' +
+                    '<li data-bind="css: {disabled:!hasPrevious()}, click: function(){currentPageIndex(currentPageIndex()-1)}">' +
+                    '<a href="#">Previous</a>' +
+                    '</li>' +
+                    '<span data-bind="foreach: pageIndexes">' +
+                    '<li data-bind="css: {active: $data == $root.currentPageIndex() }, click: function(){$root.currentPageIndex($data)}">' +
+                    '<a data-bind="text: $data"></a>' +
+                    '</li>' +
+                    '</span>' +
+                    '<li data-bind="css: {disabled:!hasNext()}, click: function(){currentPageIndex(currentPageIndex()+1)}">' +
+                    '<a href="#">Next</a>' +
+                    '</li>' +
+                    '<li data-bind="css: {disabled:!hasNext()}, click: function(){currentPageIndex(maxPageIndex())}">' +
+                    '<a href="#">Last</a>' +
+                    '</li>' +
+                    '</ul>'+
                     '</div>' +
-                    '<div class="span4">' +
-                    '<ul class="nav nav-pills" data-bind="foreach: pageIndexes">' +
-                        '<li data-bind="css: { active: $data == $root.currentPageIndex() }">' +
-                            '<a href="javascript: void(0);"data-bind="click: function() { $root.currentPageIndex($data) }, text: $data + 1"> </a>' +
-                        '</li>' +
-                    '</ul>' +
-                    '</div>' +
-                    '<div class="span2">' +
-                        '<span class="pull-right">' +
-                            '<a href="javascript: void(0);" data-bind="visible: hasNext,	click: function() { currentPageIndex(currentPageIndex()+1) }">' +
-                            'Next' +
-                            '</a>' +
-                            '<a href="javascript: void(0);" data-bind="visible: hasNext, click: function() { currentPageIndex(maxPageIndex()) }">' +
-                            'Last' +
-                            '</a>' +
-                        '</span>' +
-                    '</div>' +
-                '</div>' +
-            '</script>'
-        );
+                '</script>'
+            );
+        }
     });
 });

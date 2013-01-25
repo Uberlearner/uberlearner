@@ -1,8 +1,31 @@
+<script type="text/html" id="ko_uberGrid_courses_taught_grid">
+    <div class="row" data-bind="visible: dataExists, foreach: currentData">
+        <div class="course-tile">
+            <img class="course-tile-image" data-bind="attr: {src: $data.thumbnail}" />
+            <div class="course-tile-description">
+                <div class="course-tile-title">
+                    <a data-bind="text: $data.title, attr: {href: $data.absoluteUrl}"></a>
+                </div>
+                <div class="rating-row">
+                    Rating:
+                    <span class="badge badge-info" data-bind="attr: {title: $data.votes() + ' vote' + ($data.votes() !== 1 ? 's' : '')}">
+                        <span data-bind="text: overallUnweightedRating"></span>/5.0
+                    </span>
+                    <br/>
+                    Enrollments:
+                    <span class="badge badge-info" data-bind="text: popularity"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
 <hr/>
 <h2>Courses taught:</h2>
 <div    id="instructor-course-list"
-        class="span8 offset1"
+        class="span10"
         data-bind="	uberGridUrl: '/api/v1/courses/',
                     uberGrid: gridViewModel,
+                    uberGridTemplate: 'ko_uberGrid_courses_taught_grid',
                     uberGridGetParams: {'instructor': '{{profile_owner.username}}'}">
 </div>

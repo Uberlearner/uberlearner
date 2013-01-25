@@ -1,15 +1,16 @@
 define([
     'jquery',
     'ko',
+    'uberlearner/js/courses/models',
     'lib/ubergrid/templates/sorting_options',
     'lib/ubergrid/templates/page_links',
     'lib/ubergrid/templates/grid',
     'lib/ubergrid/templates/default_text'
-], function ($, ko, sortingOptions, pageLinks, grid, defaultText) {
+], function ($, ko, courseModels, sortingOptions, pageLinks, grid, defaultText) {
     var uberGrid = {
         viewModel: function (configuration) {
             var self = this;
-            self.url = ko.observable('')
+            self.url = ko.observable('');
             self.pageSize = configuration.pageSize || 10;
             self.maxPageCount = configuration.maxPageCount || -1;
             self.sortingOptions = configuration.sortingOptions || [];
@@ -28,7 +29,7 @@ define([
                 if (self.url() == '') {
                     // if the url hasn't been set by the binding yet, then don't waste time on ajax call
                     return;
-                };
+                }
                 var options = self.extraGetParams();
                 options[self.offsetGetKey] = self.pageSize*self.currentPageIndex();
                 if (self.currentSortingOption() && self.currentSortingOption().field)
@@ -40,7 +41,12 @@ define([
                     url: self.url(),
                     data: options,
                     success: function(data) {
-                        self.currentData(data.objects);
+                        self.currentData([]);
+                        $.each($.map(data.objects, function(course, index) {
+                            return new courseModels.Course(course);
+                        }), function(index, course) {
+                            self.currentData.push(course);
+                        });
                         self.currentMeta(data.meta);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -48,9 +54,6 @@ define([
                         console.log("textStatus: " + textStatus);
                         console.log("error: " + errorThrown);
                     }
-
-                })
-                $.get(self.url(), options, function(data) {
 
                 });
 
@@ -65,7 +68,7 @@ define([
                     self.currentPageIndex(0);
                 }
             });
-            self.currentData = ko.observable([]);
+            self.currentData = ko.observableArray([]);
             self.currentMeta = ko.observable({});
 
             self.maxPageIndex = ko.computed(function () {
@@ -123,7 +126,7 @@ define([
              * 2) If the link is a function, then it is called, otherwise the link is a key into the row data.
              * 3) If the value is a function, then it is called, otherwise the value is a key into the row data.
              */
-            self.getTdHtml = function(rowData, columnConfig) {
+            self.getDataHtml = function(rowData, columnConfig) {
                 var content = '';
                 if (typeof(columnConfig.field) == 'function')
                     content = columnConfig.field(rowData);

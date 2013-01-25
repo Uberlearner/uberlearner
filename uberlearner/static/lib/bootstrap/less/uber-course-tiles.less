@@ -1,12 +1,48 @@
-.course-tile {
-  margin-left: @gridGutterWidth;
-  margin-right: @gridGutterWidth;
-  margin-bottom: @gridGutterWidth;
+.course-tile-func(@horizontalMargin, @verticalMargin, @columns) {
   .border-radius(4px);
   .box-shadow(~"0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1)");
   background-color: @grayLighter;
   padding: 10px;
-  width: @tileColumnWidth;
+  display: inline-block;
+  margin-left: @horizontalMargin / 2;
+  margin-right: @horizontalMargin / 2;
+  margin-bottom: @verticalMargin;
+  width: (100% - (@horizontalMargin*@columns) - 10%)/@columns;
+
+  img.course-tile-image {
+    height: 100px;
+    width: 100px;
+  }
+
+  div.course-tile-description {
+    display: inline-block;
+    margin-left: 5px;
+  }
+
+  .course-tile-title {
+    font-weight: bolder;
+    font-size: 20px;
+    //border-bottom: 1px solid @white;
+    //display: block;
+    //padding-bottom: 5px;
+    //margin-bottom: 10px;
+  }
+
+  .rating-row {
+    //display: block;
+  }
+}
+
+.course-tile {
+  @media (max-width: 479px) {
+    .course-tile-func(4%, 10px, 1);
+  }
+  @media (min-width: 980px) {
+    .course-tile-func(4%, 10px, 3);
+  }
+  @media (min-width: 480px) and (max-width: 979px) {
+    .course-tile-func(4%, 10px, 2);
+  }
 }
 
 .course-tile-container {
