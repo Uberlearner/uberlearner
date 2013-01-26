@@ -163,7 +163,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
         };
     };
 
-    Models.Instructor = function(data) {
+    Models.User = function(data) {
         if (typeof(data) == 'undefined') {
             data = {};
         }
@@ -191,7 +191,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
         self.creationTimestamp = data.creationTimestamp;
         self.description = data.description;
         self.id = data.id;
-        self.instructor = new Models.Instructor(data.instructor);
+        self.instructor = new Models.User(data.instructor);
         self.isPublic = ko.observable(data.isPublic);
         self.lastModified = data.lastModified;
         self.pageListUri = data.pageListUri;
@@ -262,6 +262,16 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
                 messages.error('The course could not be rated');
             }
         };
+    };
+
+    Models.Enrollment = function (data) {
+        var self = this;
+
+        self.course = new Models.Course(data.course);
+        self.student = new Models.User(data.student);
+        self.id = Models.id;
+        self.timestamp = Models.timestamp;
+        self.resourceUri = Models.resourceUri;
     };
 
     return Models;

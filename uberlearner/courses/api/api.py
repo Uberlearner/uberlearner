@@ -144,7 +144,7 @@ class CourseResource(ModelResource):
     title = fields.CharField(attribute='title')
     pages = fields.OneToManyField(PageResource, 'pages', full=True)
     always_return_data = True
-    
+
     class Meta:
         queryset = Course.objects.all()
         resource_name = 'courses'
@@ -251,13 +251,13 @@ class CourseResource(ModelResource):
     def apply_filters(self, request, applicable_filters):
         # if the filters list has instructor, then modify its value to be the actual user
         if 'instructor__exact' in applicable_filters:
-            instructor_username = applicable_filters['instructor__exact'] 
+            instructor_username = applicable_filters['instructor__exact']
             if isinstance(instructor_username, basestring):
                 applicable_filters['instructor__exact'] = User.objects.get(username=instructor_username)
-        
+
         result = super(CourseResource, self).apply_filters(request, applicable_filters)
         return result
-    
+
     def apply_authorization_limits(self, request, object_list):
         """
         If the user is not the author of a private course, then the user cannot access it (unless
@@ -322,3 +322,28 @@ class CourseResource(ModelResource):
 
             bundle.data['rating_resource_uri'] = bundle.obj.get_rating_resource_uri()
         return bundle
+
+class EnrollmentResource(ModelResource):
+    course = fields.ForeignKey(CourseResource, 'course', full=True)
+    student = fields.ForeignKey(UserResource, 'student', full=True)
+    class Meta:
+        queryset = Enrollment.objects.all()
+        authentication = UberAuthentication()
+        authorization = UberAuthorization()
+        serializer = UberSerializer()
+        resource_name = 'enrollments'
+        filtering = {
+            'course': ALL_WITH_RELATIONS,
+            'student': ALL_WITH_RELATIONS
+        }
+        ordering = ['course']
+
+    def apply_filters(self, request, applicable_filters):
+        # if the filters list has instructor, then modify its value to be the actual user
+        if 'student__exact' in applicable_filters:
+            student_username = applicable_filters['student__exact']
+            if isinstance(student_username, basestring):
+                applicable_filters['student__exact'] = User.objects.get(username=student_username)
+
+        result = super(EnrollmentResource, self).apply_filters(request, applicable_filters)
+        return result

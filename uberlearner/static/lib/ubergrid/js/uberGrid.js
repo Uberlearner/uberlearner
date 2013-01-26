@@ -1,7 +1,6 @@
 define([
     'jquery',
     'ko',
-    'uberlearner/js/courses/models',
     'lib/ubergrid/templates/sorting_options',
     'lib/ubergrid/templates/page_links',
     'lib/ubergrid/templates/grid',
@@ -22,6 +21,7 @@ define([
             self.defaultSortingOptionIndex = configuration.defaultSortingOptionIndex || 0;
             self.extraGetParams = ko.observable({});
             self.defaultText = configuration.defaultText || 'No data for this table could be found!';
+            self.dataAdapter = configuration.dataAdapter;
 
             self.currentPageIndex = ko.observable(0);
             self.currentSortingOption = ko.observable(self.sortingOptions ? self.sortingOptions[self.defaultSortingOptionIndex] : undefined);
@@ -43,7 +43,7 @@ define([
                     success: function(data) {
                         self.currentData([]);
                         $.each($.map(data.objects, function(course, index) {
-                            return new courseModels.Course(course);
+                            return self.dataAdapter(course);
                         }), function(index, course) {
                             self.currentData.push(course);
                         });

@@ -1,6 +1,6 @@
 <script type="text/html" id="ko_uberGrid_courses_taught_grid">
     <div class="row" data-bind="visible: dataExists, foreach: currentData">
-        <div class="course-tile">
+        <div class="course-tile-small">
             <img class="course-tile-image" data-bind="attr: {src: $data.thumbnail}" />
             <div class="course-tile-description">
                 <div class="course-tile-title">
@@ -20,7 +20,30 @@
     </div>
 </script>
 
+<script type="text/html" id="ko_uberGrid_courses_enrolled_grid">
+    <div class="row" data-bind="visible: dataExists, foreach: currentData">
+        <div class="course-tile-small">
+            <img class="course-tile-image" data-bind="attr: {src: $data.course.thumbnail}" />
+            <div class="course-tile-description">
+                <div class="course-tile-title">
+                    <a data-bind="text: $data.course.title, attr: {href: $data.course.absoluteUrl}"></a>
+                </div>
+                <div class="rating-row">
+                    Rating:
+                    <span class="badge badge-info" data-bind="attr: {title: $data.course.votes() + ' vote' + ($data.course.votes() !== 1 ? 's' : '')}">
+                        <span data-bind="text: course.overallUnweightedRating"></span>/5.0
+                    </span>
+                    <br/>
+                    Enrollments:
+                    <span class="badge badge-info" data-bind="text: course.popularity"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
 <hr/>
+{% if are_instructor_courses_visible %}
 <h2>Courses taught:</h2>
 <div    id="instructor-course-list"
         class="span10"
@@ -29,3 +52,15 @@
                     uberGridTemplate: 'ko_uberGrid_courses_taught_grid',
                     uberGridGetParams: {'instructor': '{{profile_owner.username}}'}">
 </div>
+{% endif %}
+
+{% if are_enrollments_visible %}
+<h2>Courses enrolled:</h2>
+<div    id="student-course-enrolled-list"
+        class="span10"
+        data-bind=" uberGridUrl: '/api/v1/enrollments/',
+                    uberGrid: gridViewModel,
+                    uberGridTemplate: 'ko_uberGrid_courses_enrolled_grid',
+                    uberGridGetParams: {'student': '{{ profile_owner.username }}'}">
+</div>
+{% endif %}

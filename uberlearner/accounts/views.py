@@ -22,6 +22,7 @@ from accounts.forms import UserProfileForm
 from avatar.views import _get_avatars
 from avatar.models import Avatar
 from avatar.signals import avatar_updated
+from courses.models import Course
 
 def login(request, **kwargs):
     """
@@ -50,10 +51,29 @@ def signup(request, **kwargs):
 class UserProfileWithUsername(TemplateView):
     template_name = 'allauth/account/view_profile/index.html'
 
+    def are_enrollments_visible(self, profile_owner):
+        """
+        Returns true if the user is enrolled in any course.
+        """
+        return profile_owner.enrollments.all().exists()
+
+    def are_instructor_courses_visible(self, profile_owner):
+        """
+        Returns true if the instructor's profile should contain courses taught
+        """
+        #if instructor is the viewer and there are courses (public or private) then return true
+        if self.request.user.username == profile_owner.username:
+            return Course.all_objects.filter(instructor=profile_owner).exists()
+        #if viewer is not the instructor, then return true if there are publicly viewable courses
+        else:
+            return Course.objects.filter(instructor=profile_owner).exists()
+
     def get_context_data(self, **kwargs):
         context_data = super(UserProfileWithUsername, self).get_context_data(**kwargs)
         context_data['profile_owner'] = get_object_or_404(User, username=kwargs['username'])
         context_data['main_js_module'] = 'uberlearner/js/accounts/profile-view.js'
+        context_data['are_enrollments_visible'] = self.are_enrollments_visible(context_data['profile_owner'])
+        context_data['are_instructor_courses_visible'] = self.are_instructor_courses_visible(context_data['profile_owner'])
         return context_data
 
 @login_required

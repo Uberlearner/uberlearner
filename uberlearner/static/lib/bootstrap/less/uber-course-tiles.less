@@ -9,11 +9,6 @@
   margin-bottom: @verticalMargin;
   width: (100% - (@horizontalMargin*@columns) - 10%)/@columns;
 
-  img.course-tile-image {
-    height: 100px;
-    width: 100px;
-  }
-
   div.course-tile-description {
     display: inline-block;
     margin-left: 5px;
@@ -33,6 +28,15 @@
   }
 }
 
+.course-tile-small-func(@horizontalMargin, @verticalMargin, @columns) {
+  .course-tile-func(@horizontalMargin, @verticalMargin, @columns);
+
+  img.course-tile-image {
+    height: 100px;
+    width: 100px;
+  }
+}
+
 .course-tile {
   @media (max-width: 479px) {
     .course-tile-func(4%, 10px, 1);
@@ -42,6 +46,18 @@
   }
   @media (min-width: 480px) and (max-width: 979px) {
     .course-tile-func(4%, 10px, 2);
+  }
+}
+
+.course-tile-small {
+  @media (max-width: 479px) {
+    .course-tile-small-func(4%, 10px, 1);
+  }
+@media (min-width: 980px) {
+  .course-tile-small-func(4%, 10px, 3);
+  }
+@media (min-width: 480px) and (max-width: 979px) {
+  .course-tile-small-func(4%, 10px, 2);
   }
 }
 

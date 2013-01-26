@@ -28,11 +28,7 @@
             {% if profile_owner.get_profile.summary %}
                 {{ profile_owner.get_profile.summary|linebreaks }} <br/>
             {% endif %}
-            {% if profile_owner == request.user and profile_owner.instructor_courses.all_objects.exists %}
-                {% include 'allauth/account/view_profile/user_courses.html' %}
-            {% elif profile_owner.instructor_courses.all.exists %}
-                {% include 'allauth/account/view_profile/user_courses.html' %}
-            {% endif %}
+            {% include 'allauth/account/view_profile/user_courses.html' %}
         </div>
     </div>
 {% endblock %}

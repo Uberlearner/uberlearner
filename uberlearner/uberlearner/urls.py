@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
-from courses.api import CourseResource, UserResource, PageResource
+from courses.api import CourseResource, UserResource, PageResource, EnrollmentResource
 from courses.views import CourseList
 from tastypie.api import Api
 from accounts import views as accounts_views
@@ -12,6 +12,7 @@ v1_api = Api(api_name='v1')
 v1_api.register(CourseResource())
 v1_api.register(UserResource())
 v1_api.register(PageResource())
+v1_api.register(EnrollmentResource())
 
 urlpatterns = patterns('',
     url(r"^$", accounts_views.login, {
