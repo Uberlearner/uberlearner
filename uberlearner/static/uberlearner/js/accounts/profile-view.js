@@ -5,7 +5,7 @@ require([
         var self = this;
 
         self.gridViewModel = new uberGrid.viewModel({
-            pageSize: 6,
+            pageSize: 4,
             sortingOptions: [
                 { name: 'Title', field: 'title'},
                 { name: 'Oldest first', field: 'creation_timestamp'},
@@ -25,7 +25,7 @@ require([
         var self = this;
 
         self.gridViewModel = new uberGrid.viewModel({
-            pageSize: 6,
+            pageSize: 4,
             sortingOptions: [
                 { name: 'Title', field: 'course__title'},
                 { name: 'Oldest first', field: 'course__creation_timestamp'},

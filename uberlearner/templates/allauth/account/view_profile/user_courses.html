@@ -2,14 +2,14 @@
     <div class="row" data-bind="visible: dataExists, foreach: currentData">
         <div class="course-tile-small">
             <div class="course-tile-title">
-                <a data-bind="text: $data.truncatedTitle(20), attr: {href: $data.absoluteUrl}"></a>
+                <a data-bind="text: truncatedTitle(35), attr: {href: absoluteUrl, title: title}"></a>
             </div>
             <hr/>
-            <img class="course-tile-image" data-bind="attr: {src: $data.thumbnail}" />
+            <img class="course-tile-image" data-bind="attr: {src: thumbnail}" />
             <div class="course-tile-description">
                 <div class="rating-row">
                     Rating:
-                    <span class="badge badge-info" data-bind="attr: {title: $data.votes() + ' vote' + ($data.votes() !== 1 ? 's' : '')}">
+                    <span class="badge badge-info" data-bind="attr: {title: votes() + ' vote' + (votes() !== 1 ? 's' : '')}">
                         <span data-bind="text: overallUnweightedRating"></span>/5.0
                     </span>
                     <br/>
@@ -25,17 +25,17 @@
     <div class="row" data-bind="visible: dataExists, foreach: currentData">
         <div class="course-tile-small">
             <div class="course-tile-title">
-                <a data-bind="text: $data.course.truncatedTitle(20), attr: {href: $data.course.absoluteUrl}"></a>
+                <a data-bind="text: course.truncatedTitle(35), attr: {href: course.absoluteUrl, title: course.title}"></a>
             </div>
             <a data-bind="attr: { href: course.instructor.absoluteUrl }">
                 <h5 data-bind="text: '- ' + course.instructor.bestName" class="course-tile-instructor"></h5>
             </a>
             <hr/>
-            <img class="course-tile-image" data-bind="attr: {src: $data.course.thumbnail}" />
+            <img class="course-tile-image" data-bind="attr: {src: course.thumbnail}" />
             <div class="course-tile-description">
                 <div class="rating-row">
                     Rating:
-                    <span class="badge badge-info" data-bind="attr: {title: $data.course.votes() + ' vote' + ($data.course.votes() !== 1 ? 's' : '')}">
+                    <span class="badge badge-info" data-bind="attr: {title: course.votes() + ' vote' + (course.votes() !== 1 ? 's' : '')}">
                         <span data-bind="text: course.overallUnweightedRating"></span>/5.0
                     </span>
                     <br/>
