@@ -14,7 +14,7 @@ define(['jquery'], function() {
                     '</li>' +
                     '<span data-bind="foreach: pageIndexes">' +
                     '<li data-bind="css: {active: $data == $root.currentPageIndex() }, click: function(){$root.currentPageIndex($data)}">' +
-                    '<a data-bind="text: $data"></a>' +
+                    '<a data-bind="text: $data + 1"></a>' +
                     '</li>' +
                     '</span>' +
                     '<li data-bind="css: {disabled:!hasNext()}, click: function(){currentPageIndex(currentPageIndex()+1)}">' +
