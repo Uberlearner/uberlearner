@@ -1,11 +1,12 @@
 <script type="text/html" id="ko_uberGrid_courses_taught_grid">
     <div class="row" data-bind="visible: dataExists, foreach: currentData">
         <div class="course-tile-small">
+            <div class="course-tile-title">
+                <a data-bind="text: $data.truncatedTitle(20), attr: {href: $data.absoluteUrl}"></a>
+            </div>
+            <hr/>
             <img class="course-tile-image" data-bind="attr: {src: $data.thumbnail}" />
             <div class="course-tile-description">
-                <div class="course-tile-title">
-                    <a data-bind="text: $data.title, attr: {href: $data.absoluteUrl}"></a>
-                </div>
                 <div class="rating-row">
                     Rating:
                     <span class="badge badge-info" data-bind="attr: {title: $data.votes() + ' vote' + ($data.votes() !== 1 ? 's' : '')}">
@@ -23,11 +24,15 @@
 <script type="text/html" id="ko_uberGrid_courses_enrolled_grid">
     <div class="row" data-bind="visible: dataExists, foreach: currentData">
         <div class="course-tile-small">
+            <div class="course-tile-title">
+                <a data-bind="text: $data.course.truncatedTitle(20), attr: {href: $data.course.absoluteUrl}"></a>
+            </div>
+            <a data-bind="attr: { href: course.instructor.absoluteUrl }">
+                <h5 data-bind="text: '- ' + course.instructor.bestName" class="course-tile-instructor"></h5>
+            </a>
+            <hr/>
             <img class="course-tile-image" data-bind="attr: {src: $data.course.thumbnail}" />
             <div class="course-tile-description">
-                <div class="course-tile-title">
-                    <a data-bind="text: $data.course.title, attr: {href: $data.course.absoluteUrl}"></a>
-                </div>
                 <div class="rating-row">
                     Rating:
                     <span class="badge badge-info" data-bind="attr: {title: $data.course.votes() + ' vote' + ($data.course.votes() !== 1 ? 's' : '')}">

@@ -215,13 +215,21 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
         self.votes = ko.observable(data.ratingVotes || 0);
         var ratingResourceUri = data.ratingResourceUri;
 
-        self.truncatedDescription = function(length) {
-            if (self.description.length > length) {
-                return self.description.substring(0, length) + '...';
+        var truncateString = function(str, length) {
+            if (str.length > length) {
+                return str.substring(0, length) + '...';
             } else {
-                return self.description;
+                return str;
             }
         };
+
+        self.truncatedDescription = function(length) {
+            return truncateString(self.description, length);
+        };
+        self.truncatedTitle = function(length) {
+            return truncateString(self.title, length);
+        };
+
         /**
          * This method returns the rating of the course that should be displayed to the user.
          */
