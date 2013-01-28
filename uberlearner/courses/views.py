@@ -58,6 +58,21 @@ class CourseView(DetailView):
             ))
         return course
 
+    def can_user_view_pages(self):
+        """
+        This method assesses whether the user is allowed to see the contents of the course. If the user is indeed
+        allowed to see the contents of this course, then this method returns True and False otherwise.
+        """
+        course = self.object
+        # if the user is the insructor of this course or the superuser, then return True
+        if course.instructor == self.request.user or self.request.user.is_superuser:
+            return True
+        # if the user is a student enrolled in this course, then return True
+        elif course.enrollments.filter(student=self.request.user.id).exists():
+            return True
+        else:
+            return False
+
     def get_context_data(self, **kwargs):
         context_data = super(CourseView, self).get_context_data(**kwargs)
         # by this point course must have been added to the context_data and can be used to get the enrollment object
@@ -71,6 +86,7 @@ class CourseView(DetailView):
         context_data['enrollment'] = enrollment
         context_data['all_enrollments'] = context_data['course'].enrollments.all()
         context_data['main_js_module'] = os.path.join(JS_BASE_DIR_COURSE, 'detail', 'main.js')
+        context_data['can_user_view_pages'] = self.can_user_view_pages()
         return context_data
 
 class CoursePage(CourseView):

@@ -114,7 +114,11 @@ class Course(TimestampedModel):
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the course has been enrolled in
     rating = RatingField(range=settings.COURSE_RATING_RANGE, can_change_vote=True, allow_delete=False,
         allow_anonymous=False, use_cookies=False, weight=settings.COURSE_RATING_WEIGHT)
-    is_public = models.BooleanField(default=False, help_text="If checked, it will enable anyone to see your course.")
+    is_public = models.BooleanField(
+        default=False,
+        help_text="If checked, everybody will be able to see your course. Click this when your course is ready for public consumption",
+        verbose_name="Is published"
+    )
     students = models.ManyToManyField(User, through=Enrollment, blank=True, null=True, related_name='enrolled_courses')
     # a boolean used to mark courses deleted without actually deleting them
     deleted = models.BooleanField(default=False, help_text="Marks a course as deleted.")
@@ -214,7 +218,6 @@ class Page(TimestampedModel):
     user experience.
     """
     course = models.ForeignKey(Course, related_name='pages')
-    #TODO: slug = models.SlugField(max_length=50)
     title = models.CharField(max_length=50, help_text="50 characters max")
     summary = models.CharField(max_length=300, help_text="300 characters max", null=True, blank=True)
     estimated_effort = models.PositiveIntegerField(
@@ -226,7 +229,6 @@ class Page(TimestampedModel):
     
     class Meta:
         order_with_respect_to = 'course'
-        #TODO: unique_together = (("course", "slug"), )
         
     def __unicode__(self):
         return self.title

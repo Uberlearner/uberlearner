@@ -14,9 +14,16 @@ the course model.
 <ul class="nav nav-list toc well">
     {% for page in course.pages.all %}
         <li>
-            <i class="icon-file"></i> <span class="toc-page-header">{{ page.title }}</span>
+            {% if can_user_view_pages %}
+            <a href="{% url page.view username=course.instructor.username slug=course.slug pk=page.pk %}">
+            {% endif %}
+                <i class="icon-file"></i>
+                <span class="toc-page-header">{{ page.title }}</span>
+            {% if can_user_view_pages %}
+            </a>
+            {% endif %}
             {% if page.estimated_effort %}
-                <span class="badge badge-info pull-right">{{ page.estimated_effort|humanize_minutes }}</span><br/>
+                <span class="badge badge-info pull-right">{{ page.estimated_effort|humanize_minutes }}</span>
             {% endif %}
             {% if page.summary %}<p>{{ page.summary }}</p>{% endif %}
             {% if not forloop.last %}

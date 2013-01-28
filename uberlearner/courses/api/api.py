@@ -254,6 +254,20 @@ class CourseResource(ModelResource):
         else:
             return authorized_objects.filter(Q(is_public=True) | Q(instructor=request.user.id))
 
+    def is_valid(self, bundle, request=None):
+        if request and hasattr(request, 'method') and request.method in ['POST', 'PATCH', 'PUT']:
+            if not bundle.data['is_public'] and bundle.obj.enrollments.all().exists():
+                if not bundle.obj.is_public:
+                    # interestingly, this course has enrollments even though it is private. This should never happen and
+                    # is an invalid state
+                    raise ValueError('Course {course} is somehow un-published even though it has enrollments'.format(
+                        course=bundle.obj
+                    ))
+                else:
+                    #someone is attempting to make this course private even though it has enrollments
+                    return False
+        return True
+
     def dehydrate_pages(self, bundle):
         if 'pages' in bundle.data and isinstance(bundle.data['pages'], list):
             for page in bundle.data['pages']:

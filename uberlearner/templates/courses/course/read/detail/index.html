@@ -39,9 +39,14 @@
 	</div>
 	<div class="span9">
 		{% if not course.is_public %}
-			<div class="alert alert-info">
+			<div class="alert alert-info" data-bind="visible: !course().isPublic()">
 				<button class="close" data-dismiss="alert">×</button>
-				This course is not yet publicly viewable. Be sure to click that "Make public" button when the course is ready.
+				This course is not yet publicly viewable. Be sure to
+                <a href="javascript: void(0);" class="btn btn-success" title="Publish course"
+                   data-bind="click: toggleVisibility">
+                    <i class="icon-eye-open"></i> publish
+                </a>
+                this course when it is ready.
 			</div>
 		{% endif %}
         {% if not course.pages.all and course.instructor == user %}
@@ -73,13 +78,6 @@
                         <a href='{% url course.settings username=request.user.username slug=course.slug %}'
                            class="btn btn-primary" title="Course settings">
                             <i class="icon-cog icon-white"></i>
-                        </a>
-                        <a href="javascript: void(0);" class="btn btn-primary"
-                           data-bind="click: toggleVisibility,
-                                      attr: {title: course().isPublic() ? 'Mark as draft' : 'Publish'},
-                                      css: {'btn-success': !course().isPublic(), 'btn-primary': course().isPublic()}">
-                            <i data-bind="css: { 'icon-eye-open': !course().isPublic() , 'icon-eye-close': course().isPublic() }">
-                            </i>
                         </a>
                     </div>
 				{% else %}
