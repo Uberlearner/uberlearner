@@ -4,7 +4,7 @@ from tastypie.authorization import Authorization
 import types
 from courses.models import Course
 
-class UberAuthorization(Authorization):
+class CourseAuthorization(Authorization):
     """
     Handles authorization for the course resources.
     """

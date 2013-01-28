@@ -69,6 +69,7 @@ class CourseView(DetailView):
         except ObjectDoesNotExist:
             enrollment = None
         context_data['enrollment'] = enrollment
+        context_data['all_enrollments'] = context_data['course'].enrollments.all()
         context_data['main_js_module'] = os.path.join(JS_BASE_DIR_COURSE, 'detail', 'main.js')
         return context_data
 

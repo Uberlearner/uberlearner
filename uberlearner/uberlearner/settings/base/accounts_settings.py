@@ -25,6 +25,7 @@ ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = reverse_lazy('account_us
 AVATAR_DEFAULT_SIZE = 150
 AVATAR_MAX_AVATARS_PER_USER = 1
 AVATAR_MAX_SIZE = 5 * 1024 * 1024 #5MB in bytes
+AVATAR_SIZE_IN_ENROLLMENTS_GRID = 50
 
 # Note: Because of the way the settings files are imported, a request context processor was added to the
 # TEMPLATE_CONTEXT_PROCESSORS in the __init__ file. This change will not show up in the settings object till the

@@ -1,4 +1,4 @@
-define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/utils/bindings/url-list'], function(ko, Models) {
+define(['ko', 'uberlearner/js/courses/models', 'uberGrid', 'uberlearner/js/utils/bindings/url-list'], function(ko, Models, uberGrid) {
     var CourseDetailModelView = function() {
         var self = this;
         self.isEnrolled = ko.observable(false);
@@ -6,6 +6,13 @@ define(['ko', 'uberlearner/js/courses/models', 'uberlearner/js/utils/bindings/ur
         self.enrollmentUrl = ko.observable();
         self.postEnrollmentUrl = ko.observable();
         self.course = ko.observable(new Models.Course());
+
+        self.paginationViewModel = new uberGrid.viewModel({
+            pageSize: 16,
+            dataAdapter: function(data) {
+                return new Models.Enrollment(data);
+            }
+        });
 
         /* SUBSCRIPTIONS */
         /**

@@ -174,6 +174,7 @@ define(['ko', 'uberlearner/js/utils/messages/viewmodel'], function(ko, messages)
         this.resourceUri = data.resourceUri;
         this.username = data.username;
         this.bestName = data.bestName;
+        this.tinyThumbnailUrl = data.tinyThumbnail;
 
         this.getFullName = function() {
             if (!this.firstName && !this.lastName){

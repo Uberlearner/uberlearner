@@ -8,23 +8,34 @@
                                                      enrollmentUrl: '{{ course.get_enrollment_resource_uri }}',
                                                      postEnrollmentUrl: '{% url page.first.view course.instructor.username course.slug %}'}">
 	<div class="span3">
-        <ul class="thumbnails">
-            <li class="thumbnail">
-                <img src="{{ course.photo|thumbnail_url:'thumbnail' }}" /><br/>
-                {% if enrollment %}
-                    {% comment %}A course can only be rated by students enrolled in it.{% endcomment %}
-                    <span class="rating ratable pull-left" data-bind="foreach: [5,4,3,2,1]">
+    <div class="row">
+        <div class="span3">
+            <ul class="thumbnails">
+                <li class="thumbnail">
+                    <img src="{{ course.photo|thumbnail_url:'thumbnail' }}" /><br/>
+                    {% if enrollment %}
+                        {% comment %}A course can only be rated by students enrolled in it.{% endcomment %}
+                        <span class="rating ratable pull-left" data-bind="foreach: [5,4,3,2,1]">
                     <span class="star" data-bind="click: $parent.course().rate, css: {selected: $data==$parent.course().userRating()}"></span>
                 </span>
-                {% endif %}
-                <span class="badge badge-info {% if enrollment %}pull-right{% endif %}"
-                      data-bind="text: course().overallUnweightedRating() + '/5.0',
+                    {% endif %}
+                    <span class="badge badge-info {% if enrollment %}pull-right{% endif %}"
+                          data-bind="text: course().overallUnweightedRating() + '/5.0',
                       attr: {title: course().votes() + ' vote' + (course().votes() !== 1 ? 's': '')}">
                 </span>
-                {% if enrollment %}<br/><br/>{% endif %}
-                <span class="label label-info pull-right">{{course.popularity}} enrollment{{course.popularity|pluralize}}</span>
-            </li>
-        </ul>
+                    {% if enrollment %}<br/><br/>{% endif %}
+                    <span class="label label-info pull-right">{{course.popularity}} enrollment{{course.popularity|pluralize}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span3">
+            {% if all_enrollments.exists %}
+                {% include 'courses/course/read/detail/enrollments.html' %}
+            {% endif %}
+        </div>
+    </div>
 	</div>
 	<div class="span9">
 		{% if not course.is_public %}

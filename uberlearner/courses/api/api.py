@@ -12,9 +12,11 @@ from tastypie.resources import ModelResource, convert_post_to_patch
 from tastypie import fields, http
 from tastypie.utils import trailing_slash
 import types
-from courses.api.authentication import UberAuthentication
-from courses.api.authorization import UberAuthorization
-from courses.api.serializers import UberSerializer
+from accounts.api.api import UserResource
+from accounts.models import UserProfile
+from main.api.authentication import UberAuthentication
+from courses.api.authorization import CourseAuthorization
+from main.api.serializers import UberSerializer
 from courses.models import Course, Instructor, Page, Enrollment
 from django.contrib.auth.models import User              
 from tastypie.constants import ALL_WITH_RELATIONS
@@ -24,27 +26,10 @@ from django.conf import settings
 
 MAX_COURSE_SCORE = settings.COURSE_RATING_RANGE
 
-class UserResource(ModelResource):
-    class Meta:
-        queryset = User.objects.all()
-        authentication = UberAuthentication()
-        authorization = UberAuthorization()
-        resource_name = 'users'
-        fields = ['username', 'first_name', 'last_name', 'last_login']
-        allowed_methods = ['get']
-        include_absolute_url = True
-        serializer = UberSerializer()
-        
-    def dehydrate(self, bundle):
-        bundle.data['absolute_url'] = reverse('account_user_profile_with_username', kwargs={'username': bundle.obj.username})
-        bundle.data['best_name'] = bundle.obj.profile.get_best_name()
-        return bundle
-
 class PageResource(ModelResource):
     class Meta:
         queryset = Page.objects.all()
         authentication = UberAuthentication()
-        #authorization = UberAuthorization()
         resource_name = 'pages'
         serializer = UberSerializer()
         allowed_methods = ['get', 'put', 'post', 'patch', 'delete']
@@ -150,7 +135,7 @@ class CourseResource(ModelResource):
         resource_name = 'courses'
         allowed_methods = ['get', 'patch']
         authentication = UberAuthentication()
-        authorization = UberAuthorization()
+        authorization = CourseAuthorization()
         limit = 10
         ordering = ['title', 'popularity', 'instructor', 'creation_timestamp']
         filtering = {
@@ -329,7 +314,7 @@ class EnrollmentResource(ModelResource):
     class Meta:
         queryset = Enrollment.objects.all()
         authentication = UberAuthentication()
-        authorization = UberAuthorization()
+        authorization = CourseAuthorization()
         serializer = UberSerializer()
         resource_name = 'enrollments'
         filtering = {

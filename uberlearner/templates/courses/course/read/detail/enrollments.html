@@ -1,0 +1,29 @@
+<script type="text/html" id="ko_uberGrid_enrollment_thumbnails">
+<ul class="user-thumbnails" data-bind="foreach: currentData">
+    <li style="width: 55px;">
+        <a class="thumbnail" data-bind="attr: {href: student.absoluteUrl}">
+            <img data-bind="attr: {src: student.tinyThumbnailUrl}" />
+        </a>
+    </li>
+</ul>
+</script>
+
+<script type="text/html" id="ko_uberGrid_enrollment_pagination">
+<ul class="pager" data-bind="visible: dataExists() && maxPageIndex() > 0">
+    <li class="previous" data-bind="css: {disabled:!hasPrevious()}, click: function(){currentPageIndex(currentPageIndex()-1)}">
+        <a href="#">&larr; Previous</a>
+    </li>
+    <li class="next" data-bind="css: {disabled:!hasNext()}, click: function(){currentPageIndex(currentPageIndex()+1)}">
+        <a href="#">Next &rarr;</a>
+    </li>
+</ul>
+</script>
+
+<h3>Students enrolled:</h3>
+<div id="enrollment-thumbnails"
+     data-bind=" uberGridUrl: '/api/v1/enrollments/',
+                 uberGrid: paginationViewModel,
+                 uberGridTemplate: 'ko_uberGrid_enrollment_thumbnails',
+                 uberGridPagerTemplate: 'ko_uberGrid_enrollment_pagination',
+                 uberGridGetParams: {'course': '{{ course.pk }}'}">
+</div>

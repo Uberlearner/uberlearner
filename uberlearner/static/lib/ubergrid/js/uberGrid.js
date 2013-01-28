@@ -79,7 +79,7 @@ define([
                     _maxPageIndex = Math.floor((totalCount-1)/self.pageSize);
                     if (self.maxPageCount != -1)
                         _maxPageIndex = Math.min(_maxPageIndex, self.maxPageCount);
-                    else
+                    if (_maxPageIndex == -1)
                         _maxPageIndex = 0;
 
                     return _maxPageIndex;
@@ -119,7 +119,7 @@ define([
                 return self.currentMeta().totalCount > 0;
             });
             self.pageIndexes = ko.computed(function() {
-                indexes = ko.utils.range(0, self.maxPageIndex()-1);
+                indexes = ko.utils.range(0, self.maxPageIndex());
                 return indexes;
             });
             /**
