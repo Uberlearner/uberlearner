@@ -51,7 +51,7 @@
             </div>
         {% endif %}
 		<div class="row">
-			<div class="span7">
+			<div class="span6">
                 {% if request.user.is_anonymous %}
                 <div class="alert alert-info">
                     <h4>
@@ -64,24 +64,24 @@
 				<h1>{{course.title}}</h1>
 				<i>- Authored by {{course.instructor}}</i>
 			</div>
-			<div class="span2">
+			<div class="span3">
 				{% if request.user == course.instructor %}
-					<p class="pull-right">
-						<a href='{% url course.manage username=request.user.username slug=course.slug %}' class="btn btn-primary">
-							<i class="icon-pencil icon-white"></i> Manage content
-						</a>
-                    </p>
-                    <p class="pull-right">
-						<a href='{% url course.settings username=request.user.username slug=course.slug %}' class="btn btn-primary">
-							<i class="icon-cog icon-white"></i> Course settings
-						</a>
-					</p>
-					<p class="pull-right">
-                        <a href="javascript: void(0);" class="btn btn-success" data-bind="click: toggleVisibility">
-                            <i data-bind="css: { 'icon-eye-open': !course().isPublic() , 'icon-eye-close': course().isPublic() }">
-                            </i> <span data-bind="text: course().isPublic() ? 'Make private' : 'Make public'"></span>
+                    <div class="btn-group pull-right">
+                        <a href='{% url course.manage username=request.user.username slug=course.slug %}' class="btn btn-primary">
+                            <i class="icon-pencil icon-white"></i> Manage content
                         </a>
-					</p>
+                        <a href='{% url course.settings username=request.user.username slug=course.slug %}'
+                           class="btn btn-primary" title="Course settings">
+                            <i class="icon-cog icon-white"></i>
+                        </a>
+                        <a href="javascript: void(0);" class="btn btn-primary"
+                           data-bind="click: toggleVisibility,
+                                      attr: {title: course().isPublic() ? 'Mark as draft' : 'Publish'},
+                                      css: {'btn-success': !course().isPublic(), 'btn-primary': course().isPublic()}">
+                            <i data-bind="css: { 'icon-eye-open': !course().isPublic() , 'icon-eye-close': course().isPublic() }">
+                            </i>
+                        </a>
+                    </div>
 				{% else %}
                     <p class="pull-right">
                     {% if not enrollment %}
