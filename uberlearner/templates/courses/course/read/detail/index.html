@@ -1,6 +1,7 @@
 {% extends 'templated-base.html' %}
 {% load thumbnail %}
 {% load navigation_tags %}
+{% load humanize %}
 {% block title %}{{block.super}} | {{course.title}}{% endblock %}
 
 {% block content %}
@@ -67,7 +68,6 @@
                 </div>
                 {% endif %}
 				<h1>{{course.title}}</h1>
-				<i>- Authored by {{course.instructor}}</i>
 			</div>
 			<div class="span3">
 				{% if request.user == course.instructor %}
@@ -102,6 +102,19 @@
                 {% endif %}
 			</div>
 		</div>
+        <div class="row">
+            <div class="span9">
+                <i>- Authored by
+                    <a href="{% url account_user_profile_with_username username=course.instructor.username %}">
+                        {{course.instructor.profile.get_best_name}}
+                    </a>
+                </i>
+                <span class="pull-right">
+                    Estimated effort: <span class="badge badge-info">{{ course.estimated_effort|humanize_minutes }}</span>
+                </span>
+            </div>
+        </div>
+        <hr/>
         <div class="row">
             <div class="span9">
                 {% if course.description %}

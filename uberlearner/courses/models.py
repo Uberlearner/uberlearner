@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.db.models import F
+from django.db.models import F, Sum
 from easy_thumbnails.fields import ThumbnailerImageField
 import os
 from django.db import models
@@ -160,6 +160,10 @@ class Course(TimestampedModel):
 
     def is_enrolled(self, user):
         return self.enrollments.filter(student=user).exists()
+
+    @property
+    def estimated_effort(self):
+        return self.pages.aggregate(Sum('estimated_effort'))['estimated_effort__sum']
 
     def clean(self):
         """
