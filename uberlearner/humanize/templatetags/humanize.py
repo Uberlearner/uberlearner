@@ -15,6 +15,8 @@ def humanize_minutes(value):
     """
     Converts a number (in minutes) to a reasonable string consisting of hours and minutes (rounded to 15 minute intervals).
     """
+    if not value:
+        return None
     hours = int(value / MINUTES_IN_HOUR)
     remaining_minutes = value % MINUTES_IN_HOUR
     sub_hour_intervals_remaining = int(remaining_minutes / SUB_HOUR_INTERVAL_SIZE)
