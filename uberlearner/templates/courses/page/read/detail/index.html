@@ -1,5 +1,5 @@
 {% extends 'templated-base.html' %}
-
+{% load humanize %}
 {% block title %}
     {{ block.super }} |
     {% if page %}
@@ -27,6 +27,23 @@
         {% if not page %}
             {% include 'courses/page/read/list/no-pages-found.html' %}
         {% else %}
+            <div class="row">
+            <div class="span8 well">
+                <h1>{{ page.title }}</h1>
+                <i>
+                    - Authored by
+                    <a href="{% url account_user_profile_with_username username=page.course.instructor.username %}">
+                        {{ page.course.instructor.profile.get_best_name }}
+                    </a>
+                </i>
+                {% if page.estimated_effort %}
+                    <span class="badge badge-info pull-right">{{ page.estimated_effort|humanize_minutes }}</span>
+                {% endif %}
+                {% if page.summary %}
+                    <p>{{ page.summary }}</p>
+                {% endif %}
+            </div>
+            </div>
             {{ page.html|safe }}
         {% endif %}
     </div>
