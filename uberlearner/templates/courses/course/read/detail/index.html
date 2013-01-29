@@ -110,7 +110,9 @@
                     </a>
                 </i>
                 <span class="pull-right">
+                    {% if course.estimated_effort %}
                     Estimated effort: <span class="badge badge-info">{{ course.estimated_effort|humanize_minutes }}</span>
+                    {% endif %}
                 </span>
             </div>
         </div>
