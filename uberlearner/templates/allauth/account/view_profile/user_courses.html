@@ -1,11 +1,13 @@
-<script type="text/html" id="ko_uberGrid_courses_taught_grid">
+<script type="text/html" id="ko_uberGrid_courses_taught_grid" xmlns="http://www.w3.org/1999/html">
     <div class="row" data-bind="visible: dataExists, foreach: currentData">
         <div class="course-tile-small">
             <div class="course-tile-title">
                 <a data-bind="text: truncatedTitle(35), attr: {href: absoluteUrl, title: title}"></a>
             </div>
             <hr/>
-            <img class="course-tile-image" data-bind="attr: {src: thumbnail}" />
+            <a data-bind="attr: {href: absoluteUrl}">
+                <img class="course-tile-image" data-bind="attr: {src: thumbnail}" />
+            </a>
             <div class="course-tile-description">
                 <div class="rating-row">
                     Rating:
@@ -31,7 +33,9 @@
                 <h5 data-bind="text: '- ' + course.instructor.bestName" class="course-tile-instructor"></h5>
             </a>
             <hr/>
-            <img class="course-tile-image" data-bind="attr: {src: course.thumbnail}" />
+            <a data-bind="attr: {href: course.absoluteUrl}">
+                <img class="course-tile-image" data-bind="attr: {src: course.thumbnail}" />
+            </a>
             <div class="course-tile-description">
                 <div class="rating-row">
                     Rating:
