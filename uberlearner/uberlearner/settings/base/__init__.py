@@ -1,4 +1,3 @@
-
 from os.path import join, abspath, dirname
 
 DEBUG = False
@@ -129,6 +128,7 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'tastypie',
     'courses',
+    'assessment',
     'filestorage',
     'south',
     )
@@ -195,3 +195,4 @@ from sitemaps_settings import  *
 from flatpages_settings import *
 from accounts_settings import *
 from course_settings import *
+from assessment_settings import *

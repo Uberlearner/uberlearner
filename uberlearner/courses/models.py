@@ -21,7 +21,6 @@ class Instructor(models.Model):
     on to be an instructor.
     """
     user = models.OneToOneField(User, related_name="instructor_profile")
-    #rating = models.FloatField(default=0, editable=False)
     popularity = models.PositiveIntegerField(default=0, editable=False) # number of times their course has been used
     
     def __unicode__(self):

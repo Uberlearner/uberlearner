@@ -23,7 +23,7 @@ class UserProfileForm(UploadAvatarForm):
                 return
             return clean_avatar()
         return wrapped_clean_avatar
-    
+
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         self.fields['avatar'].required = False
@@ -41,7 +41,7 @@ class UserProfileForm(UploadAvatarForm):
         self.user.profile.summary = self.cleaned_data['summary']
         self.user.profile.save()
         self.user.save()
-        
+
 class ReplacementPrimaryAvatarForm(forms.Form):    
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
