@@ -10,6 +10,7 @@ class MultipleChoiceQuestion(Question):
     class Meta:
         app_label = 'assessment'
 
+
 def validate_correctness(correctness):
     if not correctness in settings.VALID_MULTIPLE_CHOICE_OPTION_CORRECTNESS_VALUES:
         raise ValidationError('Correctness value of option is not one of {0}'.format(

@@ -10,6 +10,7 @@ class BooleanQuestion(Question):
     class Meta:
         app_label = 'assessment'
 
+
 class BooleanQuestionAttempt(QuestionAttempt):
     question = models.ForeignKey(BooleanQuestion, related_name="attempts")
     answer = models.BooleanField()

@@ -1,8 +1,9 @@
 from django.test import TestCase
+from assessment.tests.factories import BooleanQuestionFactory, BooleanQuestionAttemptFactory, QuestionSetFactory
 
 # The data-structures for the boolean question models is very simple.
 # There seems to be no immediate need to test the validation logic for these models.
-from assessment.tests.factories import BooleanQuestionFactory, BooleanQuestionAttemptFactory, QuestionSetFactory
+
 
 class SimpleBooleanQuestionAttemptTests(TestCase):
     def setUp(self):

@@ -3,7 +3,9 @@ from django.test import TestCase
 
 # The data-structures for the boolean question models is very simple.
 # There seems to be no immediate need to test the validation logic for these models.
-from assessment.tests.factories import MultipleChoiceQuestionFactory, MultipleChoiceQuestionAttemptFactory, QuestionSetFactory, ChoiceFactory
+from assessment.tests.factories import MultipleChoiceQuestionFactory, MultipleChoiceQuestionAttemptFactory, \
+    QuestionSetFactory, ChoiceFactory
+
 
 class MultipleChoiceValidityTests(TestCase):
     def test_correctness(self):
@@ -20,6 +22,7 @@ class MultipleChoiceValidityTests(TestCase):
         for correctness in sample_incorrect_correctness_values:
             choice = ChoiceFactory.create(correctness=correctness)
             self.assertRaises(ValidationError, choice.full_clean)
+
 
 class SimpleMultipleChoiceQuestionAttemptTests(TestCase):
     def setUp(self):
@@ -41,6 +44,6 @@ class SimpleMultipleChoiceQuestionAttemptTests(TestCase):
         attempt = MultipleChoiceQuestionAttemptFactory.create(question=self.question, answer=self.choices[0])
         self.assertEqual(attempt.score, -1)
 
-    def test_partialy_correct_attempt_marking(self):
+    def test_partially_correct_attempt_marking(self):
         attempt = MultipleChoiceQuestionAttemptFactory.create(question=self.question, answer=self.choices[1])
         self.assertEqual(attempt.score, 0.5)

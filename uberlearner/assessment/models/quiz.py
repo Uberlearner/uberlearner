@@ -1,10 +1,11 @@
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from assessment.exceptions import EmptyQuizAttemptedException
+from question_set import QuestionSet
+from quiz_attempt import QuizAttempt
 from courses.models import Course
 from main.models import TimestampedModel
 from django.db import models
+
 
 class Quiz(TimestampedModel):
     """
@@ -26,8 +27,9 @@ class Quiz(TimestampedModel):
         app_label = 'assessment'
 
     course = models.ForeignKey(Course, related_name="quizzes")
+    # for some reason, max_length by itself won't raise an exception if length is exceeded
     summary = models.TextField(max_length=1000, blank=True, null=True,
-        validators=[MaxLengthValidator(1000)]) #for some reason, max_length by itself won't raise an exception if length is exceeded
+                               validators=[MaxLengthValidator(1000)])
     title = models.CharField(max_length=200, validators=[MaxLengthValidator(200)])
 
     grading_method = models.CharField(choices=GRADING_METHODS, default='highest', max_length=7)
@@ -72,6 +74,11 @@ class Quiz(TimestampedModel):
 
     @property
     def points(self):
+        """
+        Returns the total points for the quiz by adding the points from all the question sets
+
+        :return: The sum of the points from all the question sets.
+        """
         return sum(map(
             lambda question_set: question_set.points,
             self.question_sets.all()
@@ -80,6 +87,9 @@ class Quiz(TimestampedModel):
     def generate_question_set(self, create=True, *args, **kwargs):
         """
         Generates a question set that is attached to this quiz through foreign key.
+        :param create: Whether the question set is to be created (saved).
+        :param args: The args to use for creation of the question-set
+        :param kwargs: The kwargs to use for creation of the question-set
         """
         question_set = QuestionSet(*args, **kwargs)
         question_set.quiz = self
@@ -90,6 +100,8 @@ class Quiz(TimestampedModel):
     def generate_attempt(self, user, create=True):
         """
         Creates an attempt instance that is attached to this quiz.
+        :param user: The user attempting the quiz
+        :param create: Whether the attempt is to be created (saved)
         """
         if self.question_count == 0:
             raise EmptyQuizAttemptedException()
@@ -98,107 +110,3 @@ class Quiz(TimestampedModel):
         if create:
             attempt.save()
         return attempt
-
-class QuestionSet(TimestampedModel):
-    """
-    This model encapsulates a group of questions of similar characteristics. This is useful if an instructor
-    wants to randomly select questions for the quiz out of a question bank while having some control over the
-    questions that appear to the student.
-
-    For example, if the instructor wanted to test the students using a quiz containing 2 true/false quizzes and
-    2 multiple choice quizzes, they could create 2 question-sets: one containing 4 true/false questions and
-    another one containing 4 multiple-choice questions. Then these question-sets could be configured to contribute
-    2 random questions each every time a quiz was shown to the user.
-    """
-    quiz = models.ForeignKey(Quiz, related_name="question_sets")
-    points_per_question = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    fault_penalty = models.PositiveIntegerField(
-        default=0,
-        help_text='''Points to be subtracted from the total score in case of incorrect answer. In the interest of the
-                  learning experience of the student, it is highly advisable to not penalize for trying. Please use
-                  this feature only if you absolutely must.''',
-        validators=[MinValueValidator(0)]
-    )
-    title = models.CharField(max_length=200, blank=True, null=True, validators=[MaxLengthValidator(200)])
-    summary = models.TextField(max_length=1000, blank=True, null=True, validators=[MaxLengthValidator(1000)])
-    displayed_question_count = models.PositiveSmallIntegerField(
-        verbose_name="Number of questions shown to the user",
-        blank=True, null=True,
-        help_text="""This number dictates the number of questions that will be randomly selected from all the questions
-                  in this question-set when a student takes this quiz. If left blank, all the questions will be selected.""",
-        validators=[MinValueValidator(1)]
-    )
-
-    QUESTION_MODEL_RELATED_MANAGER_NAMES = ['booleanquestions', 'multiplechoicequestions']
-
-    class Meta:
-        order_with_respect_to = 'quiz'
-        app_label = 'assessment'
-
-    def __unicode__(self):
-        return u"{quiz} - question-set - {title}".format(
-            quiz=str(self.quiz),
-            title=self.title or u"Untitled"
-        )
-
-    def clean(self):
-        """
-        1) Make sure that fault_penalty is not greater than points_per_question
-        """
-        if self.fault_penalty > self.points_per_question:
-            raise ValidationError('Fault penalty cannot be greater than points_per_question')
-
-        return super(QuestionSet, self).clean()
-
-    @property
-    def real_question_count(self):
-        """
-        This is the number of questions attached to this question in the database. This number can be (and should
-        ideally be) greater than the displayed_question_count.
-        """
-        count = 0
-        for related_manager_name in self.QUESTION_MODEL_RELATED_MANAGER_NAMES:
-            count += getattr(self, related_manager_name).all().count()
-        return count
-
-    @property
-    def question_count(self):
-        """
-        This is the number of questions that the student will be asked when attempting this question_set. It is essentially
-        the minimum of the displayed_question_count and the real_question_count
-        """
-        return min(self.real_question_count, self.displayed_question_count)
-
-    @property
-    def points(self):
-        """
-        @return: The total number of points that can be earned through this question set.
-        """
-        question_count = self.real_question_count
-        if question_count < self.displayed_question_count:
-            return question_count * self.points_per_question
-        else:
-            return self.displayed_question_count * self.points_per_question
-
-class QuizAttempt(models.Model):
-    """
-    This is essentially a combination of the various attempts for each of the questions in the quiz
-    """
-    timestamp = models.DateTimeField(auto_now_add=True, editable=False)
-    user = models.ForeignKey(User, related_name="quiz_attempts")
-    quiz = models.ForeignKey(Quiz, related_name="attempts")
-
-    class Meta:
-        unique_together = ('user', 'quiz', 'timestamp')
-        app_label = 'assessment'
-
-    def __unicode__(self):
-        return "Quiz attempt for '{quiz}' by '{user}' at {time}".format(
-            quiz=str(self.quiz),
-            user=str(self.user),
-            time=str(self.timestamp)
-        )
-
-    @property
-    def score(self):
-        raise NotImplementedError()
