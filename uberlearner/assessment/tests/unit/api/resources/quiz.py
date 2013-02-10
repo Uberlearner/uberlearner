@@ -39,6 +39,8 @@ class QuizResourceValidationTests(ResourceTestCase):
 
 class QuizResourcePermissionTests(ResourceTestCase):
     def setUp(self):
+        super(QuizResourcePermissionTests, self).setUp()
+        #: :type: Course
         self.course = CourseFactory.create()
         self.random_user = UserFactory.create()
         self.enrolled_user = UserFactory.create()
@@ -54,6 +56,7 @@ class QuizResourcePermissionTests(ResourceTestCase):
         }
 
     def tearDown(self):
+        self.course.enrollments.all().delete()
         self.course.delete()
 
     def _perform_http_method_on_quiz(self, method=None, **kwargs):
@@ -69,7 +72,7 @@ class QuizResourcePermissionTests(ResourceTestCase):
 
     def _create_quiz(self, data=None, **kwargs):
         data = data or self.post_data
-        return self._perform_http_method_on_quiz(method='post', data=data, **kwargs)
+        return self._perform_http_method_on_quiz(method='post', uri=self.quiz_list_uri, data=data, **kwargs)
 
     def _read_quiz(self, quiz, **kwargs):
         if 'uri' in kwargs:
@@ -126,21 +129,21 @@ class QuizResourcePermissionTests(ResourceTestCase):
         quiz = QuizFactory.create(course=self.course)
         test_users = [self.course.instructor, self.enrolled_user]
         for test_user in test_users:
-            response = self._read_quiz(quiz=quiz, authentication=test_user)
+            response, pre_count, post_count = self._read_quiz(quiz=quiz, authentication=test_user)
             self.assertValidJSONResponse(response)
 
     def test_that_unauthorized_users_cannot_read_quiz(self):
         quiz = QuizFactory.create(course=self.course)
         test_users = [None, self.random_user]
         for test_user in test_users:
-            response = self._read_quiz(quiz=quiz, authentication=test_user)
+            response, pre_count, post_count = self._read_quiz(quiz=quiz, authentication=test_user)
             self.assertValidJSONResponse(response)
             self.assertHttpUnauthorized(response)
 
     def test_that_instructors_can_only_list_quizzes_from_their_courses(self):
         quiz_from_another_course = QuizFactory.create()
         quiz = QuizFactory.create(course=self.course)
-        response = self._read_quiz_list(authentication=quiz.course.instructor)
+        response, pre_count, post_count = self._read_quiz_list(authentication=quiz.course.instructor)
         self.assertValidJSONResponse(response)
         deserialized = self.deserialize(response)
         self.assertEqual(deserialized['meta']['totalCount'], 1)
@@ -152,7 +155,7 @@ class QuizResourcePermissionTests(ResourceTestCase):
         enrollment = EnrollmentFactory.create()
         non_enrolled_quiz = QuizFactory.create(course=enrollment.course)
         enrolled_quiz = QuizFactory.create(course=self.course)
-        response = self._read_quiz_list(authentication=self.enrolled_user)
+        response, pre_count, post_count = self._read_quiz_list(authentication=self.enrolled_user)
         self.assertValidJSONResponse(response)
         deserialized = self.deserialize(response)
         self.assertEqual(deserialized['meta']['totalCount'], 1)
@@ -161,27 +164,42 @@ class QuizResourcePermissionTests(ResourceTestCase):
 
     def test_that_unauthorized_users_cannot_list_quizzes(self):
         quiz = QuizFactory.create(course=self.course)
-        response = self._read_quiz_list(authentication=None)
+        response, pre_count, post_count = self._read_quiz_list(authentication=None)
         self.assertHttpUnauthorized(response)
 
     def test_that_authorized_users_can_update_quiz(self):
         quiz = QuizFactory.create(course=self.course)
-        response = self._update_quiz(quiz, data_update={'title': 'New and improved'}, authentication=self.course.instructor)
+        response, pre_count, post_count = self._update_quiz(
+            quiz,
+            data_update={'title': 'New and improved'},
+            authentication=self.course.instructor
+        )
         self.assertValidJSONResponse(response)
         self.assertEqual(quiz.title, 'New and improved')
 
     def test_that_unauthorized_users_cannot_update_quiz(self):
         quiz = QuizFactory.create(course=self.course)
         original_title = quiz.title
-        response = self._update_quiz(quiz, data_update={'title': 'New and improved'})
+        response, pre_count, post_count = self._update_quiz(
+            quiz,
+            data_update={'title': 'New and improved'}
+        )
         self.assertHttpUnauthorized(response)
         self.assertEqual(original_title, quiz.title)
 
-        response = self._update_quiz(quiz, data_update={'title': 'New and improved'}, authentication=self.enrolled_user)
+        response, pre_count, post_count = self._update_quiz(
+            quiz,
+            data_update={'title': 'New and improved'},
+            authentication=self.enrolled_user
+        )
         self.assertValidJSONResponse(response)
         self.assertEqual(original_title, quiz.title)
 
-        response = self._update_quiz(quiz, data_update={'title': 'New and improved'}, authentication=self.random_user)
+        response, pre_count, post_count = self._update_quiz(
+            quiz,
+            data_update={'title': 'New and improved'},
+            authentication=self.random_user
+        )
         self.assertValidJSONResponse(response)
         self.assertEqual(original_title, quiz.title)
 
