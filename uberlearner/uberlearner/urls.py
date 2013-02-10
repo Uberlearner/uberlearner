@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
+from assessment.api.resources.quiz import QuizResource
 from courses.api import CourseResource, UserResource, PageResource, EnrollmentResource
 from courses.views import CourseList
 from tastypie.api import Api
@@ -13,6 +14,7 @@ v1_api.register(CourseResource())
 v1_api.register(UserResource())
 v1_api.register(PageResource())
 v1_api.register(EnrollmentResource())
+v1_api.register(QuizResource())
 
 urlpatterns = patterns('',
     url(r"^$", accounts_views.login, {

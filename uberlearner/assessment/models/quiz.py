@@ -110,3 +110,15 @@ class Quiz(TimestampedModel):
         if create:
             attempt.save()
         return attempt
+
+    @models.permalink
+    def get_resource_uri(self, url_name='api_dispatch_detail'):
+        # avoid circular import
+        from assessment.api.resources.quiz import QuizResource
+        from uberlearner.urls import v1_api
+
+        return (url_name, (), {
+            'resource_name': QuizResource._meta.resource_name,
+            'api_name': v1_api.api_name,
+            'pk': self.id
+        })

@@ -1,30 +1,27 @@
-import json
 from django.conf.urls import url
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
-from django.views.decorators.http import require_POST, require_http_methods
 from easy_thumbnails.files import get_thumbnailer
-from tastypie.authentication import Authentication
 from tastypie.exceptions import ImmediateHttpResponse, BadRequest
 from tastypie.http import HttpGone, HttpMultipleChoices, HttpNoContent, HttpForbidden
 from tastypie.resources import ModelResource, convert_post_to_patch
 from tastypie import fields, http
 from tastypie.utils import trailing_slash
-import types
 from accounts.api.api import UserResource
-from accounts.models import UserProfile
+from assessment.api.resources.quiz import QuizResource
 from main.api.authentication import UberAuthentication
 from courses.api.authorization import CourseAuthorization
 from main.api.serializers import UberSerializer
 from courses.models import Course, Instructor, Page, Enrollment
-from django.contrib.auth.models import User              
+from django.contrib.auth.models import User
 from tastypie.constants import ALL_WITH_RELATIONS
 from django.core.urlresolvers import reverse
 import time
 from django.conf import settings
 
 MAX_COURSE_SCORE = settings.COURSE_RATING_RANGE
+
 
 class PageResource(ModelResource):
     class Meta:
@@ -77,7 +74,8 @@ class PageResource(ModelResource):
         # get the deserialized version of the request. This will be removed if tastypie fixes the authorization problem
         # (where the is_authorized method doesn't provide access to the object)
         post_request = convert_post_to_patch(request)
-        deserialized = self.deserialize(post_request, post_request.raw_post_data, format=post_request.META.get('CONTENT_TYPE', 'application/json'))
+        deserialized = self.deserialize(post_request, post_request.raw_post_data,
+                                        format=post_request.META.get('CONTENT_TYPE', 'application/json'))
         if "objects" not in deserialized:
             raise BadRequest("Invalid data sent.")
         q_expression = None
@@ -124,10 +122,12 @@ class PageResource(ModelResource):
         else:
             return authorized_objects.filter(course__instructor__id=request.user.id)
 
+
 class CourseResource(ModelResource):
     instructor = fields.ForeignKey(UserResource, 'instructor', full=True)
     title = fields.CharField(attribute='title')
     pages = fields.OneToManyField(PageResource, 'pages', full=True)
+    quizzes = fields.OneToManyField(QuizResource, 'quizzes')
     always_return_data = True
 
     class Meta:
@@ -223,7 +223,8 @@ class CourseResource(ModelResource):
         if not (score >= 1 and score <= MAX_COURSE_SCORE):
             return HttpForbidden('Scores for courses have to be between 1 and 5 (inclusive)')
 
-        response = course.rating.add(score=score, user=request.user, ip_address=request.META['REMOTE_ADDR'], commit=True)
+        response = course.rating.add(score=score, user=request.user, ip_address=request.META['REMOTE_ADDR'],
+                                     commit=True)
 
         if 'status_code' not in response or response.status_code == 200:
             return HttpResponse(self._meta.serializer.to_json({
@@ -296,6 +297,7 @@ class CourseResource(ModelResource):
         5) Adds the url at which ratings can be posted.n
         """
         from uberlearner.urls import v1_api
+
         if bundle.obj and bundle.data:
             bundle.data['page_list_uri'] = reverse('api_dispatch_list', kwargs={
                 'resource_name': PageResource._meta.resource_name,
@@ -304,7 +306,7 @@ class CourseResource(ModelResource):
 
             if bundle.obj.photo:
                 bundle.data['thumbnail'] = get_thumbnailer(bundle.obj.photo)['tile'].url
-            bundle.data['creationTimePrecise'] = str(time.mktime(bundle.obj.creation_timestamp.timetuple())*1000)
+            bundle.data['creationTimePrecise'] = str(time.mktime(bundle.obj.creation_timestamp.timetuple()) * 1000)
 
             if bundle.request.user.is_anonymous():
                 bundle.data['enrolled'] = None
@@ -322,9 +324,11 @@ class CourseResource(ModelResource):
             bundle.data['rating_resource_uri'] = bundle.obj.get_rating_resource_uri()
         return bundle
 
+
 class EnrollmentResource(ModelResource):
     course = fields.ForeignKey(CourseResource, 'course', full=True)
     student = fields.ForeignKey(UserResource, 'student', full=True)
+
     class Meta:
         queryset = Enrollment.objects.all()
         authentication = UberAuthentication()

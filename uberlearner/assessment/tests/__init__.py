@@ -1,1 +1,1 @@
-from assessment.tests.models import *
+from assessment.tests.unit import *
