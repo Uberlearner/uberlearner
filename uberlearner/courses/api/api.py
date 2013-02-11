@@ -9,7 +9,6 @@ from tastypie.resources import ModelResource, convert_post_to_patch
 from tastypie import fields, http
 from tastypie.utils import trailing_slash
 from accounts.api.api import UserResource
-from assessment.api.resources.quiz import QuizResource
 from main.api.authentication import UberAuthentication
 from courses.api.authorization import CourseAuthorization
 from main.api.serializers import UberSerializer
@@ -127,7 +126,7 @@ class CourseResource(ModelResource):
     instructor = fields.ForeignKey(UserResource, 'instructor', full=True)
     title = fields.CharField(attribute='title')
     pages = fields.OneToManyField(PageResource, 'pages', full=True)
-    quizzes = fields.OneToManyField(QuizResource, 'quizzes')
+    #quizzes = fields.OneToManyField(QuizResource, 'quizzes')
     always_return_data = True
 
     class Meta:

@@ -1,4 +1,5 @@
-from tastypie.authentication import SessionAuthentication
+from tastypie.authentication import SessionAuthentication, BasicAuthentication
+from django.conf import settings
 
 class UberAuthentication(SessionAuthentication):
     """
@@ -9,3 +10,6 @@ class UberAuthentication(SessionAuthentication):
             return True
         else:
             return super(UberAuthentication, self).is_authenticated(request, **kwargs)
+
+if getattr(settings, 'TEST') and settings.TEST:
+    UberAuthentication = BasicAuthentication

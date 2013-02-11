@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.test import Client
 from tastypie.test import ResourceTestCase
 from accounts.tests.factories import UserFactory
 from assessment.api.resources.quiz import QuizResource
@@ -29,12 +30,16 @@ class QuizResourceValidationTests(ResourceTestCase):
         using the api.
         """
         self.post_data['title'] = 'Really long title; ' * 100
-        self.assertHttpBadRequest(self.api_client.post(
+        response = self.api_client.post(
             self.quiz_list_uri,
             format='json',
             data=self.post_data,
-            authentication=self.course.instructor
-        ))
+            authentication=self.create_basic(self.course.instructor.username, UserFactory._plain_text_password)
+        )
+        self.assertHttpBadRequest(response)
+        content = self.deserialize(response)
+        self.assertIn('quizzes', content)
+        self.assertIn('title', content['quizzes'])
 
 
 class QuizResourcePermissionTests(ResourceTestCase):
@@ -59,15 +64,22 @@ class QuizResourcePermissionTests(ResourceTestCase):
         self.course.enrollments.all().delete()
         self.course.delete()
 
+    def _get_credentials(self, user):
+        return self.create_basic(user.username, UserFactory._plain_text_password)
+
     def _perform_http_method_on_quiz(self, method=None, **kwargs):
         if method is None:
             raise ValueError('Some action has to be performed on the quiz endpoint')
         if not hasattr(self.api_client, method):
             raise ValueError('Illegal http method attempted on the quiz endpoint')
 
+        if 'authentication' in kwargs and kwargs['authentication'] is not None:
+            kwargs['authentication'] = self._get_credentials(kwargs['authentication'])
+
         pre_creation_count = Quiz.objects.count()
         response = getattr(self.api_client, method)(**kwargs)
         post_creation_count = Quiz.objects.count()
+
         return response, pre_creation_count, post_creation_count
 
     def _create_quiz(self, data=None, **kwargs):
@@ -89,7 +101,7 @@ class QuizResourcePermissionTests(ResourceTestCase):
             del kwargs['uri']
         if 'data' in kwargs:
             del kwargs['data']
-        return self._perform_http_method_on_quiz(method='put', uri=quiz.get_resource_uri(), data=data_update)
+        return self._perform_http_method_on_quiz(method='put', uri=quiz.get_resource_uri(), data=data_update, **kwargs)
 
     def _delete_quiz(self, quiz, **kwargs):
         if 'uri' in kwargs:
@@ -98,7 +110,7 @@ class QuizResourcePermissionTests(ResourceTestCase):
 
     def test_that_authorized_users_can_create_quiz(self):
         response, pre_count, post_count = self._create_quiz(authentication=self.course.instructor)
-        self.assertEqual(pre_count, post_count + 1)
+        self.assertEqual(pre_count, post_count - 1)
         self.assertHttpCreated(response)
 
     def test_that_unauthorized_users_cannot_create_quiz(self):
@@ -131,13 +143,14 @@ class QuizResourcePermissionTests(ResourceTestCase):
         for test_user in test_users:
             response, pre_count, post_count = self._read_quiz(quiz=quiz, authentication=test_user)
             self.assertValidJSONResponse(response)
+            deserialized = self.deserialize(response)
+            self.assertEqual(deserialized['id'], quiz.id)
 
     def test_that_unauthorized_users_cannot_read_quiz(self):
         quiz = QuizFactory.create(course=self.course)
         test_users = [None, self.random_user]
         for test_user in test_users:
             response, pre_count, post_count = self._read_quiz(quiz=quiz, authentication=test_user)
-            self.assertValidJSONResponse(response)
             self.assertHttpUnauthorized(response)
 
     def test_that_instructors_can_only_list_quizzes_from_their_courses(self):
@@ -174,7 +187,8 @@ class QuizResourcePermissionTests(ResourceTestCase):
             data_update={'title': 'New and improved'},
             authentication=self.course.instructor
         )
-        self.assertValidJSONResponse(response)
+        self.assertHttpAccepted(response)
+        quiz = Quiz.objects.get(pk=quiz.pk)
         self.assertEqual(quiz.title, 'New and improved')
 
     def test_that_unauthorized_users_cannot_update_quiz(self):
@@ -192,7 +206,7 @@ class QuizResourcePermissionTests(ResourceTestCase):
             data_update={'title': 'New and improved'},
             authentication=self.enrolled_user
         )
-        self.assertValidJSONResponse(response)
+        self.assertHttpUnauthorized(response)
         self.assertEqual(original_title, quiz.title)
 
         response, pre_count, post_count = self._update_quiz(
@@ -200,7 +214,7 @@ class QuizResourcePermissionTests(ResourceTestCase):
             data_update={'title': 'New and improved'},
             authentication=self.random_user
         )
-        self.assertValidJSONResponse(response)
+        self.assertHttpUnauthorized(response)
         self.assertEqual(original_title, quiz.title)
 
 
