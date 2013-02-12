@@ -7,7 +7,7 @@ django-recaptcha
 -e git+https://github.com/chhabrakadabra/django-avatar.git#egg=django-avatar
 django-ses
 pytz
--e git+https://github.com/toastdriven/django-tastypie.git#egg=django-tastypie
+-e git+https://github.com/toastdriven/django-tastypie.git@32dae8d2590dde3122289118ac241ab0bd2452e8#egg=django_tastypie
 django-storages
 easy-thumbnails
 python-magic>=0.4.3
@@ -15,3 +15,4 @@ hoover
 -e git+https://github.com/madzak/python-json-logger.git@eafd89ae42dd7db2cedd80614e3b561378bdc413#egg=python-json-logger
 django-ratings==0.3.7
 factory_boy==1.2.0
+fudge==1.0.3

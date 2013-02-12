@@ -1,1 +1,2 @@
-from assessment.tests.unit import *
+from .unit import *
+from .integration import *
