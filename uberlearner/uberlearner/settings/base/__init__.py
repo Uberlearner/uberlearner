@@ -2,6 +2,7 @@ from os.path import join, abspath, dirname
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+TEST = False
 
 PROJECT_ROOT = abspath(join(dirname(__file__), '..', '..', '..'))
 
