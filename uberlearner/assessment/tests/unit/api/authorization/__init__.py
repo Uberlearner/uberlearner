@@ -3,37 +3,37 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from assessment.api.authorization import QuizRelatedResourceAuthorization
 from assessment.api.resources.quiz import QuizResource
-from assessment.models import Quiz
-from assessment.tests.factories import QuizFactory
-from courses.tests.factories import EnrollmentFactory
+from assessment.models import Quiz, BooleanQuestion
+from assessment.tests.factories import QuizFactory, BooleanQuestionFactory
+from courses.tests.factories import EnrollmentFactory, CourseFactory
 from main.api import UberSerializer
 from uberlearner.urls import v1_api
 import json
-
-from .quiz import *
 
 
 def merge_dicts(first, second):
     return dict(first.items() + second.items())
 
 
-def generate_authorization(course, object_class=Quiz):
+def generate_authorization(course=None, course_navigation_string='does__not__matter', object_class=Quiz):
     """
     Creates an instance of the QuizRelatedResourceAuthorization class by using a get_course
     method that merely returns the course variable given to this method.
     """
     class AuthorizationClass(QuizRelatedResourceAuthorization):
-        def __init__(self):
+        def __init__(self, course_navigation_string):
             Meta = type('Meta', (object, ), {
                 'object_class': object_class,
                 'serializer': UberSerializer()
             })
             self.resource_meta = Meta()
+            super(AuthorizationClass, self).__init__(course_navigation_string=course_navigation_string)
 
-        def get_course(self, obj=None, data=None):
-            return course
+        # if the course object is provided, then bypass the get_course logic altogether
+        if course:
+            get_course = lambda *args, **kwargs: course
 
-    return AuthorizationClass()
+    return AuthorizationClass(course_navigation_string=course_navigation_string)
 
 
 def generate_request(path=None, method='GET', user=None, data={}):
@@ -64,7 +64,7 @@ BASE_QUIZ_DATA = {
 
 class AnonymousUsersTest(TestCase):
     def setUp(self):
-        self.authorization = generate_authorization(None)
+        self.authorization = generate_authorization()
 
     def test_that_anonymous_users_cannot_get(self):
         request = generate_request(method='GET')
@@ -217,3 +217,46 @@ class NonInstructorTest(TestCase):
         request = generate_request(path=self.another_quiz.get_resource_uri(), user=self.another_user)
         is_authorized = authorization.is_authorized(request)
         self.assertTrue(is_authorized)
+
+
+class TestAuthorizationGetObject(TestCase):
+    def setUp(self):
+        self.authorization = generate_authorization(course_navigation_string='course', object_class=Quiz)
+        self.course = CourseFactory.create()
+
+    def tearDown(self):
+        self.course.instructor.delete()  # use cascading to delete all relevant objects
+
+    def test_get_course_from_valid_data(self):
+        data = {'course': self.course.get_resource_uri()}
+        self.assertEqual(self.authorization.get_course_from_data(data).pk, self.course.pk)
+
+    def test_get_course_from_invalid_data(self):
+        data = {'course': 'aoeu'}
+        self.assertIsNone(self.authorization.get_course_from_data(data))
+        self.assertIsNone(self.authorization.get_course_from_data(None))
+
+    def test_that_quiz_object_can_be_navigated(self):
+        quiz = QuizFactory.create(course=self.course)
+        obtained_course = self.authorization.get_course(obj=quiz)
+        self.assertEquals(self.course.pk, obtained_course.pk)
+
+    def test_that_boolean_question_object_can_be_navigated(self):
+        """
+        This is an example of get_course navigating a more involved chain.
+        """
+        authorization = generate_authorization(course_navigation_string='question_set__quiz__course', object_class=BooleanQuestion)
+        boolean_question = BooleanQuestionFactory.create()
+        obtained_course = authorization.get_course(obj=boolean_question)
+        self.assertEqual(boolean_question.question_set.quiz.course, obtained_course)
+
+    def test_that_object_precedes_data_in_get_course(self):
+        data = {'course': self.course.get_resource_uri()}
+        quiz = QuizFactory.create()
+        self.assertNotEqual(quiz.course.pk, self.course.pk)
+        obtained_course = self.authorization.get_course(obj=quiz, data=data)
+        self.assertEqual(obtained_course.pk, quiz.course.pk)
+
+    def test_with_no_information(self):
+        course = self.authorization.get_course()
+        self.assertIsNone(course)

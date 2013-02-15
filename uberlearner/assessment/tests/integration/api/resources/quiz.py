@@ -1,5 +1,4 @@
 from django.core.urlresolvers import reverse
-from django.test import Client
 from tastypie.test import ResourceTestCase
 from accounts.tests.factories import UserFactory
 from assessment.api.resources.quiz import QuizResource

@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist, SuspiciousOperation
+from courses.models import Course
 from main.api.authorization import UberAuthorization
 
 
@@ -16,17 +17,62 @@ class QuizRelatedResourceAuthorization(UberAuthorization):
     Since all the permissions depend on accessing the course related to the object (quiz, question-set or any
     type of question), the method get_course has to be defined by all the subclasses.
     """
-    
+
+    def __init__(self, course_navigation_string):
+        if not course_navigation_string:
+            raise ValueError('Course navigation string is required')
+        self.course_navigation_string = course_navigation_string
+
+    def get_course_from_object(self, obj):
+        """
+        Gets the course object given the object corresponding to the model backing the resource this authorization
+        is being used for.
+
+        :param obj: The object of concern
+        :raise: NotImplementedError because the subclasses have to implement this method
+        """
+        course = None
+        attribute_list = self.course_navigation_string.split('__')
+        try:
+            current_node = obj
+            for attribute_name in attribute_list:
+                current_node = getattr(current_node, attribute_name)
+            course = current_node
+        finally:
+            return course
+
+    def get_course_from_data(self, data):
+        """
+
+        :param data: A dictionary containing the resource uri of the course (attached to the key 'course')
+        :return: The course object
+        """
+        course = None
+        try:
+            course = self.get_object(data['course'], object_class=Course)
+        except (KeyError, AttributeError) as ex:
+            pass
+        finally:
+            return course
+
     def get_course(self, obj=None, data=None):
         """
-        Since all the permissions depend on accessing the course related to the object (quiz, question-set or any
-        type of question), the method get_course_from_object has to be defined by all the subclasses.
+        Returns the course object given either the relevant object (quiz, question-set or any type of question) or
+        a data dictionary containing the course resource uri (corresponding to the 'course' key) or both.
+        In the case of both pieces of data being present, the obj is given precedence.
+
+        Note: One of the methods this method depends on is the get_course_from_object method. This method has to be
+        implemented by all the subclasses.
 
         :param obj: The object of concern
         :param data: The data from the request
-        :raise: NotImplementedError because the subclasses have to implement this method
         """
-        raise NotImplementedError()
+        if obj is not None:
+            return self.get_course_from_object(obj)
+        elif data is not None:
+            return self.get_course_from_data(data)
+        else:
+            return None
 
     def is_get_list_authorized(self, user):
         """
