@@ -96,18 +96,15 @@ class QuizAttemptFactory(factory.Factory):
             MultipleChoiceQuestionAttemptFactory.build_batch(attempt_count, quiz_attempt=self)
 
 
-class QuestionFactory(factory.Factory):
-    question_set = factory.SubFactory(QuestionSetFactory)
-    html = "<p>Test generic type question</p>"
-
-
 class QuestionAttemptFactory(factory.Factory):
     quiz_attempt = factory.SubFactory(QuizAttemptFactory)
 
 
-class BooleanQuestionFactory(QuestionFactory):
+class BooleanQuestionFactory(factory.Factory):
     FACTORY_FOR = BooleanQuestion
 
+    html = '<p>Test boolean question</p>'
+    question_set = factory.SubFactory(QuestionSetFactory, question_type='BOOL')
     correct_answer = False
 
 
@@ -118,8 +115,11 @@ class BooleanQuestionAttemptFactory(QuestionAttemptFactory):
     answer = False
 
 
-class MultipleChoiceQuestionFactory(QuestionFactory):
+class MultipleChoiceQuestionFactory(factory.Factory):
     FACTORY_FOR = MultipleChoiceQuestion
+
+    html = '<p>Test multiple choice question</p>'
+    question_set = factory.SubFactory(QuestionSetFactory, question_type='MC')
 
 
 class ChoiceFactory(factory.Factory):

@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
 from main.models import TimestampedModel
 from django.db import models
@@ -22,6 +23,16 @@ class Question(TimestampedModel):
             return "({pk}) - {html}...".format(pk=self.pk, html=self.html[:50])
         else:
             return "({pk}) - {html}".format(pk=self.pk, html=self.html)
+
+    def clean(self):
+        if self.question_set.question_type != self.Meta._question_type_code:
+            raise ValidationError(
+                'This question of type "{question_type}" cannot be attached to '
+                'question_set of type "{question_set_type}"'.format(
+                question_type=QuestionSet.QUESTION_TYPES[self.Meta._question_type_code][0],
+                question_set_type=QuestionSet.QUESTION_TYPES[self.question_set.question_type][0]
+            ))
+        return super(Question, self).clean()
 
     @property
     def points(self):

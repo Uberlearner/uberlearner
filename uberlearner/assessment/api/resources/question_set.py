@@ -18,7 +18,7 @@ class QuestionSetResource(QuizRelatedResource):
         null=True
     )
 
-    class Meta(UberModelResource.Meta):
+    class Meta(QuizRelatedResource.Meta):
         resource_name = 'question_sets'
         queryset = QuestionSet.objects.all()
         _course_navigation_string = 'quiz__course'

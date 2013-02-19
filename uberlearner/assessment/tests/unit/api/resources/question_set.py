@@ -8,7 +8,7 @@ from assessment.models import QuestionSet
 from courses.tests.factories import EnrollmentFactory
 
 
-class TestQuizAuthorizationLimits(TestCase):
+class TestQuestionSetAuthorizationLimits(TestCase):
     def setUp(self):
         self.resource = QuestionSetResource()
         self.object_list = QuestionSet.objects.all()
@@ -33,25 +33,25 @@ class TestQuizAuthorizationLimits(TestCase):
         question_sets = self.resource.apply_authorization_limits(request, self.object_list)
         self.assertEqual(question_sets.count(), 0)
 
-    def test_that_enrolled_users_can_only_access_their_quizzes(self):
+    def test_that_enrolled_users_can_only_access_their_question_sets(self):
         enrollment = EnrollmentFactory.create(course=self.course)
         enrolled_user = enrollment.student
-        non_enrolled_quiz = QuizFactory.create()  # this should have a different course
-        self.assertNotEqual(self.course, non_enrolled_quiz.course)
+        non_enrolled_question_set = QuestionSetFactory.create()  # this should have a different course
+        self.assertNotEqual(self.course, non_enrolled_question_set.quiz.course)
 
         request = self._generate_request(enrolled_user)
-        quizzes = self.resource.apply_authorization_limits(request, self.object_list)
-        self.assertEqual(quizzes.count(), 1)
-        quiz = quizzes[0]
-        self.assertEqual(quiz.course, self.course)
+        question_sets = self.resource.apply_authorization_limits(request, self.object_list)
+        self.assertEqual(question_sets.count(), 1)
+        question_set = question_sets[0]
+        self.assertEqual(question_set.quiz.course, self.course)
 
     def test_that_instructors_can_access_all_their_quizzes(self):
-        random_quiz = QuizFactory.create()
-        random_course = random_quiz.course
+        random_question_set = QuestionSetFactory.create()
+        random_course = random_question_set.quiz.course
         self.assertNotEqual(random_course, self.course)
 
         request = self._generate_request(self.course.instructor)
-        quizzes = self.resource.apply_authorization_limits(request, self.object_list)
-        self.assertEqual(quizzes.count(), 1)
-        quiz = quizzes[0]
-        self.assertEqual(quiz.course, self.course)
+        question_sets = self.resource.apply_authorization_limits(request, self.object_list)
+        self.assertEqual(question_sets.count(), 1)
+        question_set = question_sets[0]
+        self.assertEqual(question_set.quiz.course, self.course)

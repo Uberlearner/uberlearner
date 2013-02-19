@@ -20,3 +20,10 @@ class QuizResource(QuizRelatedResource):
         queryset = Quiz.objects.all()
         _course_navigation_string = 'course'
         authorization = QuizRelatedResourceAuthorization(course_navigation_string=_course_navigation_string)
+
+    def dehydrate(self, bundle):
+        if bundle.request.user != bundle.obj.course.instructor:
+            del bundle.data['question_sets']
+        bundle.data['question_count'] = bundle.obj.question_count
+        bundle.data['points'] = bundle.obj.points
+        return super(QuizResource, self).dehydrate(bundle)

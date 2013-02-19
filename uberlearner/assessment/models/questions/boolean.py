@@ -1,14 +1,16 @@
 from django.db import models
 from assessment.models.questions import Question, QuestionAttempt
 
+
 class BooleanQuestion(Question):
     """
     True/False type questions.
     """
     correct_answer = models.BooleanField()
 
-    class Meta:
+    class Meta(Question.Meta):
         app_label = 'assessment'
+        _question_type_code = 'BOOL'
 
 
 class BooleanQuestionAttempt(QuestionAttempt):

@@ -3,12 +3,14 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from assessment.models.questions import Question, QuestionAttempt
 
+
 class MultipleChoiceQuestion(Question):
     """
     Questions with many possible answers.
     """
-    class Meta:
+    class Meta(Question.Meta):
         app_label = 'assessment'
+        _question_type_code = 'MC'
 
 
 def validate_correctness(correctness):

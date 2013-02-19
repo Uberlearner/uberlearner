@@ -47,13 +47,24 @@ class QuizRelatedResourceAuthorization(UberAuthorization):
         :param data: A dictionary containing the resource uri of the course (attached to the key 'course')
         :return: The course object
         """
-        course = None
+        obj = None
+        attribute_list = self.course_navigation_string.split('__')
+        key = attribute_list[0]
+        if not hasattr(self.resource_meta.object_class, key):
+            return obj
+        klass = getattr(self.resource_meta.object_class, key).field.related.parent_model
         try:
-            course = self.get_object(data['course'], object_class=Course)
+            obj = self.get_object(data[key], object_class=klass)
+            if len(attribute_list) > 1:
+                for attribute_name in attribute_list[1:]:
+                    obj = getattr(obj, attribute_name)
         except (KeyError, AttributeError) as ex:
             pass
         finally:
-            return course
+            if isinstance(obj, Course):
+                return obj
+            else:
+                return None
 
     def get_course(self, obj=None, data=None):
         """
