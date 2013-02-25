@@ -43,7 +43,7 @@ class QuizResourceValidationTests(ResourceTestCase):
 
 
 class QuizResourcePermissionTests(UberResourceTestCase):
-    class Meta:
+    class Meta(UberResourceTestCase.Meta):
         model = Quiz
         list_uri = reverse('api_dispatch_list', kwargs={
             'resource_name': QuizResource._meta.resource_name,
@@ -158,24 +158,22 @@ class QuizResourcePermissionTests(UberResourceTestCase):
         response, pre_count, post_count = self._read_list(authentication=None)
         self.assertHttpUnauthorized(response)
 
-    def _test_quiz_attributes_on_read_by_user(self, user, white_list, black_list):
+    def test_that_students_cannot_see_question_sets(self):
+        white_list = ['id', 'title', 'summary', 'course', 'gradingMethod', 'attemptsAllowed', 'reattemptInterval',
+                      'questionCount', 'points', 'resourceUri', 'lastModified', 'creationTimestamp']
+        black_list = ['questionSets']
         question_set = QuestionSetFactory.create(quiz__course=self.course)
-        response, pre_count, post_count = self._read(obj=question_set.quiz, authentication=user)
+        response, pre_count, post_count = self._read(obj=question_set.quiz, authentication=self.enrolled_user)
         self.assertValidJSONResponse(response)
         quiz = self.deserialize(response)
-        for item in white_list:
-            self.assertIn(item, quiz)
-        for item in black_list:
-            self.assertNotIn(item, quiz)
-
-    def test_that_students_cannot_see_question_sets(self):
-        white_list = ['title', 'summary', 'course', 'gradingMethod', 'attemptsAllowed', 'reattemptInterval',
-                      'questionCount', 'points']
-        black_list = ['questionSets']
-        self._test_quiz_attributes_on_read_by_user(self.enrolled_user, white_list, black_list)
+        self._test_packet_attributes(quiz, white_list, black_list)
 
     def test_that_instructors_can_see_all_attributes_of_question_sets(self):
-        white_list = ['title', 'summary', 'course', 'gradingMethod', 'attemptsAllowed', 'reattemptInterval',
-                      'questionCount', 'points', 'questionSets']
+        white_list = ['id', 'title', 'summary', 'course', 'gradingMethod', 'attemptsAllowed', 'reattemptInterval',
+                      'questionCount', 'points', 'questionSets', 'resourceUri', 'lastModified', 'creationTimestamp']
         black_list = []
-        self._test_quiz_attributes_on_read_by_user(self.course.instructor, white_list, black_list)
+        question_set = QuestionSetFactory.create(quiz__course=self.course)
+        response, pre_count, post_count = self._read(obj=question_set.quiz, authentication=self.course.instructor)
+        self.assertValidJSONResponse(response)
+        quiz = self.deserialize(response)
+        self._test_packet_attributes(quiz, white_list, black_list)
