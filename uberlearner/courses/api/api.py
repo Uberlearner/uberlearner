@@ -293,7 +293,7 @@ class CourseResource(ModelResource):
         2) Adds the url of the thumbnail version of the photo.
         3) Adds the overall rating of the course.
         4) Adds the user's rating for the course if the user is not anonymous.
-        5) Adds the url at which ratings can be posted.n
+        5) Adds the url at which ratings can be posted.
         """
         from uberlearner.urls import v1_api
         if bundle.obj and bundle.data:

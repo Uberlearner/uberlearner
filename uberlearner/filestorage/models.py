@@ -1,3 +1,4 @@
+from django.core.files.storage import get_storage_class
 from easy_thumbnails.files import get_thumbnailer
 import os
 from django.conf import settings
@@ -5,6 +6,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from easy_thumbnails.fields import ThumbnailerImageField
 from storages.backends.s3boto import S3BotoStorage
+
+default_storage_class = get_storage_class()
 
 def uberphoto_image_path_generator(instance=None, filename=None):
     """
@@ -29,11 +32,11 @@ class UberPhoto(models.Model):
     user = models.ForeignKey(User, related_name='user_images')
     image = ThumbnailerImageField(
         upload_to=uberphoto_image_path_generator,
-        storage=S3BotoStorage(
+        storage=default_storage_class(
             location='development/filestorage' if settings.DEBUG else 'filestorage',
             querystring_auth=False
         ),
-        thumbnail_storage=S3BotoStorage(
+        thumbnail_storage=default_storage_class(
             location='development/filestorage' if settings.DEBUG else 'filestorage',
             reduced_redundancy=True, #saves money on S3!
             querystring_auth=False

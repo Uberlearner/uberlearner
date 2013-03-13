@@ -1,5 +1,4 @@
-
-from os.path import join, abspath, dirname
+from os.path import join, abspath, dirname, normpath
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -8,7 +7,7 @@ PROJECT_ROOT = abspath(join(dirname(__file__), '..', '..', '..'))
 
 ADMINS = (
     ('Uber Mailman', 'mailman@uberlearner.com'),
-    )
+)
 
 MANAGERS = ADMINS
 
@@ -40,7 +39,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = join(PROJECT_ROOT, '..', 'media')
+MEDIA_ROOT = normpath(join(PROJECT_ROOT, '..', 'media'))
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -63,7 +62,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     join(PROJECT_ROOT, 'static'),
-    )
+)
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -71,17 +70,14 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    )
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '%30_ae&amp;ikyk2adxlykhdf4gjo4rfz!t9h(%n!b^06&amp;^u908dmc'
+)
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
     #'django.template.loaders.eggs.Loader',
-    )
+)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -103,7 +99,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     join(PROJECT_ROOT, 'templates'),
-    )
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -131,7 +127,7 @@ INSTALLED_APPS = (
     'courses',
     'filestorage',
     'south',
-    )
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -158,17 +154,15 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-            },
-        }
+        },
+    }
 }
 
 # Add to TEMPLATE_CONTEXT_PROCESSORS and AUTHENTICATION_BACKENDS
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS, AUTHENTICATION_BACKENDS
 TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
-    )
-
-INTERNAL_IPS = ('192.168.1.65', '127.0.0.1')
+)
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -185,13 +179,11 @@ THUMBNAIL_ALIASES = {
 THUMBNAIL_SUBDIR = 'thumbnails'
 
 FILESTORAGE_ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
-
-LOGGLY_TOKEN = 'e86b110d-d51d-4570-91f5-f566a80ad6e2'
+DEFAULT_FILE_STORAGE = 'main.staticfilestorage.FileSystemStorage'
 
 SITE_WIDE_AVERAGE_RATING = 3
 
-from aws_settings import *
-from sitemaps_settings import  *
+from sitemaps_settings import *
 from flatpages_settings import *
 from accounts_settings import *
 from course_settings import *

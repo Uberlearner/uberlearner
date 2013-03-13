@@ -22,7 +22,7 @@ media/
 # the local settings file was created so that the local settings of each installation
 # would not get uploaded onto the repository. Hence, by definition, this file 
 # does not get uploaded.
-uberlearner/uberlearner/settings_local.py
+uberlearner/uberlearner/settings/*_local.py
 
 # the eclipse settings file
 .settings

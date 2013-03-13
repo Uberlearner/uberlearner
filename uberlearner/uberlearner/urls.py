@@ -6,6 +6,12 @@ from courses.views import CourseList
 from tastypie.api import Api
 from accounts import views as accounts_views
 
+# Once the urls file is being parsed by Django, we are guaranteed that the settings have been loaded. Hence any
+# code to check whether the settings files contain all the required fields has to be checked here. Unfortunately,
+# I have not been able to find a better place to do this stuff.
+from settings.base.settings_check import check_settings
+check_settings()
+
 admin.autodiscover()
 
 v1_api = Api(api_name='v1')
@@ -37,5 +43,6 @@ if settings.DEBUG:
     urlpatterns += patterns('',
         url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
             'document_root': settings.MEDIA_ROOT,
+            'show_indexes': True
         }),
     )

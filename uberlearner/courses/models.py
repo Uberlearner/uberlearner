@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.core.files.storage import get_storage_class
 from django.db.models import F, Sum
 from easy_thumbnails.fields import ThumbnailerImageField
 import os
@@ -6,14 +7,16 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.template.defaultfilters import slugify
-from storages.backends.s3boto import S3BotoStorage
 from main.models import TimestampedModel
 from django.db.models.signals import post_save
 from ratings.fields import RatingField
 
+default_storage_class = get_storage_class()
+
 ################################
 # Main models
 ################################
+
 
 class Instructor(models.Model):
     """
@@ -50,9 +53,9 @@ class Enrollment(models.Model):
 
     def __unicode__(self):
         return "{student} - {course} - {timestamp}".format(
-            student = str(self.student),
-            course = str(self.course),
-            timestamp = str(self.timestamp)
+            student=str(self.student),
+            course=str(self.course),
+            timestamp=str(self.timestamp)
         )
 
     @classmethod
@@ -64,8 +67,9 @@ class Enrollment(models.Model):
         has to be incremented.
         """
         if created:
-            instance.course.popularity = F('popularity') + 1 #increment course popularity
+            instance.course.popularity = F('popularity') + 1  # increment course popularity
             instance.course.save()
+
 
 def course_image_path(instance=None, filename=None):
     """
@@ -77,9 +81,11 @@ def course_image_path(instance=None, filename=None):
     path = os.path.join(instance.instructor.username, filename)
     return path
 
+
 class NonDeletedCoursesManager(models.Manager):
     def get_query_set(self):
         return super(NonDeletedCoursesManager, self).get_query_set().filter(deleted=False)
+
 
 class Course(TimestampedModel):
     """
@@ -87,22 +93,19 @@ class Course(TimestampedModel):
     """
     #model fields
     instructor = models.ForeignKey(User, related_name='instructor_courses')
-    # TEACHING ASSISTANTS AND TRANSLATORS WILL BE IMPLEMENTED LATER
-    # teaching_assistants = models.ManyToManyField(Instructor)
-    # translators = models.ManyToManyField(Translator)
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, help_text="A slug is a URL friendly name \
         containing only letters, numbers, underscores or hyphens.")
     # TODO:
     photo = ThumbnailerImageField(
         upload_to=course_image_path,
-        storage=S3BotoStorage(
+        storage=default_storage_class(
             location='courses',
             querystring_auth=False
         ),
-        thumbnail_storage=S3BotoStorage(
+        thumbnail_storage=default_storage_class(
             location='courses',
-            reduced_redundancy=True, #this saves money!
+            reduced_redundancy=True,  # this saves money!
             querystring_auth=False
         ),
         default='defaultCourseImage.png',
@@ -111,7 +114,7 @@ class Course(TimestampedModel):
     description = models.TextField(blank=True)
 
     language = models.CharField(max_length=5, choices=settings.LANGUAGES, default='en')
-    popularity = models.PositiveIntegerField(default=0, editable=False) # number of times the course has been enrolled in
+    popularity = models.PositiveIntegerField(default=0, editable=False)  # number of times the course has been enrolled in
     rating = RatingField(range=settings.COURSE_RATING_RANGE, can_change_vote=True, allow_delete=False,
         allow_anonymous=False, use_cookies=False, weight=settings.COURSE_RATING_WEIGHT)
     is_public = models.BooleanField(
