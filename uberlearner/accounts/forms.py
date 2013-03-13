@@ -10,7 +10,7 @@ from django.forms import widgets
 from accounts.widgets import ImageRadioSelectRenderer
 
 class CaptchaSignupForm(SignupForm):
-    captcha = ReCaptchaField(attrs={'theme': 'clean'})
+    captcha = ReCaptchaField(attrs={'theme': 'white'})
     
 class UserProfileForm(UploadAvatarForm):
     first_name = forms.CharField(label='First name', required=False)
