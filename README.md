@@ -1,7 +1,22 @@
 # Description #
 
-Uberlearner is an web-platform for creating online courses. These courses can contain text, videos, images, quizzes etc.
+Uberlearner is a free web-platform for creating online courses. These courses can contain text, videos, images, quizzes etc.
 The objective is to promote community driven educational content with assessment.
+
+The end-goal is to make it like wikipedia with assessment (and its analysis).
+
+# Goals #
+
+This project started off as a commercial venture with the goal of making education cheap and giving the content creators
+an incentive to produce good-quality content (using revenue). But over-time, it has evolved to be an open-source platform
+with the sole intention of making educational material more accessible to users.
+
+The eventual goal is to:
+- Have great assessment tools
+- Have analytics related to the assessment to let both the students and teachers know what needs to be improved
+- Provide tools for collaborating with other users to make courses better
+
+The exact nature of some of these features is yet to be figured out.
 
 # Installation Instructions #
 
@@ -9,7 +24,12 @@ Coming soon!
 
 # Where to get help #
 
-Coming soon!
+The Uberlearner.com has a user feedback tab at the bottom right corner for problems related to the usability of the
+product.
+
+For bugs, please file a bug-report on the [github issue tracker](https://github.com/Uberlearner/uberlearner/issues).
+
+I will be working on getting a forum or mailing-list working soon!
 
 # Contribution Guidelines #
 

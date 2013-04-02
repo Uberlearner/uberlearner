@@ -17,6 +17,10 @@ DATABASES = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+INSTALLED_APPS += (
+    'django_extensions',
+)
+
 # BE SURE TO GET NEW KEYS FOR DEPLOYMENT FROM:
 # https://www.google.com/recaptcha/admin/create
 # and add the following fields to a file called development_local.py in this folder. This file should not
